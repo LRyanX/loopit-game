@@ -110,6 +110,87 @@ const GAME = {
       "award": "Cart reached checkout"
     }
   ],
+  "scenarios": [
+    [
+      {
+        "kind": "catch",
+        "title": "High Shelf Drops",
+        "goalText": "Catch the marked sale boxes as they drop",
+        "begin": "Start shelf feed",
+        "drops": [
+          -1.04,
+          1.04,
+          2.08
+        ],
+        "object": "gift",
+        "award": "Shelf drops collected"
+      },
+      {
+        "kind": "catch",
+        "title": "High Shelf Drops",
+        "goalText": "Catch the marked sale boxes as they drop",
+        "begin": "Start shelf feed",
+        "drops": [
+          0,
+          -2.08,
+          0,
+          2.08
+        ],
+        "object": "gift",
+        "award": "Shelf drops collected"
+      },
+      {
+        "kind": "catch",
+        "title": "High Shelf Drops",
+        "goalText": "Catch the marked sale boxes as they drop",
+        "begin": "Start shelf feed",
+        "drops": [
+          1.04,
+          -1.04,
+          -2.08,
+          0
+        ],
+        "object": "gift",
+        "award": "Shelf drops collected"
+      }
+    ],
+    [
+      {
+        "kind": "traffic",
+        "title": "Busy Checkout Crossing",
+        "goalText": "Wait for gaps in the crossing traffic",
+        "wait": "Wait for a gap",
+        "gates": 3,
+        "object": "person",
+        "tint": 15976834,
+        "award": "Cart reached checkout"
+      },
+      {
+        "kind": "traffic",
+        "title": "Busy Checkout Crossing",
+        "goalText": "Wait for gaps in the crossing traffic",
+        "wait": "Wait for a gap",
+        "gates": 4,
+        "object": "person",
+        "tint": 15976834,
+        "award": "Cart reached checkout",
+        "period": 2.1,
+        "offset": 0.26
+      },
+      {
+        "kind": "traffic",
+        "title": "Busy Checkout Crossing",
+        "goalText": "Wait for gaps in the crossing traffic",
+        "wait": "Wait for a gap",
+        "gates": 4,
+        "object": "person",
+        "tint": 15976834,
+        "award": "Cart reached checkout",
+        "period": 2.48,
+        "offset": 0.48
+      }
+    ]
+  ],
   "form": "aisle",
   "controls": [
     "tray",
@@ -257,8 +338,9 @@ function makeSecondTask(c,q){
 
 function makeThirdTask(c,q){
   let next=0,clock=0,current=3.18,path=null,last=false;
+  const period=q.period??2.32,offset=q.offset??.51,scale=period/2.32;
   const markerZ=i=>2.74-i*1.62;
-  const phase=()=>((clock+next*.51)%2.32);
+  const phase=()=>((clock+next*offset)%period)/scale;
   const open=()=>phase()>.67&&phase()<1.73;
   function tryStep(){
     if(path)return;
@@ -296,7 +378,7 @@ function makeThirdTask(c,q){
       for(const side of [-1,1]){
         const active=i===next&&(live||path);
         if(q.object==="person"){
-          const v=((clock+i*.22)%2.32)/2.32;
+          const v=((clock+i*.22)%period)/period;
           c.item(m,q.object,side*(.16+Math.abs(v-.50)*5.61),.14,z(dz),.81,active?0x81b9a3:bright());
         } else {
           for(let j=0;j<3;j++)m.gem(side*(.55+j*.38),active?.14:.34,z(dz),.085,active?.07:.39,.092,q.tint,4,0,1);
@@ -309,10 +391,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

@@ -101,7 +101,7 @@ const GAME = {
     {
       "kind": "ties",
       "title": "Ribbon Workshop",
-      "goalText": "Tie each colored ribbon to its matching loop",
+      "goalText": "Match each ribbon, then choose its knot",
       "names": [
         "Orange",
         "Mint",
@@ -112,8 +112,118 @@ const GAME = {
         2,
         0
       ],
+      "knots": [
+        0,
+        1,
+        0
+      ],
       "award": "Gift set wrapped"
     }
+  ],
+  "scenarios": [
+    [
+      {
+        "kind": "fold",
+        "title": "Gift Wrapping Bench",
+        "goalText": "Fold the wrapping so the seams overlap in order",
+        "order": [
+          2,
+          0,
+          1,
+          3
+        ],
+        "award": "Gift paper sealed"
+      },
+      {
+        "kind": "fold",
+        "title": "Gift Wrapping Bench",
+        "goalText": "Fold the wrapping so the seams overlap in order",
+        "order": [
+          3,
+          1,
+          0,
+          2
+        ],
+        "award": "Gift paper sealed"
+      },
+      {
+        "kind": "fold",
+        "title": "Gift Wrapping Bench",
+        "goalText": "Fold the wrapping so the seams overlap in order",
+        "order": [
+          0,
+          2,
+          3,
+          1
+        ],
+        "award": "Gift paper sealed"
+      }
+    ],
+    [
+      {
+        "kind": "ties",
+        "title": "Ribbon Workshop",
+        "goalText": "Match each ribbon, then choose its knot",
+        "names": [
+          "Orange",
+          "Mint",
+          "Violet"
+        ],
+        "end": [
+          1,
+          2,
+          0
+        ],
+        "knots": [
+          0,
+          1,
+          0
+        ],
+        "award": "Gift set wrapped"
+      },
+      {
+        "kind": "ties",
+        "title": "Ribbon Workshop",
+        "goalText": "Match each ribbon, then choose its knot",
+        "names": [
+          "Orange",
+          "Mint",
+          "Violet"
+        ],
+        "end": [
+          2,
+          0,
+          1
+        ],
+        "knots": [
+          1,
+          0,
+          1
+        ],
+        "award": "Gift set wrapped"
+      },
+      {
+        "kind": "ties",
+        "title": "Ribbon Workshop",
+        "goalText": "Match each ribbon, then choose its knot",
+        "names": [
+          "Orange",
+          "Mint",
+          "Violet"
+        ],
+        "end": [
+          0,
+          2,
+          1
+        ],
+        "knots": [
+          0,
+          1,
+          1
+        ],
+        "award": "Gift set wrapped"
+      }
+    ]
   ],
   "form": "counter",
   "controls": [
@@ -148,8 +258,8 @@ const GAME = {
 
 function makeFirstTask(c){
   const sets=[
-    {name:"Coffee kit",listen:"Kettle + mug",budget:31,need:["kettle","mug"],cut:8,stock:[["kettle",23],["mug",10],["mug",16],["lamp",15]]},
-    {name:"Creator kit",listen:"Camera + headset",budget:46,need:["camera","headset"],cut:12,stock:[["camera",34],["headset",21],["headset",26],["shoe",17]]},
+    {name:"Coffee kit",listen:"Kettle + mug + gift box",budget:42,need:["kettle","mug","gift"],cut:8,stock:[["kettle",23],["mug",10],["mug",16],["lamp",15],["gift",16]]},
+    {name:"Creator kit",listen:"Camera + headset + lamp",budget:59,need:["camera","headset","lamp"],cut:12,stock:[["camera",34],["headset",21],["headset",26],["shoe",17],["lamp",14]]},
     {name:"Gift kit",listen:"Shoes + mug + lamp",budget:59,need:["shoe","mug","lamp"],cut:15,stock:[["shoe",31],["mug",14],["lamp",26],["lamp",32],["gift",17]]}
   ];
   const names={kettle:"Kettle",mug:"Mug",lamp:"Lamp",camera:"Camera",headset:"Headset",shoe:"Shoes",gift:"Gift box"};
@@ -161,7 +271,7 @@ function makeFirstTask(c){
   const cost=()=>sum()-(matches()?cfg.cut:0);
   function refresh(){
     c.objective(cfg.listen+" · $"+cfg.budget+" max");
-    c.meter("Cart $"+cost()+" · bundle saves $"+cfg.cut);
+    c.meter(cfg.listen+" · $"+cost()+"/"+cfg.budget+" · −$"+cfg.cut+" bundle");
     cfg.stock.forEach(([id,price],i)=>{
       const active=selected.includes(i),[x,z]=sample[i];
       c.marker("sku"+i,(active?"✓ ":"")+names[id]+" $"+price,[x,.65,z],()=>pick(i),{kind:active?"good":"hot"});
@@ -242,28 +352,38 @@ function makeSecondTask(c,q){
 
 function makeThirdTask(c,q){
   const shades=[0xeaa66b,0x85c8ac,0xb5a8e3],startX=-2.02,endX=2.02;
-  let lead=null,tied=[],line=null;
+  let lead=null,tied=[],line=null,pending=null;
   const zval=i=>(i-1)*1.88+.18;
-  function startLead(i){lead=i;c.tone([335+82*i]);update();}
+  function startLead(i){c.flyTo(startX,zval(i),()=>{lead=i;c.tone([335+82*i]);update();});}
   function connect(i){
     if(lead===null)return;
     if(q.end[i]!==lead){c.mistake("Match the ribbon to its color");return;}
-    tied.push({a:lead,b:i});lead=null;line=null;
-    c.pulse([endX,.59,zval(i)],shades[q.end[i]],15);
+    c.flyTo(endX,zval(i),()=>{pending=i;line=null;c.tone([346,520]);update();});
+  }
+  function knot(i){
+    if(i!==q.knots[lead]){c.mistake(q.knots[lead]?"Use a firm knot for woven ribbon":"Use a loose knot for silk");return;}
+    tied.push({a:lead,b:pending,knot:i});
+    c.pulse([endX,.59,zval(pending)],shades[lead],15);
+    lead=null;pending=null;
     if(tied.length===q.end.length){c.receive([0,0,-2.48]);return;}
     c.feedback(true,"Ribbon secured");update();
   }
   function update(){
-    c.objective(lead===null?q.goalText:"Tie the "+q.names[lead].toLowerCase()+" ribbon");
-    c.meter(tied.length+"/"+q.end.length+" bows tied");
+    c.objective(lead===null?"Pick a ribbon":pending===null?"Find the matching loop":"Choose a knot");
+    c.meter(tied.length+"/"+q.end.length+" bows"+(pending===null?"":q.knots[lead]?" · woven ribbon":" · silk ribbon"));
     shades.forEach((_,i)=>{
       if(lead===null&&!tied.some(v=>v.a===i))c.marker("left"+i,q.names[i]+" ribbon",[startX,.63,zval(i)],()=>startLead(i),{kind:"clue"});
       else c.off("left"+i);
-      if(lead!==null&&!tied.some(v=>v.b===i))c.marker("right"+i,q.names[q.end[i]]+" loop",[endX,.64,zval(i)],()=>connect(i),{kind:"hot"});
+      if(lead!==null&&pending===null&&!tied.some(v=>v.b===i))c.marker("right"+i,q.names[q.end[i]]+" loop",[endX,.64,zval(i)],()=>connect(i),{kind:"hot"});
       else c.off("right"+i);
     });
+    for(let i=0;i<2;i++){
+      if(pending!==null)c.marker("knot"+i,i===0?"Loose knot":"Firm knot",[i===0?.45:1.48,.78,zval(pending)],
+        ()=>knot(i),{kind:"clue",caption:i===0?"Loose":"Firm"});
+      else c.off("knot"+i);
+    }
   }
-  function start(){lead=null;tied=[];line=null;update();}
+  function start(){lead=null;tied=[];line=null;pending=null;update();}
   function draw(m){
     const z=c.localZ;
     m.box(0,.22,z(.16),4.90,.40,5.30,ink());
@@ -272,19 +392,26 @@ function makeThirdTask(c,q){
       m.oval(startX,.62,z(zval(i)),.19,.135,.19,color,0,1,9);
       m.oval(endX,.62,z(zval(i)),.19,.135,.19,shades[q.end[i]],0,1,9);
     });
-    for(const {a,b} of tied)m.tube([startX,.64,z(zval(a))],[endX,.64,z(zval(b))],.047,.047,shades[a],7,1);
+    for(const {a,b,knot} of tied){
+      m.tube([startX,.64,z(zval(a))],[endX,.64,z(zval(b))],.047,.047,shades[a],7,1);
+      m.oval(endX-.10,.69,z(zval(b)),knot?.15:.24,.11,.13,shades[a],0,1,9);
+    }
     if(lead!==null){
-      const [x,pp]=line||[.48,zval(lead)];
+      const [x,pp]=pending===null?(line||[.48,zval(lead)]):[endX,zval(pending)];
       m.tube([startX,.64,z(zval(lead))],[x,.66,z(pp)],.048,.043,shades[lead],7,1);
+      if(pending!==null){
+        m.oval(.45,.65,z(pp),.26,.085,.18,shades[lead],0,1,9);
+        m.oval(1.48,.65,z(pp),.15,.10,.12,shades[lead],0,1,9);
+      }
     }
   }
   function swipe(p){
-    if(lead===null||!p.floor)return false;
+    if(lead===null||pending!==null||!p.floor)return false;
     line=[p.floor.x,p.floor.z];return true;
   }
   function dragEnd(p){
     line=null;
-    if(!p.floor||p.floor.x<1.11||lead===null)return;
+    if(!p.floor||p.floor.x<1.11||lead===null||pending!==null)return;
     const i=shades.findIndex((_,j)=>Math.abs(p.floor.z-zval(j))<.76);
     if(i>=0)connect(i);
   }
@@ -292,10 +419,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

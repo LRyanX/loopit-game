@@ -151,6 +151,216 @@ const GAME = {
       "award": "Offers permanently locked"
     }
   ],
+  "scenarios": [
+    [
+      {
+        "kind": "offers",
+        "title": "Member Trade-In",
+        "goalText": "Trade eligible gear for a camera you can afford",
+        "trade": [
+          [
+            "Broken gear",
+            30,
+            false
+          ],
+          [
+            "Working gear",
+            25,
+            true
+          ],
+          [
+            "Old case",
+            8,
+            true
+          ]
+        ],
+        "stock": [
+          [
+            "Camera",
+            64,
+            "Camera",
+            "camera"
+          ],
+          [
+            "Lens",
+            31,
+            "Lens",
+            "lamp"
+          ],
+          [
+            "Headset",
+            38,
+            "Audio",
+            "headset"
+          ]
+        ],
+        "must": "Camera",
+        "limit": 45,
+        "award": "Trade-in accepted"
+      },
+      {
+        "kind": "offers",
+        "title": "Member Trade-In",
+        "goalText": "Trade in for a headset under budget",
+        "trade": [
+          [
+            "Cracked lens",
+            29,
+            false
+          ],
+          [
+            "Working tuner",
+            19,
+            true
+          ],
+          [
+            "Plain case",
+            6,
+            true
+          ]
+        ],
+        "stock": [
+          [
+            "Camera",
+            49,
+            "Camera",
+            "camera"
+          ],
+          [
+            "Headset",
+            41,
+            "Headset",
+            "headset"
+          ],
+          [
+            "Speaker",
+            29,
+            "Audio",
+            "lamp"
+          ]
+        ],
+        "must": "Headset",
+        "limit": 24,
+        "award": "Trade-in accepted"
+      },
+      {
+        "kind": "offers",
+        "title": "Member Trade-In",
+        "goalText": "Trade in for a lens under budget",
+        "trade": [
+          [
+            "Scuffed case",
+            11,
+            true
+          ],
+          [
+            "Working tripod",
+            27,
+            true
+          ],
+          [
+            "Broken camera",
+            35,
+            false
+          ]
+        ],
+        "stock": [
+          [
+            "Headset",
+            31,
+            "Headset",
+            "headset"
+          ],
+          [
+            "Lens",
+            50,
+            "Lens",
+            "lamp"
+          ],
+          [
+            "Camera",
+            67,
+            "Camera",
+            "camera"
+          ]
+        ],
+        "must": "Lens",
+        "limit": 25,
+        "award": "Trade-in accepted"
+      }
+    ],
+    [
+      {
+        "kind": "hold",
+        "title": "Price Lock Terminal",
+        "goalText": "Lock the printed offer at the pressure mark",
+        "begin": "Engage lock",
+        "unit": "offers locked",
+        "bands": [
+          [
+            0.38,
+            0.67
+          ],
+          [
+            0.51,
+            0.74
+          ]
+        ],
+        "object": "coupon",
+        "award": "Offers permanently locked"
+      },
+      {
+        "kind": "hold",
+        "title": "Price Lock Terminal",
+        "goalText": "Lock the printed offer at the pressure mark",
+        "begin": "Engage lock",
+        "unit": "offers locked",
+        "bands": [
+          [
+            0.32,
+            0.62
+          ],
+          [
+            0.5,
+            0.72
+          ],
+          [
+            0.43,
+            0.65
+          ]
+        ],
+        "object": "coupon",
+        "award": "Offers permanently locked"
+      },
+      {
+        "kind": "hold",
+        "title": "Price Lock Terminal",
+        "goalText": "Lock the printed offer at the pressure mark",
+        "begin": "Engage lock",
+        "unit": "offers locked",
+        "bands": [
+          [
+            0.46,
+            0.69
+          ],
+          [
+            0.3,
+            0.56
+          ],
+          [
+            0.54,
+            0.75
+          ],
+          [
+            0.38,
+            0.63
+          ]
+        ],
+        "object": "coupon",
+        "award": "Offers permanently locked"
+      }
+    ]
+  ],
   "form": "hub",
   "controls": [
     "tray",
@@ -323,10 +533,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

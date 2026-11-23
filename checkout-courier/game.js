@@ -7,12 +7,12 @@ const GAME = {
   "avatar": "cart",
   "zones": [
     "Express Belt",
-    "Returns Scale",
+    "Returns Inspection",
     "Packing Line"
   ],
   "awards": [
     "Express receipt",
-    "Return weight verified",
+    "Returns inspected",
     "Sealed dispatch"
   ],
   "awardShape": "receipt",
@@ -28,7 +28,7 @@ const GAME = {
     "css": "#bd472d"
   },
   "passages": [
-    "Enter Returns Scale",
+    "Enter Returns Inspection",
     "Enter Packing Line"
   ],
   "scene": "checkout",
@@ -66,8 +66,8 @@ const GAME = {
       "Scan the sale box"
     ],
     [
-      "⚖",
-      "Balance the scale"
+      "▤",
+      "Inspect the return"
     ],
     [
       "◉",
@@ -87,32 +87,33 @@ const GAME = {
   },
   "tasks": [
     {
-      "kind": "weigh",
-      "title": "Returns Scale",
-      "goalText": "Balance the return parcel and inspection weights",
-      "unit": "lb",
-      "parts": [
+      "kind": "returns",
+      "title": "Returns Inspection",
+      "goalText": "Match the barcode, then check the seal",
+      "cards": [
         [
-          "Cable",
-          1,
-          "parcel"
+          "Camera",
+          "camera",
+          "C24",
+          "C24",
+          false
         ],
         [
-          "Console",
-          4,
-          "box"
+          "Mug",
+          "mug",
+          "M11",
+          "M41",
+          true
         ],
         [
-          "Battery",
-          2,
-          "parcel"
+          "Headset",
+          "headset",
+          "H17",
+          "H17",
+          true
         ]
       ],
-      "goal": [
-        5,
-        2
-      ],
-      "award": "Return weight verified"
+      "award": "Returns inspected"
     },
     {
       "kind": "hold",
@@ -137,6 +138,186 @@ const GAME = {
       "object": "parcel",
       "award": "Sealed dispatch"
     }
+  ],
+  "scenarios": [
+    [
+      {
+        "kind": "returns",
+        "title": "Returns Inspection",
+        "goalText": "Match the barcode, then check the seal",
+        "cards": [
+          [
+            "Camera",
+            "camera",
+            "C24",
+            "C24",
+            false
+          ],
+          [
+            "Mug",
+            "mug",
+            "M11",
+            "M41",
+            true
+          ],
+          [
+            "Headset",
+            "headset",
+            "H17",
+            "H17",
+            true
+          ]
+        ],
+        "award": "Returns inspected"
+      },
+      {
+        "kind": "returns",
+        "title": "Returns Inspection",
+        "goalText": "Match the barcode, then check the seal",
+        "cards": [
+          [
+            "Lamp",
+            "lamp",
+            "L18",
+            "L18",
+            true
+          ],
+          [
+            "Kettle",
+            "kettle",
+            "K13",
+            "K03",
+            false
+          ],
+          [
+            "Sneakers",
+            "shoe",
+            "S06",
+            "S06",
+            false
+          ],
+          [
+            "Gift box",
+            "gift",
+            "G25",
+            "G25",
+            true
+          ]
+        ],
+        "award": "Returns inspected"
+      },
+      {
+        "kind": "returns",
+        "title": "Returns Inspection",
+        "goalText": "Match the barcode, then check the seal",
+        "cards": [
+          [
+            "Console",
+            "box",
+            "C37",
+            "C73",
+            true
+          ],
+          [
+            "Cable",
+            "parcel",
+            "C81",
+            "C81",
+            false
+          ],
+          [
+            "Camera",
+            "camera",
+            "C14",
+            "C14",
+            true
+          ],
+          [
+            "Mug",
+            "mug",
+            "M07",
+            "M70",
+            false
+          ]
+        ],
+        "award": "Returns inspected"
+      }
+    ],
+    [
+      {
+        "kind": "hold",
+        "title": "Packing Line",
+        "goalText": "Seal the outbound parcels",
+        "begin": "Press seal",
+        "unit": "parcels sealed",
+        "bands": [
+          [
+            0.4,
+            0.68
+          ],
+          [
+            0.45,
+            0.68
+          ],
+          [
+            0.49,
+            0.71
+          ]
+        ],
+        "object": "parcel",
+        "award": "Sealed dispatch"
+      },
+      {
+        "kind": "hold",
+        "title": "Packing Line",
+        "goalText": "Seal the outbound parcels",
+        "begin": "Press seal",
+        "unit": "parcels sealed",
+        "bands": [
+          [
+            0.32,
+            0.62
+          ],
+          [
+            0.5,
+            0.72
+          ],
+          [
+            0.43,
+            0.65
+          ]
+        ],
+        "object": "parcel",
+        "award": "Sealed dispatch"
+      },
+      {
+        "kind": "hold",
+        "title": "Packing Line",
+        "goalText": "Seal the outbound parcels",
+        "begin": "Press seal",
+        "unit": "parcels sealed",
+        "bands": [
+          [
+            0.46,
+            0.69
+          ],
+          [
+            0.3,
+            0.56
+          ],
+          [
+            0.54,
+            0.75
+          ],
+          [
+            0.38,
+            0.63
+          ]
+        ],
+        "object": "parcel",
+        "award": "Sealed dispatch"
+      }
+    ]
   ],
   "form": "counter",
   "controls": [
@@ -230,56 +411,57 @@ function makeFirstTask(c) {
 }
 
 function makeSecondTask(c,q){
-  const xs=[-2.43,0,2.43],colors=[0xe49063,0x83c6ad,0x8eaad6];
-  let selected=-1,locations=[],angle=0;
-  const total=side=>locations.reduce((n,p,i)=>p===side?n+q.parts[i][1]:n,0);
-  function choose(i){selected=i;c.tone([329,482]);show();}
-  function put(side){
-    if(selected<0)return;
-    const i=selected,d=side===0?-2.15:2.15;
-    c.flyTo(d,-.42,()=>{
-      locations[i]=side;selected=-1;
-      c.pulse([d,.42,-.77],colors[i],13);
-      if(locations.every(n=>n!==null)){
-        if(total(0)===q.goal[0]&&total(1)===q.goal[1]){c.receive([0,0,-2.73]);return;}
-        c.mistake("The scale is off · move a weight");
-      }else c.feedback(true);
-      show();
+  const bins=["Restock","Reseal","Reject"],colors=[0x84d9b2,0xefd184,0xd79283],lanes=[-2.45,0,2.45];
+  let index=0,seen=false,placed=[];
+  function inspect(){
+    c.flyTo(0,1.52,()=>{seen=true;c.tone([348,571]);show();});
+  }
+  function route(i){
+    const [name,type,order,actual,sealed]=q.cards[index];
+    const correct=order!==actual?2:sealed?0:1;
+    if(i!==correct){
+      c.mistake(order!==actual?"The barcodes differ":sealed?"Matched return, seal intact":"Matched return, seal torn");
+      return;
+    }
+    c.flyTo(lanes[i],-1.26,()=>{
+      placed.push({i,type});index++;seen=false;
+      c.pulse([lanes[i],.42,-1.55],colors[i],16);
+      if(index===q.cards.length){c.receive([0,0,-2.69]);return;}
+      c.feedback(true,"Return routed");show();
     });
   }
   function show(){
-    c.objective(selected<0?q.goalText:"Place the "+q.parts[selected][0].toLowerCase());
-    c.meter("Left "+total(0)+"/"+q.goal[0]+" · Right "+total(1)+"/"+q.goal[1]+" "+q.unit);
-    q.parts.forEach(([name,weight],i)=>{
-      const where=locations[i],same=where===null;
-      c.marker("weight"+i,name+" "+weight,[same?xs[i]:(where===0?-2.2:2.2)+(i-1)*.49,.59,same?2.26:-.86],()=>choose(i),
-        {kind:i===selected?"good":"clue",hidden:selected>=0});
+    const [name,,order,actual,sealed]=q.cards[index];
+    c.objective(seen?"Route the returned "+name.toLowerCase():"Inspect the return label");
+    c.meter(seen?order+" ↔ "+actual+" · "+(sealed?"seal intact":"seal torn"):"Order "+order+" · "+name);
+    if(!seen)c.marker("inspect","Inspect return",[0,.69,1.33],inspect,{kind:"clue"});
+    else c.off("inspect");
+    bins.forEach((name,i)=>{
+      if(seen)c.marker("bin"+i,name,[lanes[i],.79,-1.54],()=>route(i),{kind:"hot"});
+      else c.off("bin"+i);
     });
-    if(selected>=0){
-      c.marker("left","Place left",[-2.16,.70,-.63],()=>put(0),{kind:"hot"});
-      c.marker("right","Place right",[2.16,.70,-.63],()=>put(1),{kind:"hot"});
-    }else {c.off("left");c.off("right");}
   }
-  function start(){selected=-1;locations=q.parts.map(()=>null);angle=0;show();}
-  function tick(dt){angle=lerp(angle,clamp((total(0)-total(1))*.057,-.23,.23),1-Math.exp(-dt*10));}
-  function draw(m,t){
-    const z=c.localZ, center=z(-.95);
-    m.box(0,.26,center,.61,.45,.52,ink());
-    const beam=(x)=>[x,.68-Math.sin(angle)*x,center];
-    m.tube(beam(-2.46),beam(2.46),.088,.088,trim(),10);
-    for(const side of [-1,1]){
-      const [x,y]=beam(side*2.16);
-      m.box(x,y-.27,center,1.79,.11,1.08,bright());
-      m.tube([x,y,center],[x,y-.22,center],.071,.047,ink(),8);
+  function start(){index=0;seen=false;placed=[];show();}
+  function draw(m){
+    const z=c.localZ,card=q.cards[index];
+    m.box(0,.27,z(1.29),1.52,.47,1.20,ink());
+    m.box(0,.52,z(1.29),1.64,.10,1.26,trim());
+    if(card){
+      c.item(m,"parcel",0,.60,z(1.29),.92,seen?0xd2a579:bright());
+      if(seen){
+        const label=card[2]===card[3]?0x82d9b1:0xe08d7f;
+        for(let k=0;k<5;k++)m.box((k-2)*.073,1.04,z(1.63),.048,.081,.036,label,0,1);
+        m.box(.30,1.01,z(1.32),.11,.05,.37,card[4]?0x8fceab:0xe28369,0,1,card[4]?0:.22);
+      }
     }
-    q.parts.forEach(([_,weight,type],i)=>{
-      const here=locations[i],pos=here===null?xs[i]:(here===0?-2.16:2.16)+(i-1)*.47;
-      const zz=here===null?z(2.23):center;
-      if(selected===i)c.item(m,type||"box",c.player.x,.67,c.player.z,.84,colors[i]);
-      else {if(here===null)c.pedestal(m,pos,zz,1.00,colors[i]);c.item(m,type||"box",pos,here===null?.21:.51-Math.sin(angle)*pos,zz,.68+weight*.043,colors[i]);}
+    lanes.forEach((x,i)=>{
+      m.box(x,.25,z(-1.61),1.58,.43,1.16,ink());
+      m.box(x,.46,z(-1.06),1.29,.16,.075,colors[i],0,1);
+      const done=placed.filter(p=>p.i===i);
+      done.forEach((p,j)=>c.item(m,p.type,x+(j-1)*.26,.47,z(-1.60),.57,colors[i]));
     });
   }
-  return {start,tick,draw};
+  return {start,draw};
 }
 
 function makeThirdTask(c,q){
@@ -333,10 +515,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

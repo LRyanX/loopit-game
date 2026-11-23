@@ -143,6 +143,208 @@ const GAME = {
       "award": "Rebates filed"
     }
   ],
+  "scenarios": [
+    [
+      {
+        "kind": "audit",
+        "title": "Offer Audit Desk",
+        "goalText": "Flag the price card that breaks the posted rules",
+        "sourceName": "sign",
+        "object": "coupon",
+        "rows": [
+          {
+            "clue": "Headsets $22–30 · sticker R",
+            "labels": [
+              "R · $24",
+              "R · $27",
+              "X · $29"
+            ],
+            "wrong": 2
+          },
+          {
+            "clue": "Kitchen deals $30–40",
+            "labels": [
+              "Kettle $28",
+              "Mug $35",
+              "Lamp $38"
+            ],
+            "wrong": 0
+          }
+        ],
+        "award": "Expired promos reported"
+      },
+      {
+        "kind": "audit",
+        "title": "Offer Audit Desk",
+        "goalText": "Flag the price card that breaks the posted rules",
+        "sourceName": "sign",
+        "object": "coupon",
+        "rows": [
+          {
+            "clue": "Headsets $22–30 · sticker R",
+            "labels": [
+              "R · $24",
+              "R · $27",
+              "X · $29"
+            ],
+            "wrong": 2
+          },
+          {
+            "clue": "Cameras $45–55 · tag G",
+            "labels": [
+              "G · $52",
+              "G · $39",
+              "G · $48"
+            ],
+            "wrong": 1
+          },
+          {
+            "clue": "Footwear $24–32",
+            "labels": [
+              "Boots $28",
+              "Shoes $26",
+              "Slippers $35"
+            ],
+            "wrong": 2
+          }
+        ],
+        "award": "Expired promos reported"
+      },
+      {
+        "kind": "audit",
+        "title": "Offer Audit Desk",
+        "goalText": "Flag the price card that breaks the posted rules",
+        "sourceName": "sign",
+        "object": "coupon",
+        "rows": [
+          {
+            "clue": "Kitchen deals $30–40",
+            "labels": [
+              "Kettle $28",
+              "Mug $35",
+              "Lamp $38"
+            ],
+            "wrong": 0
+          },
+          {
+            "clue": "Cameras $45–55 · tag G",
+            "labels": [
+              "G · $52",
+              "G · $39",
+              "G · $48"
+            ],
+            "wrong": 1
+          },
+          {
+            "clue": "Footwear $24–32",
+            "labels": [
+              "Boots $28",
+              "Shoes $26",
+              "Slippers $35"
+            ],
+            "wrong": 2
+          }
+        ],
+        "award": "Expired promos reported"
+      }
+    ],
+    [
+      {
+        "kind": "sort",
+        "title": "Customer Refunds",
+        "goalText": "Route rebate claims to their processing bins",
+        "name": "claim",
+        "bins": [
+          "Valid claims",
+          "Expired claims"
+        ],
+        "items": [
+          [
+            "Current claim",
+            "receipt",
+            0
+          ],
+          [
+            "Expired claim",
+            "coupon",
+            1
+          ],
+          [
+            "Verified claim",
+            "receipt",
+            0
+          ]
+        ],
+        "award": "Rebates filed"
+      },
+      {
+        "kind": "sort",
+        "title": "Customer Refunds",
+        "goalText": "Route rebate claims to their processing bins",
+        "name": "claim",
+        "bins": [
+          "Valid claims",
+          "Expired claims"
+        ],
+        "items": [
+          [
+            "Out-of-date receipt",
+            "receipt",
+            1
+          ],
+          [
+            "Current claim",
+            "receipt",
+            0
+          ],
+          [
+            "Expired claim",
+            "coupon",
+            1
+          ],
+          [
+            "Verified claim",
+            "receipt",
+            0
+          ]
+        ],
+        "award": "Rebates filed"
+      },
+      {
+        "kind": "sort",
+        "title": "Customer Refunds",
+        "goalText": "Route rebate claims to their processing bins",
+        "name": "claim",
+        "bins": [
+          "Valid claims",
+          "Expired claims"
+        ],
+        "items": [
+          [
+            "In-date voucher",
+            "coupon",
+            0
+          ],
+          [
+            "Expired claim",
+            "coupon",
+            1
+          ],
+          [
+            "Verified claim",
+            "receipt",
+            0
+          ],
+          [
+            "Current claim",
+            "receipt",
+            0
+          ]
+        ],
+        "award": "Rebates filed"
+      }
+    ]
+  ],
   "form": "mall",
   "controls": [
     "tray",
@@ -297,10 +499,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

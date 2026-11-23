@@ -7,12 +7,12 @@ const GAME = {
   "avatar": "cart",
   "zones": [
     "Cart Yard",
-    "Balance Bay",
+    "Cargo Tie-Down",
     "Blocked Loading Aisle"
   ],
   "awards": [
     "Two items packed",
-    "Balanced checkout load",
+    "Cargo secured",
     "Cart delivered intact"
   ],
   "awardShape": "receipt",
@@ -28,7 +28,7 @@ const GAME = {
     "css": "#4d6744"
   },
   "passages": [
-    "Enter Balance Bay",
+    "Enter Cargo Tie-Down",
     "Enter Blocked Loading Aisle"
   ],
   "scene": "freight",
@@ -66,8 +66,8 @@ const GAME = {
       "Pack the cart"
     ],
     [
-      "⚖",
-      "Balance the scale"
+      "∞",
+      "Clip cargo straps"
     ],
     [
       "→",
@@ -87,32 +87,21 @@ const GAME = {
   },
   "tasks": [
     {
-      "kind": "weigh",
-      "title": "Balance Bay",
-      "goalText": "Split the goods to balance the checkout scale",
-      "unit": "lb",
-      "parts": [
+      "kind": "straps",
+      "title": "Cargo Tie-Down",
+      "goalText": "Join matching anchor clips to secure the load",
+      "pairs": [
         [
-          "Lamp",
+          0,
+          5
+        ],
+        [
           2,
-          "lamp"
-        ],
-        [
-          "Kettle",
-          3,
-          "kettle"
-        ],
-        [
-          "Shoes",
-          4,
-          "shoe"
+          3
         ]
       ],
-      "goal": [
-        4,
-        5
-      ],
-      "award": "Balanced checkout load"
+      "high": 1,
+      "award": "Cargo secured"
     },
     {
       "kind": "maze",
@@ -147,6 +136,170 @@ const GAME = {
       "object": "parcel",
       "award": "Cart delivered intact"
     }
+  ],
+  "scenarios": [
+    [
+      {
+        "kind": "straps",
+        "title": "Cargo Tie-Down",
+        "goalText": "Join matching anchor clips to secure the load",
+        "pairs": [
+          [
+            0,
+            5
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "high": 1,
+        "award": "Cargo secured"
+      },
+      {
+        "kind": "straps",
+        "title": "Cargo Tie-Down",
+        "goalText": "Join matching anchor clips to secure the load",
+        "pairs": [
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            2,
+            5
+          ]
+        ],
+        "high": 2,
+        "award": "Cargo secured"
+      },
+      {
+        "kind": "straps",
+        "title": "Cargo Tie-Down",
+        "goalText": "Join matching anchor clips to secure the load",
+        "pairs": [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            2,
+            4
+          ]
+        ],
+        "high": 0,
+        "award": "Cargo secured"
+      }
+    ],
+    [
+      {
+        "kind": "maze",
+        "title": "Blocked Loading Aisle",
+        "goalText": "Steer the packed cart around the stock cages",
+        "start": [
+          0,
+          3
+        ],
+        "exit": [
+          3,
+          0
+        ],
+        "blocks": [
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "object": "parcel",
+        "award": "Cart delivered intact"
+      },
+      {
+        "kind": "maze",
+        "title": "Blocked Loading Aisle",
+        "goalText": "Steer the packed cart around the stock cages",
+        "start": [
+          3,
+          3
+        ],
+        "exit": [
+          0,
+          0
+        ],
+        "blocks": [
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        "object": "parcel",
+        "award": "Cart delivered intact"
+      },
+      {
+        "kind": "maze",
+        "title": "Blocked Loading Aisle",
+        "goalText": "Steer the packed cart around the stock cages",
+        "start": [
+          0,
+          3
+        ],
+        "exit": [
+          3,
+          0
+        ],
+        "blocks": [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            3,
+            3
+          ]
+        ],
+        "object": "parcel",
+        "award": "Cart delivered intact"
+      }
+    ]
   ],
   "form": "loading",
   "controls": [
@@ -257,56 +410,78 @@ function makeFirstTask(c){
 }
 
 function makeSecondTask(c,q){
-  const xs=[-2.43,0,2.43],colors=[0xe49063,0x83c6ad,0x8eaad6];
-  let selected=-1,locations=[],angle=0;
-  const total=side=>locations.reduce((n,p,i)=>p===side?n+q.parts[i][1]:n,0);
-  function choose(i){selected=i;c.tone([329,482]);show();}
-  function put(side){
-    if(selected<0)return;
-    const i=selected,d=side===0?-2.15:2.15;
-    c.flyTo(d,-.42,()=>{
-      locations[i]=side;selected=-1;
-      c.pulse([d,.42,-.77],colors[i],13);
-      if(locations.every(n=>n!==null)){
-        if(total(0)===q.goal[0]&&total(1)===q.goal[1]){c.receive([0,0,-2.73]);return;}
-        c.mistake("The scale is off · move a weight");
-      }else c.feedback(true);
-      show();
+  const colors=[0xf0ad73,0x8ee0c2,0xa7bbef],letter=i=>String.fromCharCode(65+i);
+  const anchor=i=>[i<3?-2.29:2.29,1.60-(i%3)*1.53];
+  let left=null,used=[],pending=null;
+  const routeOf=i=>q.pairs.findIndex(pair=>pair.includes(i));
+  const goal=link=>link===q.high?3:2;
+  function choose(i){
+    if(i<3){
+      const [x,z]=anchor(i);
+      c.flyTo(x,z,()=>{left=left===i?null:i;c.tone();show();});return;
+    }
+    if(left===null)return;
+    const link=q.pairs.findIndex(([a,b])=>a===left&&b===i);
+    if(link<0){c.mistake("The clips do not match");return;}
+    const [x,z]=anchor(i);
+    c.flyTo(x,z,()=>{
+      pending={link,steps:0,i};left=null;
+      c.pulse([x,.5,z],colors[link],14);
+      c.feedback(true,"Strap clipped");show();
     });
+  }
+  function ratchet(){
+    pending.steps=(pending.steps+1)%4;
+    c.tone([281+pending.steps*67,420]);show();
+  }
+  function secure(){
+    if(pending.steps!==goal(pending.link)){c.mistake("Bring the ratchet to the marked tension");return;}
+    used.push(pending.link);pending=null;c.feedback(true,"Strap secured");show();
   }
   function show(){
-    c.objective(selected<0?q.goalText:"Place the "+q.parts[selected][0].toLowerCase());
-    c.meter("Left "+total(0)+"/"+q.goal[0]+" · Right "+total(1)+"/"+q.goal[1]+" "+q.unit);
-    q.parts.forEach(([name,weight],i)=>{
-      const where=locations[i],same=where===null;
-      c.marker("weight"+i,name+" "+weight,[same?xs[i]:(where===0?-2.2:2.2)+(i-1)*.49,.59,same?2.26:-.86],()=>choose(i),
-        {kind:i===selected?"good":"clue",hidden:selected>=0});
-    });
-    if(selected>=0){
-      c.marker("left","Place left",[-2.16,.70,-.63],()=>put(0),{kind:"hot"});
-      c.marker("right","Place right",[2.16,.70,-.63],()=>put(1),{kind:"hot"});
-    }else {c.off("left");c.off("right");}
-  }
-  function start(){selected=-1;locations=q.parts.map(()=>null);angle=0;show();}
-  function tick(dt){angle=lerp(angle,clamp((total(0)-total(1))*.057,-.23,.23),1-Math.exp(-dt*10));}
-  function draw(m,t){
-    const z=c.localZ, center=z(-.95);
-    m.box(0,.26,center,.61,.45,.52,ink());
-    const beam=(x)=>[x,.68-Math.sin(angle)*x,center];
-    m.tube(beam(-2.46),beam(2.46),.088,.088,trim(),10);
-    for(const side of [-1,1]){
-      const [x,y]=beam(side*2.16);
-      m.box(x,y-.27,center,1.79,.11,1.08,bright());
-      m.tube([x,y,center],[x,y-.22,center],.071,.047,ink(),8);
+    c.objective(pending?"Tighten to the grip mark":used.length===q.pairs.length?"Lock the tied-down load":
+      left===null?"Choose an anchor clip":"Choose the matching clip");
+    c.meter(pending?"Tension "+pending.steps+"/"+goal(pending.link):used.length+"/"+q.pairs.length+" straps secured");
+    for(let i=0;i<6;i++){
+      const [x,z]=anchor(i),link=routeOf(i);
+      const hidden=Boolean(pending)||used.length===q.pairs.length||used.includes(link)||(i>=3&&left===null);
+      c.marker("anchor"+i,"Clip "+letter(i),[x,.44,z],()=>choose(i),{kind:i===left?"good":"clue",hidden,caption:letter(i)});
     }
-    q.parts.forEach(([_,weight,type],i)=>{
-      const here=locations[i],pos=here===null?xs[i]:(here===0?-2.16:2.16)+(i-1)*.47;
-      const zz=here===null?z(2.23):center;
-      if(selected===i)c.item(m,type||"box",c.player.x,.67,c.player.z,.84,colors[i]);
-      else {if(here===null)c.pedestal(m,pos,zz,1.00,colors[i]);c.item(m,type||"box",pos,here===null?.21:.51-Math.sin(angle)*pos,zz,.68+weight*.043,colors[i]);}
-    });
+    if(pending){
+      const [x,z]=anchor(pending.i);
+      c.marker("pull","Pull ratchet",[x,.53,z],ratchet,{kind:"clue",caption:"Ratchet"});
+      c.marker("secure","Secure strap",[x-.65,.59,z-.43],secure,{kind:pending.steps===goal(pending.link)?"good":"hot"});
+    }else {c.off("pull");c.off("secure");}
+    if(used.length===q.pairs.length)c.marker("lock","Lock cargo",[0,.68,-2.70],
+      ()=>c.flyTo(0,-2.38,()=>c.receive([0,0,-2.69])),{kind:"hot"});
+    else c.off("lock");
   }
-  return {start,tick,draw};
+  function start(){left=null;used=[];pending=null;show();}
+  function draw(m){
+    const z=c.localZ;
+    m.box(0,.11,z(.10),4.18,.19,4.24,ink(),0,4);
+    for(let i=0;i<3;i++)c.item(m,i===q.high?"parcel":"box",(i-1)*.91,.22,z(.33-i*.39),i===q.high?1.33:.91,
+      i===q.high?0xb78f6f:trim());
+    for(let i=0;i<6;i++){
+      const [x,pz]=anchor(i),link=routeOf(i),color=link<0?0x839297:colors[link];
+      m.oval(x,.36,z(pz),.19,.12,.18,color,0,link<0?4:1,10);
+      if(i===left)c.ring(m,x,.072,z(pz),.40,color,.035);
+    }
+    const drawStrap=(link,tension)=>{
+      const [a,b]=q.pairs[link].map(anchor),p=[(a[0]+b[0])*.50,.81+tension*.10,z((a[1]+b[1])*.50)];
+      m.tube([a[0],.39,z(a[1])],p,.043,.043,colors[link],6,1);
+      m.tube(p,[b[0],.39,z(b[1])],.043,.043,colors[link],6,1);
+    };
+    used.forEach(link=>drawStrap(link,goal(link)));
+    if(pending){
+      drawStrap(pending.link,pending.steps);
+      const [x,pz]=anchor(pending.i);
+      for(let i=1;i<=3;i++)m.box(x,.43+i*.12,z(pz+.21),.36,.07,.07,
+        i===goal(pending.link)?0xffcd85:i<=pending.steps?0x8fe7b8:trim(),0,1);
+    }
+    c.item(m,"register",0,.06,z(-2.74),.81,used.length===q.pairs.length?0x8de2b8:trim());
+  }
+  return {start,draw};
 }
 
 function makeThirdTask(c,q){
@@ -358,10 +533,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

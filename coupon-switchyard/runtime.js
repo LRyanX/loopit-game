@@ -1152,7 +1152,7 @@ function finaleScene(m,t){
 
 "use strict";
 
-const ui=Object.fromEntries(["game","playfield","theme","place","count","guide","guide-icon","mission","goal","metric","attempt","reset","sound","targets","tools","toast","reveal","award",
+const ui=Object.fromEntries(["game","playfield","theme","place","count","challenges","guide","guide-icon","mission","goal","metric","attempt","reset","sound","targets","tools","toast","reveal","award",
   "award-count","finish","finish-count","finish-title","finish-summary","result-items","replay","retry","failure"].map(key=>[key,document.getElementById(key)]));
 const stageZ=index=>-11*index;
 const player={x:0,y:.03,z:3.55,heading:0,lift:0};
@@ -1167,13 +1167,15 @@ let gfx=null, raf=0, toastUntil=0, pointer=null, zoomTarget=homeZoom, zoom=homeZ
 let sunburst=[], pressKeys=new Set();
 let showReady=false;
 let finale=null;
+const challenges=[2,2,3];
+let challenge=0,changeAt=null;
 const mistakeLimit=3;
 const timedTasks=new Set(["catch","hold","rhythm","service","swing","traffic"]);
 const longTasks=new Set(["assembly","glide","jam","lattice","maze","shadow","weigh"]);
 let mistakes=0, secondsLeft=0, attemptStarted=false, failed=false;
 const curve=x=>{const t=clamp(x,0,1);return t*t*(3-2*t);};
 const localZ=z=>stageZ(stage)+z;
-const busy=()=>Boolean(route?.action||crossing||reward||finale||end||failed||justArrived!==null);
+const busy=()=>Boolean(route?.action||crossing||reward||finale||end||failed||justArrived!==null||changeAt!==null);
 const toWorld=(point,index=stage)=>[point[0],point[1]??0,stageZ(index)+(point[2]??0)];
 const clock=()=>elapsed;
 
@@ -1231,7 +1233,7 @@ function startAttempt() {
   if(!failed&&!awards[stage])attemptStarted=true;
 }
 function failRoom(reason) {
-  if(failed||reward||awards[stage])return;
+  if(failed||reward||awards[stage]||changeAt!==null)return;
   failed=true;
   route=null;
   pointer=null;
@@ -1249,7 +1251,7 @@ function failRoom(reason) {
   ui.retry.focus?.({preventScroll:true});
 }
 function mistake(text) {
-  if(failed||reward||awards[stage])return;
+  if(failed||reward||awards[stage]||changeAt!==null)return;
   startAttempt();
   mistakes++;
   if(mistakes>=mistakeLimit){
@@ -1375,7 +1377,20 @@ function flyTo(x,z,arrived,options={}) {
 }
 
 function receive(pos,name) {
-  if(end||failed||reward||awards[stage])return;
+  if(end||failed||reward||awards[stage]||changeAt!==null)return;
+  if(challenge+1<challenges[stage]){
+    changeAt=elapsed+(reduced?.12:.53);
+    workProgress();
+    hideTools();
+    for(const {b} of targets.values())b.hidden=true;
+    attemptStarted=false;
+    clearMessage();
+    meter("");
+    objective("Challenge cleared");
+    pulse(pos,GAME.palette.loot,21);
+    tone([370,523,659],.085,.12);
+    return;
+  }
   const kind=GAME.ending.kind;
   const type=GAME.brief==="sale"?"receipt":
     kind==="chart"||kind==="stone"?kind:GAME.ending.pieces[stage];
@@ -1390,6 +1405,15 @@ function receive(pos,name) {
 }
 function workProgress() {
   setText(ui.count,awards.filter(Boolean).length+"/3");
+  const done=challenge+(changeAt!==null||awards[stage]?1:0),total=challenges[stage];
+  setText(ui.challenges,"●".repeat(done)+"○".repeat(total-done));
+  ui.challenges.ariaLabel=done+" of "+total+" challenges complete";
+}
+function tickChallenge(){
+  if(changeAt===null||elapsed<changeAt)return;
+  changeAt=null;
+  challenge++;
+  openZone(true);
 }
 function tickReward() {
   if(!reward)return;
@@ -1423,6 +1447,7 @@ function walkBridge() {
   route={points:[{x:0,z:stageZ(current)-4.22},{x:0,z:stageZ(current+1)+3.66}],
     speed:8.0,action:true,arrived:()=>{
       stage=current+1;
+      challenge=0;
       crossing=false;
       justArrived=elapsed+.30;
       openZone();
@@ -1458,11 +1483,11 @@ function tickFinale(){
   }
   if(progress>=1)finish();
 }
-function openZone() {
+function openZone(keepTries=false) {
   [homeYaw,homePitch,homeZoom,homeZ,homeFov]=GAME.views[stage];
   const kind=GAME.tasks[stage-1]?.kind;
   secondsLeft=timedTasks.has(kind)?58:longTasks.has(kind)?105:stage===0?88:78;
-  mistakes=0;
+  if(!keepTries)mistakes=0;
   attemptStarted=false;
   failed=false;
   ui.game.dataset.failed="false";
@@ -1475,6 +1500,7 @@ function openZone() {
   view.targetPitch=homePitch;
   zoomTarget=homeZoom;
   setText(ui.place,GAME.zones[stage]);
+  workProgress();
   ui.targets.replaceChildren();
   ui.tools.replaceChildren();
   targets.clear();
@@ -1487,7 +1513,7 @@ function openZone() {
     ui.tools.dataset.pad==="four"?"Directions":"Controls";
   clearMessage();
   meter("");
-  mode.start(stage,rounds);
+  mode.start(stage,rounds,challenge);
 }
 
 const ctx={
@@ -1513,7 +1539,7 @@ function restart() {
   rounds++;
   if(ui.finish.open)ui.finish.close();
   [homeYaw,homePitch,homeZoom,homeZ,homeFov]=GAME.views[0];
-  stage=0;awards=[];figures.length=0;end=false;crossing=false;reward=null;finale=null;route=null;justArrived=null;
+  stage=0;challenge=0;changeAt=null;awards=[];figures.length=0;end=false;crossing=false;reward=null;finale=null;route=null;justArrived=null;
   sunburst=[];pressKeys.clear();pointer=null;showReady=false;
   view.yaw=view.targetYaw=homeYaw;
   view.pitch=view.targetPitch=homePitch;
@@ -1772,6 +1798,7 @@ function frame(ms) {
   movePlayer(dt);
   if(justArrived!==null&&elapsed>=justArrived)justArrived=null;
   if(!busy()&&!awards[stage])mode.tick?.(dt,elapsed);
+  tickChallenge();
   tickReward();
   tickFinale();
   if(attemptStarted&&!failed&&!awards[stage]&&!reward&&!crossing&&!end){

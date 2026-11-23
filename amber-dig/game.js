@@ -129,6 +129,150 @@ const GAME = {
       "award": "Unbroken Spiral Fossil"
     }
   ],
+  "scenarios": [
+    [
+      {
+        "kind": "assembly",
+        "title": "Fossil Field Table",
+        "goalText": "Fit the fossil pieces to their outlines",
+        "pieces": [
+          [
+            "Spine",
+            "fossil",
+            1
+          ],
+          [
+            "Rib",
+            "key",
+            2
+          ],
+          [
+            "Shell",
+            "shell",
+            0
+          ]
+        ],
+        "award": "Ancient Fern Restored"
+      },
+      {
+        "kind": "assembly",
+        "title": "Fossil Field Table",
+        "goalText": "Fit the fossil pieces to their outlines",
+        "pieces": [
+          [
+            "Spine",
+            "fossil",
+            2
+          ],
+          [
+            "Rib",
+            "key",
+            0
+          ],
+          [
+            "Shell",
+            "shell",
+            3
+          ]
+        ],
+        "award": "Ancient Fern Restored"
+      },
+      {
+        "kind": "assembly",
+        "title": "Fossil Field Table",
+        "goalText": "Fit the fossil pieces to their outlines",
+        "pieces": [
+          [
+            "Spine",
+            "fossil",
+            3
+          ],
+          [
+            "Rib",
+            "key",
+            1
+          ],
+          [
+            "Shell",
+            "shell",
+            0
+          ]
+        ],
+        "award": "Ancient Fern Restored"
+      }
+    ],
+    [
+      {
+        "kind": "hold",
+        "title": "Amber Core Drill",
+        "goalText": "Sample each stratum without crushing the core",
+        "begin": "Apply drill pressure",
+        "unit": "cores sampled",
+        "bands": [
+          [
+            0.43,
+            0.68
+          ],
+          [
+            0.5,
+            0.71
+          ]
+        ],
+        "object": "rock",
+        "award": "Unbroken Spiral Fossil"
+      },
+      {
+        "kind": "hold",
+        "title": "Amber Core Drill",
+        "goalText": "Sample each stratum without crushing the core",
+        "begin": "Apply drill pressure",
+        "unit": "cores sampled",
+        "bands": [
+          [
+            0.32,
+            0.62
+          ],
+          [
+            0.5,
+            0.72
+          ],
+          [
+            0.43,
+            0.65
+          ]
+        ],
+        "object": "rock",
+        "award": "Unbroken Spiral Fossil"
+      },
+      {
+        "kind": "hold",
+        "title": "Amber Core Drill",
+        "goalText": "Sample each stratum without crushing the core",
+        "begin": "Apply drill pressure",
+        "unit": "cores sampled",
+        "bands": [
+          [
+            0.46,
+            0.69
+          ],
+          [
+            0.3,
+            0.56
+          ],
+          [
+            0.54,
+            0.75
+          ],
+          [
+            0.38,
+            0.63
+          ]
+        ],
+        "object": "rock",
+        "award": "Unbroken Spiral Fossil"
+      }
+    ]
+  ],
   "form": "scrub",
   "controls": [
     "world",
@@ -316,10 +460,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

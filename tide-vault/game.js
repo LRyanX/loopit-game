@@ -108,10 +108,125 @@ const GAME = {
     {
       "kind": "winch",
       "title": "Winch Basin",
-      "goalText": "Crank both lines evenly to guide the raft to shore",
+      "goalText": "Counter the current before bringing the raft ashore",
       "length": 3,
+      "current": [
+        0,
+        1,
+        0
+      ],
       "award": "Coral Seal"
     }
+  ],
+  "scenarios": [
+    [
+      {
+        "kind": "connect",
+        "title": "Stone Channel Gallery",
+        "goalText": "Turn the channel sections to carry water to the gate",
+        "start": [
+          0,
+          0,
+          0
+        ],
+        "target": [
+          2,
+          1,
+          3
+        ],
+        "finalText": "Water reaches the gate",
+        "finish": "Release water gate",
+        "object": "orb",
+        "award": "Sluice Badge"
+      },
+      {
+        "kind": "connect",
+        "title": "Stone Channel Gallery",
+        "goalText": "Turn the channel sections to carry water to the gate",
+        "start": [
+          1,
+          0,
+          2
+        ],
+        "target": [
+          3,
+          3,
+          2
+        ],
+        "finalText": "Water reaches the gate",
+        "finish": "Release water gate",
+        "object": "orb",
+        "award": "Sluice Badge"
+      },
+      {
+        "kind": "connect",
+        "title": "Stone Channel Gallery",
+        "goalText": "Turn the channel sections to carry water to the gate",
+        "start": [
+          2,
+          3,
+          0
+        ],
+        "target": [
+          0,
+          1,
+          1
+        ],
+        "finalText": "Water reaches the gate",
+        "finish": "Release water gate",
+        "object": "orb",
+        "award": "Sluice Badge"
+      }
+    ],
+    [
+      {
+        "kind": "winch",
+        "title": "Winch Basin",
+        "goalText": "Counter the current before bringing the raft ashore",
+        "length": 3,
+        "current": [
+          0,
+          1,
+          0
+        ],
+        "award": "Coral Seal"
+      },
+      {
+        "kind": "winch",
+        "title": "Winch Basin",
+        "goalText": "Counter the current before bringing the raft ashore",
+        "length": 4,
+        "current": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "award": "Coral Seal",
+        "start": [
+          1,
+          0
+        ]
+      },
+      {
+        "kind": "winch",
+        "title": "Winch Basin",
+        "goalText": "Counter the current before bringing the raft ashore",
+        "length": 5,
+        "current": [
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "award": "Coral Seal",
+        "start": [
+          0,
+          1
+        ]
+      }
+    ]
   ],
   "form": "basins",
   "controls": [
@@ -251,29 +366,41 @@ function makeSecondTask(c,q){
 }
 
 function makeThirdTask(c,q){
-  let tension=[],shown=[],balance=0;
+  let tension=[],shown=[];
   const bridge=-3.0,mid=2.63;
+  const current=()=>q.current[Math.min(tension[0],tension[1])];
   function pull(i){
     if(tension[i]===q.length)return;
     if(tension[i]-tension[1-i]>=1){c.mistake("Too much tilt · crank the other line");return;}
-    tension[i]++;
-    c.pulse([i===0?-2.46:2.46,.42,-2.91],0x7ee5cf,12);
-    if(tension.every(v=>v===q.length)){c.receive([0,0,-2.43]);return;}
-    c.tone([305+tension[i]*52,453]);show();
+    if(tension[0]===tension[1]&&i!==current()){c.mistake("Crank against the current first");return;}
+    const x=i===0?-2.36:2.36;
+    c.flyTo(x,-2.48,()=>{
+      tension[i]++;
+      c.pulse([x,.42,-2.91],0x7ee5cf,12);
+      if(tension.every(v=>v===q.length)){c.receive([0,0,-2.43]);return;}
+      c.tone([305+tension[i]*52,453]);show();
+    });
   }
   function show(){
     c.objective(q.goalText);
-    c.meter("Port "+tension[0]+"/"+q.length+" · Starboard "+tension[1]+"/"+q.length);
+    const level=tension[0]===tension[1];
+    c.meter(level?"Current "+(current()===0?"→":"←"):
+      "Port "+tension[0]+"/"+q.length+" · Starboard "+tension[1]+"/"+q.length);
     c.marker("port","Crank port",[-2.36,.79,-2.88],()=>pull(0),{kind:tension[0]<tension[1]?"good":"clue",disabled:tension[0]===q.length});
     c.marker("star","Crank starboard",[2.36,.79,-2.88],()=>pull(1),{kind:tension[1]<tension[0]?"good":"clue",disabled:tension[1]===q.length});
   }
-  function start(){tension=[0,0];shown=[0,0];balance=0;show();}
+  function start(){tension=q.start?.slice()??[0,0];shown=tension.slice();show();}
   function tick(dt){shown=shown.map((n,i)=>lerp(n,tension[i],1-Math.exp(-dt*8)));}
   function draw(m,t){
     const z=c.localZ,depth=lerp(mid,bridge,(shown[0]+shown[1])/(q.length*2)),shift=(shown[0]-shown[1])*.34;
     m.box(0,.073,z(-.17),4.59,.14,6.01,0x69b5c2,0,7);
     m.box(shift,.22,z(depth),1.45,.23,1.20,trim(),shift*.22);
     c.item(m,"shell",shift,.39,z(depth),.76,0xe6ca8b);
+    const direction=current()===0?1:-1;
+    for(let j=0;j<3;j++){
+      const sx=direction*((t*.7+j*.38)%1-.45);
+      m.tri([sx-direction*.18,.18,z(depth+.62)],[sx-direction*.18,.18,z(depth+.92)],[sx+direction*.16,.18,z(depth+.77)],0xabe7df,1);
+    }
     for(const i of [-1,1]){
       const x=i*2.36;
       c.item(m,"gear",x,.52,z(-2.88),1.15,bright(),t*.76);
@@ -284,10 +411,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

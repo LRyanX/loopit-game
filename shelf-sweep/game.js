@@ -124,6 +124,141 @@ const GAME = {
       "award": "Incorrect labels replaced"
     }
   ],
+  "scenarios": [
+    [
+      {
+        "kind": "vision",
+        "title": "Backstock Carousel",
+        "goalText": "Spin the carousel to reveal the hidden product",
+        "itemName": "Camera",
+        "object": "camera",
+        "way": 2,
+        "award": "Hidden camera recovered"
+      },
+      {
+        "kind": "vision",
+        "title": "Backstock Carousel",
+        "goalText": "Spin the carousel to reveal the hidden product",
+        "itemName": "Headset",
+        "object": "headset",
+        "way": 3,
+        "award": "Hidden camera recovered"
+      },
+      {
+        "kind": "vision",
+        "title": "Backstock Carousel",
+        "goalText": "Spin the carousel to reveal the hidden product",
+        "itemName": "Mug",
+        "object": "mug",
+        "way": 1,
+        "award": "Hidden camera recovered"
+      }
+    ],
+    [
+      {
+        "kind": "audit",
+        "title": "Shelf Label Check",
+        "goalText": "Pull the label that describes the wrong product",
+        "sourceName": "stock card",
+        "object": "gift",
+        "rows": [
+          {
+            "clue": "Flash shelf holds audio only",
+            "labels": [
+              "Headset",
+              "Lamp",
+              "Speaker"
+            ],
+            "wrong": 1
+          },
+          {
+            "clue": "Members tags have a gold stamp",
+            "labels": [
+              "Gold mug",
+              "Blue sneakers",
+              "Gold camera"
+            ],
+            "wrong": 1
+          }
+        ],
+        "award": "Incorrect labels replaced"
+      },
+      {
+        "kind": "audit",
+        "title": "Shelf Label Check",
+        "goalText": "Pull the label that describes the wrong product",
+        "sourceName": "stock card",
+        "object": "gift",
+        "rows": [
+          {
+            "clue": "Flash shelf holds audio only",
+            "labels": [
+              "Headset",
+              "Lamp",
+              "Speaker"
+            ],
+            "wrong": 1
+          },
+          {
+            "clue": "Coffee shelf holds drinkware",
+            "labels": [
+              "Mug",
+              "Tumbler",
+              "Headset"
+            ],
+            "wrong": 2
+          },
+          {
+            "clue": "Clearance labels are red",
+            "labels": [
+              "Green scarf",
+              "Red purse",
+              "Red boots"
+            ],
+            "wrong": 0
+          }
+        ],
+        "award": "Incorrect labels replaced"
+      },
+      {
+        "kind": "audit",
+        "title": "Shelf Label Check",
+        "goalText": "Pull the label that describes the wrong product",
+        "sourceName": "stock card",
+        "object": "gift",
+        "rows": [
+          {
+            "clue": "Members tags have a gold stamp",
+            "labels": [
+              "Gold mug",
+              "Blue sneakers",
+              "Gold camera"
+            ],
+            "wrong": 1
+          },
+          {
+            "clue": "Coffee shelf holds drinkware",
+            "labels": [
+              "Mug",
+              "Tumbler",
+              "Headset"
+            ],
+            "wrong": 2
+          },
+          {
+            "clue": "Clearance labels are red",
+            "labels": [
+              "Green scarf",
+              "Red purse",
+              "Red boots"
+            ],
+            "wrong": 0
+          }
+        ],
+        "award": "Incorrect labels replaced"
+      }
+    ]
+  ],
   "form": "hub",
   "controls": [
     "world",
@@ -291,10 +426,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

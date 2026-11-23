@@ -134,6 +134,163 @@ const GAME = {
       "award": "Magnet Crown"
     }
   ],
+  "scenarios": [
+    [
+      {
+        "kind": "sort",
+        "title": "Ore Sorting Silo",
+        "goalText": "Sort the ore by whether a magnet can pull it",
+        "name": "sample",
+        "bins": [
+          "Magnetic ore",
+          "Nonmagnetic ore"
+        ],
+        "items": [
+          [
+            "Iron",
+            "rock",
+            0
+          ],
+          [
+            "Quartz",
+            "gem",
+            1
+          ],
+          [
+            "Steel",
+            "key",
+            0
+          ]
+        ],
+        "award": "Iron Key"
+      },
+      {
+        "kind": "sort",
+        "title": "Ore Sorting Silo",
+        "goalText": "Sort the ore by whether a magnet can pull it",
+        "name": "sample",
+        "bins": [
+          "Magnetic ore",
+          "Nonmagnetic ore"
+        ],
+        "items": [
+          [
+            "Lodestone",
+            "magnet",
+            0
+          ],
+          [
+            "Iron",
+            "rock",
+            0
+          ],
+          [
+            "Quartz",
+            "gem",
+            1
+          ],
+          [
+            "Steel",
+            "key",
+            0
+          ]
+        ],
+        "award": "Iron Key"
+      },
+      {
+        "kind": "sort",
+        "title": "Ore Sorting Silo",
+        "goalText": "Sort the ore by whether a magnet can pull it",
+        "name": "sample",
+        "bins": [
+          "Magnetic ore",
+          "Nonmagnetic ore"
+        ],
+        "items": [
+          [
+            "Amber",
+            "gem",
+            1
+          ],
+          [
+            "Quartz",
+            "gem",
+            1
+          ],
+          [
+            "Steel",
+            "key",
+            0
+          ],
+          [
+            "Iron",
+            "rock",
+            0
+          ]
+        ],
+        "award": "Iron Key"
+      }
+    ],
+    [
+      {
+        "kind": "connect",
+        "title": "Electric Lift Room",
+        "goalText": "Turn the contacts to bridge the live circuit",
+        "start": [
+          0,
+          0,
+          0
+        ],
+        "target": [
+          3,
+          2,
+          1
+        ],
+        "finalText": "Circuit complete · run the lift",
+        "finish": "Power lift",
+        "object": "magnet",
+        "award": "Magnet Crown"
+      },
+      {
+        "kind": "connect",
+        "title": "Electric Lift Room",
+        "goalText": "Turn the contacts to bridge the live circuit",
+        "start": [
+          1,
+          0,
+          2
+        ],
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "finalText": "Circuit complete · run the lift",
+        "finish": "Power lift",
+        "object": "magnet",
+        "award": "Magnet Crown"
+      },
+      {
+        "kind": "connect",
+        "title": "Electric Lift Room",
+        "goalText": "Turn the contacts to bridge the live circuit",
+        "start": [
+          2,
+          3,
+          0
+        ],
+        "target": [
+          1,
+          2,
+          3
+        ],
+        "finalText": "Circuit complete · run the lift",
+        "finish": "Power lift",
+        "object": "magnet",
+        "award": "Magnet Crown"
+      }
+    ]
+  ],
   "form": "lift",
   "controls": [
     "world",
@@ -305,10 +462,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

@@ -106,6 +106,7 @@ p, h1 { margin: 0 }
 #theme { color: #f5ca91; font-size: .61rem; font-weight: 900; letter-spacing: .075em; line-height: 1.1 }
 #game[data-form="dive"] #theme, #game[data-form="ice"] #theme { color: #a0dfd8 }
 #count { color: #fff8ed; font-weight: 850; font-size: .8rem; font-variant-numeric: tabular-nums; white-space: nowrap; padding-inline: 3px }
+#challenges { color: #ffdb9d; font-size: .67rem; letter-spacing: .08em; white-space: nowrap }
 #reset, #sound {
   display: grid;
   place-items: center;

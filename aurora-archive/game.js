@@ -123,14 +123,175 @@ const GAME = {
     {
       "kind": "lattice",
       "title": "Ice Rosette Gate",
-      "goalText": "Align each ice ring with its marker",
+      "goalText": "Align the linked ice rings with their markers",
       "target": [
         2,
         1,
         4
       ],
+      "links": [
+        1,
+        2,
+        -1
+      ],
       "award": "Aurora Shard"
     }
+  ],
+  "scenarios": [
+    [
+      {
+        "kind": "maze",
+        "title": "Glacier Crevasses",
+        "goalText": "Navigate around the ice fissure markers",
+        "start": [
+          1,
+          3
+        ],
+        "exit": [
+          3,
+          0
+        ],
+        "blocks": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "object": "ice",
+        "blockHint": "Crevasse · find solid ice",
+        "award": "Polar Signet"
+      },
+      {
+        "kind": "maze",
+        "title": "Glacier Crevasses",
+        "goalText": "Navigate around the ice fissure markers",
+        "start": [
+          2,
+          3
+        ],
+        "exit": [
+          0,
+          0
+        ],
+        "blocks": [
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            3,
+            1
+          ]
+        ],
+        "object": "ice",
+        "blockHint": "Crevasse · find solid ice",
+        "award": "Polar Signet"
+      },
+      {
+        "kind": "maze",
+        "title": "Glacier Crevasses",
+        "goalText": "Navigate around the ice fissure markers",
+        "start": [
+          0,
+          2
+        ],
+        "exit": [
+          3,
+          0
+        ],
+        "blocks": [
+          [
+            1,
+            2
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            2,
+            3
+          ]
+        ],
+        "object": "ice",
+        "blockHint": "Crevasse · find solid ice",
+        "award": "Polar Signet"
+      }
+    ],
+    [
+      {
+        "kind": "lattice",
+        "title": "Ice Rosette Gate",
+        "goalText": "Align the linked ice rings with their markers",
+        "target": [
+          2,
+          1,
+          4
+        ],
+        "links": [
+          1,
+          2,
+          -1
+        ],
+        "award": "Aurora Shard"
+      },
+      {
+        "kind": "lattice",
+        "title": "Ice Rosette Gate",
+        "goalText": "Align the linked ice rings with their markers",
+        "target": [
+          4,
+          2,
+          3
+        ],
+        "links": [
+          -1,
+          0,
+          1
+        ],
+        "award": "Aurora Shard"
+      },
+      {
+        "kind": "lattice",
+        "title": "Ice Rosette Gate",
+        "goalText": "Align the linked ice rings with their markers",
+        "target": [
+          1,
+          5,
+          2
+        ],
+        "links": [
+          2,
+          -1,
+          1
+        ],
+        "award": "Aurora Shard"
+      }
+    ]
   ],
   "form": "ice",
   "controls": [
@@ -274,28 +435,36 @@ function makeSecondTask(c,q){
 }
 
 function makeThirdTask(c,q){
-  let rings=[],angles=[],active=false;
+  let rings=[],angles=[],active=false,turning=0;
   const rad=[.53,.98,1.48],hues=[0x8ed5d4,0xa8a0df,0xf0bc86];
+  const names=["Inner","Middle","Outer"];
   const fit=()=>rings.every((v,i)=>v===q.target[i]);
-  function turn(i){rings[i]=(rings[i]+1)%6;c.tone([326+i*92+rings[i]*22]);update();}
-  function see(){active=true;c.tone([341,520]);update();}
+  function turn(i){
+    const driven=q.links[i];
+    rings[i]=(rings[i]+1)%6;
+    if(driven>=0)rings[driven]=(rings[driven]+1)%6;
+    turning=c.clock()+.29;c.tone([326+i*92+rings[i]*22]);update();
+  }
+  function see(){c.flyTo(0,1.90,()=>{active=true;c.tone([341,520]);update();});}
   function update(){
     c.objective(!active?"Inspect the ice rosette":fit()?"All notches meet the cut marks":"Turn the concentric ice rings");
-    c.meter(active?rings.filter((v,i)=>v===q.target[i]).length+"/3 notches aligned":"");
+    c.meter(active?q.links.map((j,i)=>j<0?null:names[i]+"→"+names[j]).filter(Boolean).join(" · "):"");
     if(!active)c.marker("read","Inspect rosette",[0,.63,2.59],see,{kind:"clue"});else c.off("read");
     if(active)for(let i=0;i<3;i++){
       const angle=(i-1)*1.57;
-      c.marker("turn"+i,["Inner ring","Middle ring","Outer ring"][i],
-        [Math.sin(angle)*rad[i],.40,Math.cos(angle)*rad[i]-.61],()=>turn(i),{kind:"clue",caption:["Inner","Middle","Outer"][i]});
+      c.marker("turn"+i,names[i]+" ring",
+        [Math.sin(angle)*rad[i],.40,Math.cos(angle)*rad[i]-.61],()=>turn(i),
+        {kind:rings[i]===q.target[i]?"good":"clue",caption:names[i],disabled:!!turning});
     }
-    if(fit())c.marker("cache","Lift ice prism",[0,.77,-2.51],()=>c.flyTo(0,-2.09,()=>c.receive([0,0,-2.54])),{kind:"hot"});else c.off("cache");
+    if(fit())c.marker("cache","Lift ice prism",[0,.77,-2.51],()=>c.flyTo(0,-2.09,()=>c.receive([0,0,-2.54])),{kind:"hot",disabled:!!turning});else c.off("cache");
   }
-  function start(){rings=[0,0,0];angles=[0,0,0];active=false;update();}
+  function start(){rings=[0,0,0];angles=[0,0,0];active=false;turning=0;update();}
   function tick(dt){
     angles=angles.map((v,i)=>{
       const d=rings[i]/6*TAU-v;
       return v+Math.atan2(Math.sin(d),Math.cos(d))*Math.min(1,dt*9);
     });
+    if(turning&&c.clock()>=turning){turning=0;update();}
   }
   function draw(m){
     const z=c.localZ(-.61);
@@ -306,6 +475,12 @@ function makeThirdTask(c,q){
       m.box(Math.sin(t)*radius,.31,z+Math.cos(t)*radius,.21,.046,.29,0xffd994,t,1);
       m.box(Math.sin(d)*radius,.40,z+Math.cos(d)*radius,.16,.12,.19,rings[i]===q.target[i]?0xa4f9d4:hues[i],d,1);
     }
+    q.links.forEach((to,i)=>{
+      if(to<0)return;
+      const a=1.4+i*.80;
+      const at=r=>[Math.sin(a)*r,.36,z+Math.cos(a)*r];
+      m.tube(at(rad[i]),at(rad[to]),.036,.036,hues[i],6,1);
+    });
     c.pedestal(m,0,c.localZ(-2.51),1.36,trim());
     c.item(m,"ice",0,.23,c.localZ(-2.51),1.07,0xacc9f3);
   }
@@ -313,10 +488,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

@@ -126,6 +126,148 @@ const GAME = {
       "award": "Manifest signed"
     }
   ],
+  "scenarios": [
+    [
+      {
+        "kind": "swing",
+        "title": "Crane Loading Dock",
+        "goalText": "Release each parcel above its marked truck",
+        "docks": [
+          -2.33,
+          2.33,
+          0
+        ],
+        "award": "All trucks loaded"
+      },
+      {
+        "kind": "swing",
+        "title": "Crane Loading Dock",
+        "goalText": "Release each parcel above its marked truck",
+        "docks": [
+          0,
+          -2.33,
+          2.33
+        ],
+        "award": "All trucks loaded"
+      },
+      {
+        "kind": "swing",
+        "title": "Crane Loading Dock",
+        "goalText": "Release each parcel above its marked truck",
+        "docks": [
+          2.33,
+          0,
+          -2.33,
+          0
+        ],
+        "award": "All trucks loaded"
+      }
+    ],
+    [
+      {
+        "kind": "audit",
+        "title": "Manifest Desk",
+        "goalText": "Flag the parcel that breaks the manifest",
+        "sourceName": "manifest",
+        "object": "parcel",
+        "rows": [
+          {
+            "clue": "Fragile line · max 4 kg",
+            "labels": [
+              "Glass · 3 kg",
+              "Ceramic · 4 kg",
+              "Lamp · 6 kg"
+            ],
+            "wrong": 2
+          },
+          {
+            "clue": "Blue pickup labels only",
+            "labels": [
+              "Red · A24",
+              "Blue · B11",
+              "Blue · C16"
+            ],
+            "wrong": 0
+          }
+        ],
+        "award": "Manifest signed"
+      },
+      {
+        "kind": "audit",
+        "title": "Manifest Desk",
+        "goalText": "Flag the parcel that breaks the manifest",
+        "sourceName": "manifest",
+        "object": "parcel",
+        "rows": [
+          {
+            "clue": "Fragile line · max 4 kg",
+            "labels": [
+              "Glass · 3 kg",
+              "Ceramic · 4 kg",
+              "Lamp · 6 kg"
+            ],
+            "wrong": 2
+          },
+          {
+            "clue": "Insulated bay · max 5 kg",
+            "labels": [
+              "Jar · 5 kg",
+              "Kettle · 6 kg",
+              "Jug · 4 kg"
+            ],
+            "wrong": 1
+          },
+          {
+            "clue": "Amber pickup labels only",
+            "labels": [
+              "Amber · P42",
+              "Amber · K11",
+              "Blue · A16"
+            ],
+            "wrong": 2
+          }
+        ],
+        "award": "Manifest signed"
+      },
+      {
+        "kind": "audit",
+        "title": "Manifest Desk",
+        "goalText": "Flag the parcel that breaks the manifest",
+        "sourceName": "manifest",
+        "object": "parcel",
+        "rows": [
+          {
+            "clue": "Blue pickup labels only",
+            "labels": [
+              "Red · A24",
+              "Blue · B11",
+              "Blue · C16"
+            ],
+            "wrong": 0
+          },
+          {
+            "clue": "Insulated bay · max 5 kg",
+            "labels": [
+              "Jar · 5 kg",
+              "Kettle · 6 kg",
+              "Jug · 4 kg"
+            ],
+            "wrong": 1
+          },
+          {
+            "clue": "Amber pickup labels only",
+            "labels": [
+              "Amber · P42",
+              "Amber · K11",
+              "Blue · A16"
+            ],
+            "wrong": 2
+          }
+        ],
+        "award": "Manifest signed"
+      }
+    ]
+  ],
   "form": "loading",
   "controls": [
     "world",
@@ -309,10 +451,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

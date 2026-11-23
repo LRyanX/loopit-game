@@ -101,6 +101,56 @@ const GAME = {
       "award": "Crown Tuning Fork"
     }
   ],
+  "scenarios": [
+    [
+      {
+        "kind": "rhythm",
+        "title": "Drum Court",
+        "goalText": "Tap in time with the gold pulse",
+        "count": 4,
+        "award": "Rain Drum"
+      },
+      {
+        "kind": "rhythm",
+        "title": "Drum Court",
+        "goalText": "Tap in time with the gold pulse",
+        "count": 5,
+        "award": "Rain Drum",
+        "period": 1.12
+      },
+      {
+        "kind": "rhythm",
+        "title": "Drum Court",
+        "goalText": "Tap in time with the gold pulse",
+        "count": 6,
+        "award": "Rain Drum",
+        "period": 1.3
+      }
+    ],
+    [
+      {
+        "kind": "field",
+        "title": "Echo Plinths",
+        "goalText": "Listen to the tone from each plinth",
+        "target": 1,
+        "award": "Crown Tuning Fork"
+      },
+      {
+        "kind": "field",
+        "title": "Echo Plinths",
+        "goalText": "Listen to the tone from each plinth",
+        "target": 2,
+        "award": "Crown Tuning Fork"
+      },
+      {
+        "kind": "field",
+        "title": "Echo Plinths",
+        "goalText": "Listen to the tone from each plinth",
+        "target": 0,
+        "award": "Crown Tuning Fork"
+      }
+    ]
+  ],
   "form": "grove",
   "controls": [
     "world",
@@ -193,7 +243,7 @@ function makeFirstTask(c){
 
 function makeSecondTask(c,q){
   let t=0,beat=-1,heard=false,total=0,lastNote=-2;
-  const period=1.20;
+  const period=q.period??1.20;
   const phase=()=>t%period;
   const beatIndex=()=>Math.floor(t/period);
   const ready=()=>heard&&phase()>.32&&phase()<.80&&beat!==beatIndex();
@@ -272,10 +322,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

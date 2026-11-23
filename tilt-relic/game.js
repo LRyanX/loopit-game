@@ -7,7 +7,7 @@ const GAME = {
   "avatar": "explorer",
   "zones": [
     "Rolling Court",
-    "Counterweight Shrine",
+    "Marble Brake Gates",
     "Sliding Stone Door"
   ],
   "awards": [
@@ -28,7 +28,7 @@ const GAME = {
     "css": "#53677d"
   },
   "passages": [
-    "Enter Counterweight Shrine",
+    "Enter Marble Brake Gates",
     "Enter Sliding Stone Door"
   ],
   "scene": "shrine",
@@ -66,8 +66,8 @@ const GAME = {
       "Roll to the socket"
     ],
     [
-      "⚖",
-      "Balance the scale"
+      "◉",
+      "Brake for each rail"
     ],
     [
       "↔",
@@ -87,30 +87,22 @@ const GAME = {
   },
   "tasks": [
     {
-      "kind": "weigh",
-      "title": "Counterweight Shrine",
-      "goalText": "Balance the stone lift on both sides",
-      "unit": "stone",
-      "parts": [
+      "kind": "brakes",
+      "title": "Marble Brake Gates",
+      "goalText": "Choose the clear rail and set its brake",
+      "forks": [
         [
-          "Pebble",
+          -1,
+          false
+        ],
+        [
           1,
-          "rock"
+          true
         ],
         [
-          "Idol",
-          3,
-          "idol"
-        ],
-        [
-          "Boulder",
-          2,
-          "rock"
+          -1,
+          true
         ]
-      ],
-      "goal": [
-        3,
-        3
       ],
       "award": "Jade Bearing"
     },
@@ -132,6 +124,126 @@ const GAME = {
       "object": "idol",
       "award": "Solar Sphere"
     }
+  ],
+  "scenarios": [
+    [
+      {
+        "kind": "brakes",
+        "title": "Marble Brake Gates",
+        "goalText": "Choose the clear rail and set its brake",
+        "forks": [
+          [
+            -1,
+            false
+          ],
+          [
+            1,
+            true
+          ],
+          [
+            -1,
+            true
+          ]
+        ],
+        "award": "Jade Bearing"
+      },
+      {
+        "kind": "brakes",
+        "title": "Marble Brake Gates",
+        "goalText": "Choose the clear rail and set its brake",
+        "forks": [
+          [
+            1,
+            true
+          ],
+          [
+            -1,
+            false
+          ],
+          [
+            1,
+            true
+          ]
+        ],
+        "award": "Jade Bearing"
+      },
+      {
+        "kind": "brakes",
+        "title": "Marble Brake Gates",
+        "goalText": "Choose the clear rail and set its brake",
+        "forks": [
+          [
+            1,
+            false
+          ],
+          [
+            1,
+            true
+          ],
+          [
+            -1,
+            false
+          ]
+        ],
+        "award": "Jade Bearing"
+      }
+    ],
+    [
+      {
+        "kind": "jam",
+        "title": "Sliding Stone Door",
+        "goalText": "Slide the marked blocks into the door pattern",
+        "parts": [
+          "Sun",
+          "Jade",
+          "Moon"
+        ],
+        "start": [
+          1,
+          2,
+          0,
+          -1
+        ],
+        "object": "idol",
+        "award": "Solar Sphere"
+      },
+      {
+        "kind": "jam",
+        "title": "Sliding Stone Door",
+        "goalText": "Slide the marked blocks into the door pattern",
+        "parts": [
+          "Sun",
+          "Jade",
+          "Moon"
+        ],
+        "start": [
+          2,
+          0,
+          1,
+          -1
+        ],
+        "object": "idol",
+        "award": "Solar Sphere"
+      },
+      {
+        "kind": "jam",
+        "title": "Sliding Stone Door",
+        "goalText": "Slide the marked blocks into the door pattern",
+        "parts": [
+          "Sun",
+          "Jade",
+          "Moon"
+        ],
+        "start": [
+          -1,
+          2,
+          1,
+          0
+        ],
+        "object": "idol",
+        "award": "Solar Sphere"
+      }
+    ]
   ],
   "form": "lift",
   "controls": [
@@ -256,54 +368,53 @@ function makeFirstTask(c){
 }
 
 function makeSecondTask(c,q){
-  const xs=[-2.43,0,2.43],colors=[0xe49063,0x83c6ad,0x8eaad6];
-  let selected=-1,locations=[],angle=0;
-  const total=side=>locations.reduce((n,p,i)=>p===side?n+q.parts[i][1]:n,0);
-  function choose(i){selected=i;c.tone([329,482]);show();}
-  function put(side){
-    if(selected<0)return;
-    const i=selected,d=side===0?-2.15:2.15;
-    c.flyTo(d,-.42,()=>{
-      locations[i]=side;selected=-1;
-      c.pulse([d,.42,-.77],colors[i],13);
-      if(locations.every(n=>n!==null)){
-        if(total(0)===q.goal[0]&&total(1)===q.goal[1]){c.receive([0,0,-2.73]);return;}
-        c.mistake("The scale is off · move a weight");
-      }else c.feedback(true);
-      show();
-    });
+  let index=0,brake=false,roll=null;
+  const row=i=>2.21-i*1.73;
+  const speedAt=i=>q.forks[i][1];
+  function toggle(){brake=!brake;c.tone([brake?261:431]);show();}
+  function route(side){
+    if(roll)return;
+    const [safe,slow]=q.forks[index];
+    if(side!==safe||brake!==slow){
+      c.mistake(side!==safe?"That track leads into the pit":slow?"Brake for the short rail":"Release the brake for the ramp");
+      return;
+    }
+    roll={at:c.clock(),side};
+    c.tone([298,442,574]);show();
   }
   function show(){
-    c.objective(selected<0?q.goalText:"Place the "+q.parts[selected][0].toLowerCase());
-    c.meter("Left "+total(0)+"/"+q.goal[0]+" · Right "+total(1)+"/"+q.goal[1]+" "+q.unit);
-    q.parts.forEach(([name,weight],i)=>{
-      const where=locations[i],same=where===null;
-      c.marker("weight"+i,name+" "+weight,[same?xs[i]:(where===0?-2.2:2.2)+(i-1)*.49,.59,same?2.26:-.86],()=>choose(i),
-        {kind:i===selected?"good":"clue",hidden:selected>=0});
-    });
-    if(selected>=0){
-      c.marker("left","Place left",[-2.16,.70,-.63],()=>put(0),{kind:"hot"});
-      c.marker("right","Place right",[2.16,.70,-.63],()=>put(1),{kind:"hot"});
-    }else {c.off("left");c.off("right");}
+    c.objective("Set the brake and choose a rail");
+    const slow=speedAt(index);
+    c.meter((index+1)+"/"+q.forks.length+" · "+(slow?"short rail":"jump ramp")+" · "+(brake?"brake on":"brake off"));
+    c.marker("brake",brake?"Release brake":"Set brake",[0,.74,row(index)+.64],toggle,{kind:brake?"good":"clue",disabled:!!roll});
+    for(const s of [-1,1])c.marker("rail"+s,s<0?"Left rail":"Right rail",[s*1.53,.48,row(index)-.36],()=>route(s),{kind:"hot",disabled:!!roll});
   }
-  function start(){selected=-1;locations=q.parts.map(()=>null);angle=0;show();}
-  function tick(dt){angle=lerp(angle,clamp((total(0)-total(1))*.057,-.23,.23),1-Math.exp(-dt*10));}
+  function start(){index=0;brake=false;roll=null;show();}
+  function tick(dt,t){
+    if(!roll||t-roll.at<.72)return;
+    const side=roll.side;roll=null;
+    c.pulse([side*.91,.44,row(index)-.53],0x86dfbd,13);
+    index++;
+    if(index===q.forks.length){c.receive([0,0,-2.70]);return;}
+    show();
+  }
   function draw(m,t){
-    const z=c.localZ, center=z(-.95);
-    m.box(0,.26,center,.61,.45,.52,ink());
-    const beam=(x)=>[x,.68-Math.sin(angle)*x,center];
-    m.tube(beam(-2.46),beam(2.46),.088,.088,trim(),10);
-    for(const side of [-1,1]){
-      const [x,y]=beam(side*2.16);
-      m.box(x,y-.27,center,1.79,.11,1.08,bright());
-      m.tube([x,y,center],[x,y-.22,center],.071,.047,ink(),8);
-    }
-    q.parts.forEach(([_,weight,type],i)=>{
-      const here=locations[i],pos=here===null?xs[i]:(here===0?-2.16:2.16)+(i-1)*.47;
-      const zz=here===null?z(2.23):center;
-      if(selected===i)c.item(m,type||"box",c.player.x,.67,c.player.z,.84,colors[i]);
-      else {if(here===null)c.pedestal(m,pos,zz,1.00,colors[i]);c.item(m,type||"box",pos,here===null?.21:.51-Math.sin(angle)*pos,zz,.68+weight*.043,colors[i]);}
+    const z=c.localZ;
+    q.forks.forEach(([safe,slow],i)=>{
+      const r=row(i);
+      m.box(0,.10,z(r),3.96,.18,1.51,ink(),0,9);
+      for(const side of [-1,1]){
+        const x=side*1.04,ok=side===safe;
+        m.box(x,.24,z(r-.22),.95,.13,ok?(slow?.85:1.40):.61,ok?0x84a59a:0xa37c6e,0,9,ok&&!slow?.24:0);
+        if(!ok)m.oval(x,.18,z(r-.62),.29,.09,.31,0x8d5045,0,9,9);
+        if(ok&&slow)for(let a=0;a<3;a++)m.box(x,.34,z(r-.06-a*.19),.63,.035,.065,0xeac583,0,1);
+      }
+      m.oval(0,.47,z(r+.54),.12,.12,.11,i<index?0x86dcb9:i===index?0xefc780:trim(),0,1,8);
     });
+    if(index>=q.forks.length)return;
+    const f=roll?curve((t-roll.at)/.72):0;
+    c.item(m,"orb",roll?roll.side*Math.sin(f*Math.PI)*1.05:0,.30+.24*Math.sin(f*Math.PI),
+      z(row(index)+.73-f*1.70),.98,0xe9c688,t*4);
   }
   return {start,tick,draw};
 }
@@ -348,10 +459,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},

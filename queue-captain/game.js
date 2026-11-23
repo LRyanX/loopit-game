@@ -126,6 +126,139 @@ const GAME = {
       "award": "Counters restocked"
     }
   ],
+  "scenarios": [
+    [
+      {
+        "kind": "service",
+        "title": "Timed Bagging Counters",
+        "goalText": "Bag each purchase when its register lights up",
+        "delays": [
+          0.58,
+          1.08,
+          1.44
+        ],
+        "award": "Bagging rush cleared"
+      },
+      {
+        "kind": "service",
+        "title": "Timed Bagging Counters",
+        "goalText": "Bag each purchase when its register lights up",
+        "delays": [
+          1.5,
+          0.44,
+          0.97
+        ],
+        "award": "Bagging rush cleared"
+      },
+      {
+        "kind": "service",
+        "title": "Timed Bagging Counters",
+        "goalText": "Bag each purchase when its register lights up",
+        "delays": [
+          0.98,
+          1.55,
+          0.48
+        ],
+        "award": "Bagging rush cleared"
+      }
+    ],
+    [
+      {
+        "kind": "sort",
+        "title": "Cashier Restock Bay",
+        "goalText": "Restock the right service bins",
+        "name": "supply",
+        "bins": [
+          "Packing supplies",
+          "Drawer supplies"
+        ],
+        "items": [
+          [
+            "Gift bags",
+            "bag",
+            0
+          ],
+          [
+            "Change tray",
+            "coin",
+            1
+          ],
+          [
+            "Tape refill",
+            "parcel",
+            0
+          ]
+        ],
+        "award": "Counters restocked"
+      },
+      {
+        "kind": "sort",
+        "title": "Cashier Restock Bay",
+        "goalText": "Restock the right service bins",
+        "name": "supply",
+        "bins": [
+          "Packing supplies",
+          "Drawer supplies"
+        ],
+        "items": [
+          [
+            "Coin roll",
+            "coin",
+            1
+          ],
+          [
+            "Gift bags",
+            "bag",
+            0
+          ],
+          [
+            "Change tray",
+            "coin",
+            1
+          ],
+          [
+            "Tape refill",
+            "parcel",
+            0
+          ]
+        ],
+        "award": "Counters restocked"
+      },
+      {
+        "kind": "sort",
+        "title": "Cashier Restock Bay",
+        "goalText": "Restock the right service bins",
+        "name": "supply",
+        "bins": [
+          "Packing supplies",
+          "Drawer supplies"
+        ],
+        "items": [
+          [
+            "Gift paper",
+            "parcel",
+            0
+          ],
+          [
+            "Change tray",
+            "coin",
+            1
+          ],
+          [
+            "Tape refill",
+            "parcel",
+            0
+          ],
+          [
+            "Gift bags",
+            "bag",
+            0
+          ]
+        ],
+        "award": "Counters restocked"
+      }
+    ]
+  ],
   "form": "mall",
   "controls": [
     "world",
@@ -289,10 +422,14 @@ function makeThirdTask(c,q){
 }
 
 function makeChallenge(c){
-  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
-  let active=tasks[0];
+  const makeRoom=[null,makeSecondTask,makeThirdTask];
+  let active;
   return {
-    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    start(stage,run,challenge){
+      const scenario=(run+challenge)%3;
+      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
+      active.start(stage===0?scenario:stage,0);
+    },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},
