@@ -1153,7 +1153,8 @@ function finaleScene(m,t){
 "use strict";
 
 const ui=Object.fromEntries(["game","playfield","theme","place","count","challenges","guide","guide-icon","mission","goal","metric","attempt","reset","sound","targets","tools","toast","reveal","award",
-  "award-count","finish","finish-count","finish-title","finish-summary","result-items","replay","retry","failure"].map(key=>[key,document.getElementById(key)]));
+  "award-count","finish","finish-count","finish-title","finish-summary","result-items","replay","retry","failure","target-guides"].map(key=>[key,document.getElementById(key)]));
+const guideCanvas=ui["target-guides"],leaders=guideCanvas.getContext?.("2d");
 const stageZ=index=>-11*index;
 const player={x:0,y:.03,z:3.55,heading:0,lift:0};
 let [homeYaw,homePitch,homeZoom,homeZ,homeFov]=GAME.views[0];
@@ -1167,8 +1168,9 @@ let gfx=null, raf=0, toastUntil=0, pointer=null, zoomTarget=homeZoom, zoom=homeZ
 let sunburst=[], pressKeys=new Set();
 let showReady=false;
 let finale=null;
-const challenges=[2,2,3];
-let challenge=0,changeAt=null;
+const challenges=GAME.chapters.map(room=>room.length);
+let challenge=0,changeAt=null,earnedName=null;
+const currentChapter=()=>GAME.chapters[stage][challenge];
 const mistakeLimit=3;
 const timedTasks=new Set(["catch","hold","rhythm","service","swing","traffic"]);
 const longTasks=new Set(["assembly","glide","jam","lattice","maze","shadow","weigh"]);
@@ -1265,8 +1267,8 @@ function mistake(text) {
 function objective(text) {
   if(failed)return;
   setText(ui.goal,text);
-  const short=GAME.guides[stage][1];
-  setText(ui.mission,text.length<=27&&text.split(/\s+/).length<=5?text:short);
+  const short=currentChapter().guide[1];
+  setText(ui.mission,text.length<=43&&text.split(/\s+/).length<=8?text:short);
 }
 function meter(text) {
   if(failed)return;
@@ -1378,6 +1380,7 @@ function flyTo(x,z,arrived,options={}) {
 
 function receive(pos,name) {
   if(end||failed||reward||awards[stage]||changeAt!==null)return;
+  if(name&&!earnedName)earnedName=name;
   if(challenge+1<challenges[stage]){
     changeAt=elapsed+(reduced?.12:.53);
     workProgress();
@@ -1394,7 +1397,7 @@ function receive(pos,name) {
   const kind=GAME.ending.kind;
   const type=GAME.brief==="sale"?"receipt":
     kind==="chart"||kind==="stone"?kind:GAME.ending.pieces[stage];
-  reward={stage,pos,at:elapsed,item:name||GAME.awards[stage],type,fired:false};
+  reward={stage,pos,at:elapsed,item:earnedName||GAME.awards[stage],type,fired:false};
   attemptStatus();
   objective(GAME.brief==="hunt"?"Treasure found":"Checkout complete");
   meter("");
@@ -1448,6 +1451,7 @@ function walkBridge() {
     speed:8.0,action:true,arrived:()=>{
       stage=current+1;
       challenge=0;
+      earnedName=null;
       crossing=false;
       justArrived=elapsed+.30;
       openZone();
@@ -1485,13 +1489,13 @@ function tickFinale(){
 }
 function openZone(keepTries=false) {
   [homeYaw,homePitch,homeZoom,homeZ,homeFov]=GAME.views[stage];
-  const kind=GAME.tasks[stage-1]?.kind;
+  const kind=currentChapter().kind;
   secondsLeft=timedTasks.has(kind)?58:longTasks.has(kind)?105:stage===0?88:78;
   if(!keepTries)mistakes=0;
   attemptStarted=false;
   failed=false;
   ui.game.dataset.failed="false";
-  setText(ui["guide-icon"],GAME.guides[stage][0]);
+  setText(ui["guide-icon"],currentChapter().guide[0]);
   setGuideOpen(false);
   ui.retry.hidden=true;
   attemptStatus();
@@ -1506,7 +1510,7 @@ function openZone(keepTries=false) {
   targets.clear();
   toolButtons.clear();
   hideTools();
-  ui.tools.dataset.pad=kind==="maze"||(!stage&&GAME.scene==="shrine")?"four":
+  ui.tools.dataset.pad=kind==="maze"||(kind==="signature"&&GAME.scene==="shrine")?"four":
     ["catch","depth","vision"].includes(kind)?"pair":"";
   ui.tools.ariaLabel=kind==="depth"?"Adjust depth":
     kind==="catch"?"Steer basket":kind==="vision"?"Rotate shelf":
@@ -1539,7 +1543,7 @@ function restart() {
   rounds++;
   if(ui.finish.open)ui.finish.close();
   [homeYaw,homePitch,homeZoom,homeZ,homeFov]=GAME.views[0];
-  stage=0;challenge=0;changeAt=null;awards=[];figures.length=0;end=false;crossing=false;reward=null;finale=null;route=null;justArrived=null;
+  stage=0;challenge=0;changeAt=null;earnedName=null;awards=[];figures.length=0;end=false;crossing=false;reward=null;finale=null;route=null;justArrived=null;
   sunburst=[];pressKeys.clear();pointer=null;showReady=false;
   view.yaw=view.targetYaw=homeYaw;
   view.pitch=view.targetPitch=homePitch;
@@ -1745,38 +1749,111 @@ function motion(){
   return m;
 }
 
+function overlapArea(a,b){
+  return Math.max(0,a.dx+b.dx-Math.abs(a.x-b.x))*Math.max(0,a.dy+b.dy-Math.abs(a.y-b.y));
+}
+
+const clearBoards={
+  straps:[1.47,.98,-.05,1.72],
+  fold:[.99,.86,.23,.86],
+  ties:[1.30,.70,.16,1.81],
+  hold:[1.57,1.04,-.46,.82],
+  lattice:[1.52,.43,-.61,1.52],
+  bridgework:[1.03,.54,-.35,2.16]
+};
+
 function mapTargets(){
   syncEnabled();
   const w=ui.playfield.clientWidth||canvas.clientWidth,h=ui.playfield.clientHeight||canvas.clientHeight;
-  const active=[...targets.values()].filter(({b})=>!b.hidden);
-  const projected=active.map(entry=>{
-    const [x,y,,depth]=transform(view.vp,placed(toWorld(entry.point),stage));
+  const project=point=>{
+    const [x,y,,depth]=transform(view.vp,point);
+    return {x:(x/depth*.5+.5)*w,y:(.5-y/depth*.5)*h,depth};
+  };
+  const transit=Boolean(route?.action||crossing||changeAt!==null||reward||finale);
+  if(leaders){
+    const width=Math.round(w),height=Math.round(h);
+    if(guideCanvas.width!==width||guideCanvas.height!==height){
+      guideCanvas.width=width;guideCanvas.height=height;
+    }
+    leaders.clearRect(0,0,width,height);
+  }
+  const projected=[...targets.values()].filter(({b})=>!b.hidden).map(entry=>{
+    const point=entry.point;
+    const position=project(placed(toWorld(point),stage));
+    const base=project(placed(toWorld([point[0],.13,point[2]]),stage));
     const tile=entry.b.dataset.tile==="true";
-    return {entry,depth,tile,x:(x/depth*.5+.5)*w,y:(.5-y/depth*.5)*h,
-      width:entry.b.offsetWidth||44,height:entry.b.offsetHeight||44};
+    return {...position,base,tile,entry,width:entry.b.offsetWidth||44,height:entry.b.offsetHeight||44};
   });
+  const protectedAreas=projected.filter(p=>p.depth>0).map(p=>{
+    const below=clamp(p.base.y-p.y,-8,54);
+    return {x:p.x,y:p.y+below*.5,dx:p.tile?13:25,dy:p.tile?13:20+Math.abs(below)*.5};
+  });
+  const protectFootprint=(points,margin)=>{
+    const visible=points.filter(p=>p.depth>0);
+    if(!visible.length)return;
+    const xs=visible.map(p=>p.x),ys=visible.map(p=>p.y);
+    const l=Math.min(...xs),r=Math.max(...xs),a=Math.min(...ys),b=Math.max(...ys);
+    protectedAreas.push({x:(l+r)*.5,y:(a+b)*.5,dx:(r-l)*.5+margin,dy:(b-a)*.5+margin});
+  };
+  const grid=projected.filter(p=>p.tile);
+  if(grid.length>=5)protectFootprint(grid,22);
+  const board=clearBoards[currentChapter().kind];
+  if(board){
+    const [halfWidth,top,center,halfDepth]=board;
+    const points=[];
+    for(const x of [-halfWidth,halfWidth])for(const y of [.14,top])for(const z of [center-halfDepth,center+halfDepth])
+      points.push(project(placed(toWorld([x,y,z]),stage)));
+    protectFootprint(points,6);
+  }
+  const agent=visualAgent(),body=project([agent.x,agent.y+.52,agent.z]);
+  if(body.depth>0)protectedAreas.push({...body,dx:22,dy:29});
   const boxes=[];
   for(const item of projected){
     const {entry,depth,tile,x,y,width,height}=item,{b}=entry;
+    b.dataset.inTransit=String(transit);
     b.style.visibility=depth<=0?"hidden":"visible";
-    if(depth<=0){entry.hit=null;continue;}
+    if(depth<=0||transit){entry.hit=null;continue;}
     entry.hit=[x,y];
-    const dx=width*.5+4,dy=height*.5+4;
-    const ideal=tile?0:-28;
-    const options=tile?[[0,0],[-12,8],[12,8],[0,-15],[0,15]]:
-      [[0,ideal],[0,-62],[-40,-32],[40,-32],[-47,-4],[47,-4],
-        [0,34],[-56,31],[56,31],[0,-95],[-79,-57],[79,-57],[0,65]];
+    const dx=width*.5+3,dy=height*.5+3;
+    const ideal=tile?0:-49;
+    const offsets=tile?[[0,0],[-12,8],[12,8],[0,-15],[0,15]]:
+      [[0,-49],[0,-74],[-52,-52],[52,-52],[-66,-19],[66,-19],
+        [-73,18],[73,18],[0,67],[0,-103],[-91,-78],[91,-78],
+        [-107,9],[107,9],[0,100]];
     let selected=null,best=Infinity;
-    for(const [sx,sy] of options){
-      const cx=clamp(x+sx,dx,w-dx),cy=clamp(y+sy,dy,h-dy);
-      const overlap=boxes.reduce((sum,other)=>sum+
-        Math.max(0,other.dx+dx-Math.abs(other.x-cx))*Math.max(0,other.dy+dy-Math.abs(other.y-cy)),0);
-      const distance=Math.hypot(cx-x,cy-y-ideal);
-      const score=overlap*15+distance;
-      if(score<best){selected={x:cx,y:cy,dx,dy};best=score;}
+    const consider=(cx,cy)=>{
+      const hit={x:clamp(cx,dx,w-dx),y:clamp(cy,dy,h-dy),dx,dy};
+      const caption={...hit,dy:tile?8:Math.min(20,7+Math.ceil((b.dataset.caption?.length||1)/13)*4)};
+      const occlusion=tile?0:protectedAreas.reduce((sum,r)=>sum+overlapArea(caption,r),0);
+      const overlap=boxes.reduce((sum,r)=>sum+overlapArea(hit,r),0);
+      const score=occlusion*48+overlap*32+Math.hypot(hit.x-x,hit.y-y-ideal);
+      if(score<best){selected=hit;best=score;}
+    };
+    for(const [sx,sy] of offsets)consider(x+sx,y+sy);
+    if(best>470&&!tile){
+      for(let row=dy;row<=h-dy;row+=37){
+        for(const column of [dx,w*.26,w*.5,w*.74,w-dx])consider(column,row);
+      }
     }
     boxes.push(selected);
     b.style.transform="translate3d("+Math.round(selected.x)+"px,"+Math.round(selected.y)+"px,0) translate(-50%,-50%)";
+    if(leaders&&!tile&&Math.hypot(selected.x-x,selected.y-y)>32){
+      const x0=clamp(x,4,w-4),y0=clamp(y,4,h-4);
+      const sign=selected.y<y0?1:-1;
+      leaders.beginPath();
+      leaders.moveTo(selected.x,selected.y+sign*9);
+      leaders.lineTo(x0,y0);
+      leaders.strokeStyle="rgba(28,43,51,.54)";
+      leaders.lineWidth=2.5;
+      leaders.stroke();
+      leaders.strokeStyle="rgba(255,244,211,.88)";
+      leaders.lineWidth=1;
+      leaders.stroke();
+      leaders.beginPath();
+      leaders.fillStyle="rgba(255,242,205,.92)";
+      leaders.arc(x0,y0,2.5,0,TAU);
+      leaders.fill();
+    }
   }
 }
 

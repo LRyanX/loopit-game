@@ -26,7 +26,7 @@ p, h1 { margin: 0 }
 }
 #playfield { position: relative; overflow: hidden; min-block-size: 0; touch-action: none; cursor: grab }
 #playfield:active { cursor: grabbing }
-#world, #targets { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; display: block; pointer-events: none }
+#world, #targets, #target-guides { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; display: block; pointer-events: none }
 .target {
   position: absolute;
   inset: 0 auto auto 0;
@@ -75,6 +75,7 @@ p, h1 { margin: 0 }
 }
 .target[data-tile="true"]:focus-visible, .target[data-tile="true"]:active { background: #fae6a979; border-radius: 7px }
 .target:disabled { opacity: .52; pointer-events: none }
+.target[data-in-transit="true"] { opacity: 0 }
 .target:hover::after { filter: brightness(1.20) }
 
 #hud {

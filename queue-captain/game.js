@@ -60,18 +60,171 @@ const GAME = {
       0
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "◫",
-      "Assign a cashier"
+      {
+        "kind": "signature",
+        "guide": [
+          "◫",
+          "Assign a cashier"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "◫",
+          "Assign a cashier"
+        ]
+      }
     ],
     [
-      "●",
-      "Serve when lit"
+      {
+        "kind": "service",
+        "guide": [
+          "●",
+          "Serve when lit"
+        ],
+        "runs": [
+          {
+            "kind": "service",
+            "title": "Timed Bagging Counters",
+            "goalText": "Bag each purchase when its register lights up",
+            "delays": [
+              0.58,
+              1.08,
+              1.44
+            ],
+            "award": "Bagging rush cleared"
+          },
+          {
+            "kind": "service",
+            "title": "Timed Bagging Counters",
+            "goalText": "Bag each purchase when its register lights up",
+            "delays": [
+              1.5,
+              0.44,
+              0.97
+            ],
+            "award": "Bagging rush cleared"
+          },
+          {
+            "kind": "service",
+            "title": "Timed Bagging Counters",
+            "goalText": "Bag each purchase when its register lights up",
+            "delays": [
+              0.98,
+              1.55,
+              0.48
+            ],
+            "award": "Bagging rush cleared"
+          }
+        ]
+      }
     ],
     [
-      "⇄",
-      "Match items to bins"
+      {
+        "kind": "sort",
+        "guide": [
+          "⇄",
+          "Match items to bins"
+        ],
+        "runs": [
+          {
+            "kind": "sort",
+            "title": "Cashier Restock Bay",
+            "goalText": "Restock the right service bins",
+            "name": "supply",
+            "bins": [
+              "Packing supplies",
+              "Drawer supplies"
+            ],
+            "items": [
+              [
+                "Gift bags",
+                "bag",
+                0
+              ],
+              [
+                "Change tray",
+                "coin",
+                1
+              ],
+              [
+                "Tape refill",
+                "parcel",
+                0
+              ]
+            ],
+            "award": "Counters restocked"
+          },
+          {
+            "kind": "sort",
+            "title": "Cashier Restock Bay",
+            "goalText": "Restock the right service bins",
+            "name": "supply",
+            "bins": [
+              "Packing supplies",
+              "Drawer supplies"
+            ],
+            "items": [
+              [
+                "Coin roll",
+                "coin",
+                1
+              ],
+              [
+                "Gift bags",
+                "bag",
+                0
+              ],
+              [
+                "Change tray",
+                "coin",
+                1
+              ],
+              [
+                "Tape refill",
+                "parcel",
+                0
+              ]
+            ],
+            "award": "Counters restocked"
+          },
+          {
+            "kind": "sort",
+            "title": "Cashier Restock Bay",
+            "goalText": "Restock the right service bins",
+            "name": "supply",
+            "bins": [
+              "Packing supplies",
+              "Drawer supplies"
+            ],
+            "items": [
+              [
+                "Gift paper",
+                "parcel",
+                0
+              ],
+              [
+                "Change tray",
+                "coin",
+                1
+              ],
+              [
+                "Tape refill",
+                "parcel",
+                0
+              ],
+              [
+                "Gift bags",
+                "bag",
+                0
+              ]
+            ],
+            "award": "Counters restocked"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -125,139 +278,6 @@ const GAME = {
       ],
       "award": "Counters restocked"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "service",
-        "title": "Timed Bagging Counters",
-        "goalText": "Bag each purchase when its register lights up",
-        "delays": [
-          0.58,
-          1.08,
-          1.44
-        ],
-        "award": "Bagging rush cleared"
-      },
-      {
-        "kind": "service",
-        "title": "Timed Bagging Counters",
-        "goalText": "Bag each purchase when its register lights up",
-        "delays": [
-          1.5,
-          0.44,
-          0.97
-        ],
-        "award": "Bagging rush cleared"
-      },
-      {
-        "kind": "service",
-        "title": "Timed Bagging Counters",
-        "goalText": "Bag each purchase when its register lights up",
-        "delays": [
-          0.98,
-          1.55,
-          0.48
-        ],
-        "award": "Bagging rush cleared"
-      }
-    ],
-    [
-      {
-        "kind": "sort",
-        "title": "Cashier Restock Bay",
-        "goalText": "Restock the right service bins",
-        "name": "supply",
-        "bins": [
-          "Packing supplies",
-          "Drawer supplies"
-        ],
-        "items": [
-          [
-            "Gift bags",
-            "bag",
-            0
-          ],
-          [
-            "Change tray",
-            "coin",
-            1
-          ],
-          [
-            "Tape refill",
-            "parcel",
-            0
-          ]
-        ],
-        "award": "Counters restocked"
-      },
-      {
-        "kind": "sort",
-        "title": "Cashier Restock Bay",
-        "goalText": "Restock the right service bins",
-        "name": "supply",
-        "bins": [
-          "Packing supplies",
-          "Drawer supplies"
-        ],
-        "items": [
-          [
-            "Coin roll",
-            "coin",
-            1
-          ],
-          [
-            "Gift bags",
-            "bag",
-            0
-          ],
-          [
-            "Change tray",
-            "coin",
-            1
-          ],
-          [
-            "Tape refill",
-            "parcel",
-            0
-          ]
-        ],
-        "award": "Counters restocked"
-      },
-      {
-        "kind": "sort",
-        "title": "Cashier Restock Bay",
-        "goalText": "Restock the right service bins",
-        "name": "supply",
-        "bins": [
-          "Packing supplies",
-          "Drawer supplies"
-        ],
-        "items": [
-          [
-            "Gift paper",
-            "parcel",
-            0
-          ],
-          [
-            "Change tray",
-            "coin",
-            1
-          ],
-          [
-            "Tape refill",
-            "parcel",
-            0
-          ],
-          [
-            "Gift bags",
-            "bag",
-            0
-          ]
-        ],
-        "award": "Counters restocked"
-      }
-    ]
   ],
   "form": "mall",
   "controls": [
@@ -345,7 +365,35 @@ function makeFirstTask(c){
   return {start,draw,swipe,dragEnd};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const loads=[[2,6,1,5],[4,1,7,3],[5,2,6,1]][scenario];
+  let index=0;
+  function route(express){
+    if(express!==(loads[index]<=3)){c.mistake("Express takes baskets of three or fewer");return;}
+    const x=express?-2:2;
+    c.flyTo(x,-.81,()=>{
+      index++;c.pulse([x,.72,-.83],0x91dab8,14);c.tone([405,571]);
+      if(index===loads.length){c.receive([0,0,-2.37]);return;}
+      update();
+    });
+  }
+  function update(){
+    c.objective("Route the basket by item count");
+    c.meter(loads[index]+" items · express ≤3");
+    c.marker("express","Express lane",[-2.07,.73,-.83],()=>route(true),{kind:"clue"});
+    c.marker("regular","Regular lane",[2.07,.73,-.83],()=>route(false),{kind:"clue"});
+  }
+  function draw(m){
+    const z=c.localZ;
+    c.item(m,"register",-2,.06,z(-.85),1.29,0x92d9bd);
+    c.item(m,"register",2,.06,z(-.85),1.29,0xd3b399);
+    c.item(m,"person",0,.04,z(2.29),1.30,bright());
+    for(let i=0;i<(loads[index]||0);i++)c.item(m,"parcel",(i%4-1.5)*.39,.12,z(1.50+Math.floor(i/4)*.35),.39,0xe0bb7a);
+  }
+  return {start:update,draw};
+}
+
+function make_service(c,q){
   const spots=[-2.34,0,2.34];
   let requests=[],t=0,ok=0,started=false;
   const open=i=>started&&!requests[i].done&&t>=requests[i].delay&&t<requests[i].delay+.88;
@@ -384,27 +432,32 @@ function makeSecondTask(c,q){
   return {start,tick,draw};
 }
 
-function makeThirdTask(c,q){
+function make_sort(c,q){
   const x=[-2.47,2.47];
-  let index=0,held=false,settled=[];
+  let index=0,held=false,settled=[],tested=false;
   function grab(){c.flyTo(0,1.80,()=>{held=true;c.tone([315,498]);update();});}
   function drop(side){
     c.flyTo(x[side],-.88,()=>{
       const part=q.items[index];
       if(side!==part[2]){c.mistake("Look at the label and choose another bin");return;}
-      settled.push({side,part:index});held=false;index++;
+      settled.push({side,part:index});held=false;tested=false;index++;
       c.pulse([x[side],.48,-1.68],bright(),18);
       if(index===q.items.length){c.receive([x[side],0,-2.42]);return;}
       c.feedback(true,"Item accepted");update();
     });
   }
   function update(){
-    c.objective(held?q.goalText:"Pick up the next "+q.name.toLowerCase());
-    c.meter(index+"/"+q.items.length+" · "+q.items[index][0]);
+    c.objective(held?(q.magnet&&!tested?"Bring the sample to the magnet":q.goalText):"Pick up the next "+q.name.toLowerCase());
+    c.meter(index+"/"+q.items.length+" · "+(q.magnet&&tested?(q.items[index][2]===0?"Pulled by magnet":"No movement"):q.items[index][0]));
     if(!held)c.marker("grab","Pick "+q.items[index][0],[0,.78,1.94],grab,{kind:"clue"});else c.off("grab");
-    q.bins.forEach((name,i)=>{if(held)c.marker("bin"+i,name,[x[i],.77,-1.65],()=>drop(i),{kind:"hot"});else c.off("bin"+i);});
+    if(q.magnet&&held&&!tested)c.marker("probe","Test with magnet",[0,.81,-.15],()=>c.flyTo(0,.19,()=>{
+      tested=true;c.tone(q.items[index][2]===0?[312,553,783]:[315]);
+      if(q.items[index][2]===0)c.pulse([0,.93,-.14],0xa8d7ed,18);update();
+    }),{kind:"clue"});
+    else c.off("probe");
+    q.bins.forEach((name,i)=>{if(held&&(!q.magnet||tested))c.marker("bin"+i,name,[x[i],.77,-1.65],()=>drop(i),{kind:"hot"});else c.off("bin"+i);});
   }
-  function start(){index=0;held=false;settled=[];update();}
+  function start(){index=0;held=false;tested=false;settled=[];update();}
   function draw(m){
     const z=c.localZ;
     for(let i=0;i<2;i++){
@@ -415,20 +468,24 @@ function makeThirdTask(c,q){
     settled.forEach(({side,part},i)=>c.item(m,q.items[part][1],x[side]+(i%2-.5)*.50,.54,z(-1.67),.50,i%2?0xf1bb6b:bright()));
     const item=q.items[index];
     if(!item)return;
+    if(q.magnet)c.item(m,"magnet",0,.34,z(-.15),1.0,tested&&item[2]===0?0xa8e8ec:trim());
     c.pedestal(m,0,z(1.94),1.36,trim());
     c.item(m,item[1],held?c.player.x:0,held?.76:.24,held?c.player.z:z(1.94),1.1,!held?bright():0xf0bb73);
   }
   return {start,draw};
 }
 
+const taskFactories = {service:make_service, sort:make_sort};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

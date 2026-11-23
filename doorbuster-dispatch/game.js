@@ -60,18 +60,183 @@ const GAME = {
       -0.58
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "→",
-      "Pick and deliver"
+      {
+        "kind": "signature",
+        "guide": [
+          "→",
+          "Pick and deliver"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "→",
+          "Pick and deliver"
+        ]
+      }
     ],
     [
-      "↓",
-      "Drop onto the truck"
+      {
+        "kind": "swing",
+        "guide": [
+          "↓",
+          "Drop onto the truck"
+        ],
+        "runs": [
+          {
+            "kind": "swing",
+            "title": "Crane Loading Dock",
+            "goalText": "Release each parcel above its marked truck",
+            "docks": [
+              -2.33,
+              2.33,
+              0
+            ],
+            "award": "All trucks loaded"
+          },
+          {
+            "kind": "swing",
+            "title": "Crane Loading Dock",
+            "goalText": "Release each parcel above its marked truck",
+            "docks": [
+              0,
+              -2.33,
+              2.33
+            ],
+            "award": "All trucks loaded"
+          },
+          {
+            "kind": "swing",
+            "title": "Crane Loading Dock",
+            "goalText": "Release each parcel above its marked truck",
+            "docks": [
+              2.33,
+              0,
+              -2.33,
+              0
+            ],
+            "award": "All trucks loaded"
+          }
+        ]
+      }
     ],
     [
-      "!",
-      "Find the mismatch"
+      {
+        "kind": "audit",
+        "guide": [
+          "!",
+          "Find the mismatch"
+        ],
+        "runs": [
+          {
+            "kind": "audit",
+            "title": "Manifest Desk",
+            "goalText": "Flag the parcel that breaks the manifest",
+            "sourceName": "manifest",
+            "object": "parcel",
+            "flip": true,
+            "rows": [
+              {
+                "clue": "Fragile line · max 4 kg",
+                "labels": [
+                  "Glass · 3 kg",
+                  "Ceramic · 4 kg",
+                  "Lamp · 6 kg"
+                ],
+                "wrong": 2
+              },
+              {
+                "clue": "Blue pickup labels only",
+                "labels": [
+                  "Red · A24",
+                  "Blue · B11",
+                  "Blue · C16"
+                ],
+                "wrong": 0
+              }
+            ],
+            "award": "Manifest signed"
+          },
+          {
+            "kind": "audit",
+            "title": "Manifest Desk",
+            "goalText": "Flag the parcel that breaks the manifest",
+            "sourceName": "manifest",
+            "object": "parcel",
+            "flip": true,
+            "rows": [
+              {
+                "clue": "Fragile line · max 4 kg",
+                "labels": [
+                  "Glass · 3 kg",
+                  "Ceramic · 4 kg",
+                  "Lamp · 6 kg"
+                ],
+                "wrong": 2
+              },
+              {
+                "clue": "Insulated bay · max 5 kg",
+                "labels": [
+                  "Jar · 5 kg",
+                  "Kettle · 6 kg",
+                  "Jug · 4 kg"
+                ],
+                "wrong": 1
+              },
+              {
+                "clue": "Amber pickup labels only",
+                "labels": [
+                  "Amber · P42",
+                  "Amber · K11",
+                  "Blue · A16"
+                ],
+                "wrong": 2
+              }
+            ],
+            "award": "Manifest signed"
+          },
+          {
+            "kind": "audit",
+            "title": "Manifest Desk",
+            "goalText": "Flag the parcel that breaks the manifest",
+            "sourceName": "manifest",
+            "object": "parcel",
+            "flip": true,
+            "rows": [
+              {
+                "clue": "Blue pickup labels only",
+                "labels": [
+                  "Red · A24",
+                  "Blue · B11",
+                  "Blue · C16"
+                ],
+                "wrong": 0
+              },
+              {
+                "clue": "Insulated bay · max 5 kg",
+                "labels": [
+                  "Jar · 5 kg",
+                  "Kettle · 6 kg",
+                  "Jug · 4 kg"
+                ],
+                "wrong": 1
+              },
+              {
+                "clue": "Amber pickup labels only",
+                "labels": [
+                  "Amber · P42",
+                  "Amber · K11",
+                  "Blue · A16"
+                ],
+                "wrong": 2
+              }
+            ],
+            "award": "Manifest signed"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -103,6 +268,7 @@ const GAME = {
       "goalText": "Flag the parcel that breaks the manifest",
       "sourceName": "manifest",
       "object": "parcel",
+      "flip": true,
       "rows": [
         {
           "clue": "Fragile line · max 4 kg",
@@ -125,148 +291,6 @@ const GAME = {
       ],
       "award": "Manifest signed"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "swing",
-        "title": "Crane Loading Dock",
-        "goalText": "Release each parcel above its marked truck",
-        "docks": [
-          -2.33,
-          2.33,
-          0
-        ],
-        "award": "All trucks loaded"
-      },
-      {
-        "kind": "swing",
-        "title": "Crane Loading Dock",
-        "goalText": "Release each parcel above its marked truck",
-        "docks": [
-          0,
-          -2.33,
-          2.33
-        ],
-        "award": "All trucks loaded"
-      },
-      {
-        "kind": "swing",
-        "title": "Crane Loading Dock",
-        "goalText": "Release each parcel above its marked truck",
-        "docks": [
-          2.33,
-          0,
-          -2.33,
-          0
-        ],
-        "award": "All trucks loaded"
-      }
-    ],
-    [
-      {
-        "kind": "audit",
-        "title": "Manifest Desk",
-        "goalText": "Flag the parcel that breaks the manifest",
-        "sourceName": "manifest",
-        "object": "parcel",
-        "rows": [
-          {
-            "clue": "Fragile line · max 4 kg",
-            "labels": [
-              "Glass · 3 kg",
-              "Ceramic · 4 kg",
-              "Lamp · 6 kg"
-            ],
-            "wrong": 2
-          },
-          {
-            "clue": "Blue pickup labels only",
-            "labels": [
-              "Red · A24",
-              "Blue · B11",
-              "Blue · C16"
-            ],
-            "wrong": 0
-          }
-        ],
-        "award": "Manifest signed"
-      },
-      {
-        "kind": "audit",
-        "title": "Manifest Desk",
-        "goalText": "Flag the parcel that breaks the manifest",
-        "sourceName": "manifest",
-        "object": "parcel",
-        "rows": [
-          {
-            "clue": "Fragile line · max 4 kg",
-            "labels": [
-              "Glass · 3 kg",
-              "Ceramic · 4 kg",
-              "Lamp · 6 kg"
-            ],
-            "wrong": 2
-          },
-          {
-            "clue": "Insulated bay · max 5 kg",
-            "labels": [
-              "Jar · 5 kg",
-              "Kettle · 6 kg",
-              "Jug · 4 kg"
-            ],
-            "wrong": 1
-          },
-          {
-            "clue": "Amber pickup labels only",
-            "labels": [
-              "Amber · P42",
-              "Amber · K11",
-              "Blue · A16"
-            ],
-            "wrong": 2
-          }
-        ],
-        "award": "Manifest signed"
-      },
-      {
-        "kind": "audit",
-        "title": "Manifest Desk",
-        "goalText": "Flag the parcel that breaks the manifest",
-        "sourceName": "manifest",
-        "object": "parcel",
-        "rows": [
-          {
-            "clue": "Blue pickup labels only",
-            "labels": [
-              "Red · A24",
-              "Blue · B11",
-              "Blue · C16"
-            ],
-            "wrong": 0
-          },
-          {
-            "clue": "Insulated bay · max 5 kg",
-            "labels": [
-              "Jar · 5 kg",
-              "Kettle · 6 kg",
-              "Jug · 4 kg"
-            ],
-            "wrong": 1
-          },
-          {
-            "clue": "Amber pickup labels only",
-            "labels": [
-              "Amber · P42",
-              "Amber · K11",
-              "Blue · A16"
-            ],
-            "wrong": 2
-          }
-        ],
-        "award": "Manifest signed"
-      }
-    ]
   ],
   "form": "loading",
   "controls": [
@@ -369,7 +393,39 @@ function makeFirstTask(c){
   return {start,draw,swipe,dragEnd};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const jobs=[["Red",10,8,0xe09282],["Mint",8,4,0x8dcaba],["Gold",12,11,0xe4c280]];
+  const plans=[[0,1,2],[2,0,1],[1,2,0]][scenario];
+  let dispatched=[];
+  function ship(i){
+    const slack=j=>jobs[j][1]-jobs[j][2];
+    if(plans.some(j=>!dispatched.includes(j)&&slack(j)<slack(i))){c.mistake("Send the van with the least spare time first");return;}
+    c.flyTo((plans.indexOf(i)-1)*2.13,-.39,()=>{
+      dispatched.push(i);c.tone([405,550,705]);
+      if(dispatched.length===plans.length){c.receive([0,0,-2.45]);return;}
+      update();
+    });
+  }
+  function update(){
+    c.objective("Dispatch the tightest deadline first");
+    c.meter("Time left − driving time");
+    plans.forEach((id,i)=>{
+      const [name,cut,drive]=jobs[id];
+      if(!dispatched.includes(id))c.marker("van"+id,"Send "+name,[(i-1)*2.13,.99,-.38],()=>ship(id),{kind:"clue",caption:name+" "+cut+"−"+drive});
+      else c.off("van"+id);
+    });
+  }
+  function draw(m,t){
+    plans.forEach((id,i)=>{
+      const x=(i-1)*2.13,z=c.localZ(dispatched.includes(id)?-2.65:-.35);
+      endingCart(m,x,.08,z,jobs[id][3],true);
+      m.box(x,.035,c.localZ(.12),1.76,.041,3.81,trim(),0,4);
+    });
+  }
+  return {start:update,draw};
+}
+
+function make_swing(c,q){
   let t=0,shot=null,index=0,landed=[];
   const phase=()=>Math.sin(t*(1.75+index*.28))*2.66;
   const target=()=>q.docks[index]??0;
@@ -410,9 +466,9 @@ function makeSecondTask(c,q){
   return {start,tick,draw};
 }
 
-function makeThirdTask(c,q){
+function make_audit(c,q){
   const col=[-2.35,0,2.35],badge=[0x77be9f,0xe6b16a,0xab94c8];
-  let index=0,seen=false,picked=[];
+  let index=0,seen=false,labels=[];
   function read(){
     c.flyTo(0,2.53,()=>{
       seen=true;c.tone([294,442]);c.pulse([0,.63,2.55],bright(),12);update();
@@ -421,22 +477,26 @@ function makeThirdTask(c,q){
   function choose(i){
     c.flyTo(col[i],-.51,()=>{
       if(i!==q.rows[index].wrong){c.mistake("That record matches");return;}
-      picked.push(i);seen=false;index++;
+      labels=[];seen=false;index++;
       c.pulse([col[i],.52,-1.08],0xf3cd81,18);
       if(index===q.rows.length){c.receive([col[i],0,-1.11]);return;}
       c.feedback(true,"Mismatch reported");update();
     });
   }
   function update(){
-    c.objective(seen?q.goalText:"Inspect the next "+q.sourceName.toLowerCase());
+    c.objective(seen?(q.flip&&labels.length<3?"Turn the labels to compare":q.goalText):"Inspect the next "+q.sourceName.toLowerCase());
     c.meter(seen?q.rows[index].clue:(index+"/"+q.rows.length+" checked"));
     if(!seen)c.marker("read","Read "+q.sourceName,[0,.66,2.55],read,{kind:"clue"});
     else c.off("read");
     q.rows[index].labels.forEach((name,i)=>{
-      if(seen)c.marker("doc"+i,name,[col[i],.77,-.95],()=>choose(i),{kind:"hot"});else c.off("doc"+i);
+      if(seen&&q.flip&&labels.length<3&&!labels.includes(i))c.marker("doc"+i,"Turn label "+(i+1),[col[i],.77,-.95],()=>{
+        c.flyTo(col[i],-.53,()=>{labels.push(i);c.tone([360,495]);update();});
+      },{kind:"clue"});
+      else if(seen&&(!q.flip||labels.includes(i)))c.marker("doc"+i,name,[col[i],.77,-.95],()=>choose(i),{kind:"hot",disabled:q.flip&&labels.length<3});
+      else c.off("doc"+i);
     });
   }
-  function start(){index=0;seen=false;picked=[];update();}
+  function start(){index=0;seen=false;labels=[];update();}
   function draw(m,t){
     const z=c.localZ;
     c.pedestal(m,0,z(2.55),1.32,trim());
@@ -444,20 +504,23 @@ function makeThirdTask(c,q){
     for(let i=0;i<3;i++){
       c.pedestal(m,col[i],z(-.99),1.51,badge[i]);
       c.item(m,q.object,col[i],.23,z(-1.03),1.01,badge[i]);
-      if(seen)c.item(m,"coupon",col[i]+.47,.25,z(-.64),.61,0xeed1a0);
+      if(seen)c.item(m,"coupon",col[i]+.47,.25,z(-.64),.61,0xeed1a0,q.flip&&!labels.includes(i)?Math.PI*.50:0);
     }
   }
   return {start,draw};
 }
 
+const taskFactories = {swing:make_swing, audit:make_audit};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

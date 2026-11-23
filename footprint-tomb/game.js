@@ -60,18 +60,147 @@ const GAME = {
       -0.12
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "▦",
-      "Follow the tiles"
+      {
+        "kind": "signature",
+        "guide": [
+          "▦",
+          "Follow the tiles"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "▦",
+          "Follow the tiles"
+        ]
+      }
     ],
     [
-      "◇",
-      "Fit the pieces"
+      {
+        "kind": "assembly",
+        "guide": [
+          "◇",
+          "Fit the pieces"
+        ],
+        "runs": [
+          {
+            "kind": "assembly",
+            "title": "Glyph Stone Gallery",
+            "goalText": "Rotate the three glyphs into their carved sockets",
+            "pieces": [
+              [
+                "Sun",
+                "coin",
+                2
+              ],
+              [
+                "Warden",
+                "idol",
+                0
+              ],
+              [
+                "Scarab",
+                "shell",
+                3
+              ]
+            ],
+            "award": "Gold Scarab"
+          },
+          {
+            "kind": "assembly",
+            "title": "Glyph Stone Gallery",
+            "goalText": "Rotate the three glyphs into their carved sockets",
+            "pieces": [
+              [
+                "Sun",
+                "coin",
+                3
+              ],
+              [
+                "Warden",
+                "idol",
+                2
+              ],
+              [
+                "Scarab",
+                "shell",
+                2
+              ]
+            ],
+            "award": "Gold Scarab"
+          },
+          {
+            "kind": "assembly",
+            "title": "Glyph Stone Gallery",
+            "goalText": "Rotate the three glyphs into their carved sockets",
+            "pieces": [
+              [
+                "Sun",
+                "coin",
+                0
+              ],
+              [
+                "Warden",
+                "idol",
+                3
+              ],
+              [
+                "Scarab",
+                "shell",
+                3
+              ]
+            ],
+            "award": "Gold Scarab"
+          }
+        ]
+      }
     ],
     [
-      "→",
-      "Cross in the gaps"
+      {
+        "kind": "traffic",
+        "guide": [
+          "→",
+          "Cross in the gaps"
+        ],
+        "runs": [
+          {
+            "kind": "traffic",
+            "title": "Spike Court",
+            "goalText": "Cross each slab while its spikes retract",
+            "wait": "Wait for spikes",
+            "gates": 4,
+            "object": "spikes",
+            "tint": 15051635,
+            "award": "Sun Guardian"
+          },
+          {
+            "kind": "traffic",
+            "title": "Spike Court",
+            "goalText": "Cross each slab while its spikes retract",
+            "wait": "Wait for spikes",
+            "gates": 4,
+            "object": "spikes",
+            "tint": 15051635,
+            "award": "Sun Guardian",
+            "period": 2.1,
+            "offset": 0.26
+          },
+          {
+            "kind": "traffic",
+            "title": "Spike Court",
+            "goalText": "Cross each slab while its spikes retract",
+            "wait": "Wait for spikes",
+            "gates": 4,
+            "object": "spikes",
+            "tint": 15051635,
+            "award": "Sun Guardian",
+            "period": 2.48,
+            "offset": 0.48
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -119,115 +248,6 @@ const GAME = {
       "tint": 15051635,
       "award": "Sun Guardian"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "assembly",
-        "title": "Glyph Stone Gallery",
-        "goalText": "Rotate the three glyphs into their carved sockets",
-        "pieces": [
-          [
-            "Sun",
-            "coin",
-            2
-          ],
-          [
-            "Warden",
-            "idol",
-            0
-          ],
-          [
-            "Scarab",
-            "shell",
-            3
-          ]
-        ],
-        "award": "Gold Scarab"
-      },
-      {
-        "kind": "assembly",
-        "title": "Glyph Stone Gallery",
-        "goalText": "Rotate the three glyphs into their carved sockets",
-        "pieces": [
-          [
-            "Sun",
-            "coin",
-            3
-          ],
-          [
-            "Warden",
-            "idol",
-            2
-          ],
-          [
-            "Scarab",
-            "shell",
-            2
-          ]
-        ],
-        "award": "Gold Scarab"
-      },
-      {
-        "kind": "assembly",
-        "title": "Glyph Stone Gallery",
-        "goalText": "Rotate the three glyphs into their carved sockets",
-        "pieces": [
-          [
-            "Sun",
-            "coin",
-            0
-          ],
-          [
-            "Warden",
-            "idol",
-            3
-          ],
-          [
-            "Scarab",
-            "shell",
-            3
-          ]
-        ],
-        "award": "Gold Scarab"
-      }
-    ],
-    [
-      {
-        "kind": "traffic",
-        "title": "Spike Court",
-        "goalText": "Cross each slab while its spikes retract",
-        "wait": "Wait for spikes",
-        "gates": 4,
-        "object": "spikes",
-        "tint": 15051635,
-        "award": "Sun Guardian"
-      },
-      {
-        "kind": "traffic",
-        "title": "Spike Court",
-        "goalText": "Cross each slab while its spikes retract",
-        "wait": "Wait for spikes",
-        "gates": 4,
-        "object": "spikes",
-        "tint": 15051635,
-        "award": "Sun Guardian",
-        "period": 2.1,
-        "offset": 0.26
-      },
-      {
-        "kind": "traffic",
-        "title": "Spike Court",
-        "goalText": "Cross each slab while its spikes retract",
-        "wait": "Wait for spikes",
-        "gates": 4,
-        "object": "spikes",
-        "tint": 15051635,
-        "award": "Sun Guardian",
-        "period": 2.48,
-        "offset": 0.48
-      }
-    ]
   ],
   "form": "vault",
   "controls": [
@@ -326,7 +346,37 @@ function makeFirstTask(c){
   return {start,draw,tap};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const gates=[[0,2],[1,0],[2,1]][scenario];
+  const px=i=>(i-1)*1.95,slots=["Left","Centre","Right"];
+  let weight=null;
+  function update(){
+    c.objective(weight===null?"Weight the square plate":"Stand on the round plate");
+    c.meter("■ "+slots[gates[0]]+" · ● "+slots[gates[1]]);
+    for(let i=0;i<3;i++){
+      if(weight===null)c.marker("weight"+i,"Move statue "+slots[i],[px(i),.42,1.32],()=>{
+        if(i!==gates[0]){c.mistake("The statue belongs on the square mark");return;}
+        c.flyTo(px(i),1.28,()=>{weight=i;c.tone([315,478]);update();});
+      },{kind:"clue",caption:slots[i]});
+      else c.off("weight"+i);
+      if(weight!==null)c.marker("step"+i,"Stand "+slots[i],[px(i),.48,-1.42],()=>{
+        if(i!==gates[1]){c.mistake("Stand on the round mark");return;}
+        c.flyTo(px(i),-1.42,()=>c.receive([0,0,-2.48]));
+      },{kind:"clue",caption:slots[i]});
+      else c.off("step"+i);
+    }
+  }
+  function draw(m){
+    for(let i=0;i<3;i++){
+      m.box(px(i),.12,c.localZ(1.31),1.42,.22,1.39,i===gates[0]?0xd4a571:trim(),0,9);
+      m.oval(px(i),.12,c.localZ(-1.42),.67,.14,.67,i===gates[1]?0xd4a571:trim(),0,9,9);
+    }
+    c.item(m,"idol",weight===null?0:px(weight),.17,c.localZ(weight===null?3.11:1.32),1.03,bright());
+  }
+  return {start:update,draw};
+}
+
+function make_assembly(c,q){
   const colors=[0xe6b36a,0x87c1b2,0xb5a3d8],xs=[-2.34,0,2.34];
   let held=-1,rot=0,inserted=[];
   function pick(i){held=i;rot=0;c.tone([297,452]);show();}
@@ -366,7 +416,7 @@ function makeSecondTask(c,q){
   return {start,draw};
 }
 
-function makeThirdTask(c,q){
+function make_traffic(c,q){
   let next=0,clock=0,current=3.18,path=null,last=false;
   const period=q.period??2.32,offset=q.offset??.51,scale=period/2.32;
   const markerZ=i=>2.74-i*1.62;
@@ -420,14 +470,17 @@ function makeThirdTask(c,q){
   return {start,tick,draw,tap,lockMove:true};
 }
 
+const taskFactories = {assembly:make_assembly, traffic:make_traffic};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

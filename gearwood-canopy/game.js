@@ -60,18 +60,111 @@ const GAME = {
       -0.28
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "⚙",
-      "Fit the gears"
+      {
+        "kind": "signature",
+        "guide": [
+          "⚙",
+          "Fit the gears"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "⚙",
+          "Fit the gears"
+        ]
+      }
     ],
     [
-      "╫",
-      "Fit the bridge planks"
+      {
+        "kind": "bridgework",
+        "guide": [
+          "╫",
+          "Fit the bridge planks"
+        ],
+        "runs": [
+          {
+            "kind": "bridgework",
+            "title": "Canopy Bridge Repair",
+            "goalText": "Fit planks to gaps and reinforce the long span",
+            "gaps": [
+              1,
+              3,
+              2
+            ],
+            "reinforced": 1,
+            "award": "Canopy Pinion"
+          },
+          {
+            "kind": "bridgework",
+            "title": "Canopy Bridge Repair",
+            "goalText": "Fit planks to gaps and reinforce the long span",
+            "gaps": [
+              3,
+              2,
+              1
+            ],
+            "reinforced": 0,
+            "award": "Canopy Pinion"
+          },
+          {
+            "kind": "bridgework",
+            "title": "Canopy Bridge Repair",
+            "goalText": "Fit planks to gaps and reinforce the long span",
+            "gaps": [
+              2,
+              1,
+              3
+            ],
+            "reinforced": 2,
+            "award": "Canopy Pinion"
+          }
+        ]
+      }
     ],
     [
-      "↗",
-      "Glide onto the perch"
+      {
+        "kind": "glide",
+        "guide": [
+          "↗",
+          "Glide onto the perch"
+        ],
+        "runs": [
+          {
+            "kind": "glide",
+            "title": "Wind Launch Perch",
+            "goalText": "Trim the glider against the wind and reach the ledge",
+            "wind": -1.12,
+            "goalZ": -2.74,
+            "award": "Clockwood Dial"
+          },
+          {
+            "kind": "glide",
+            "title": "Wind Launch Perch",
+            "goalText": "Trim the glider against the wind and reach the ledge",
+            "wind": 1.12,
+            "goalZ": -1.37,
+            "award": "Clockwood Dial"
+          },
+          {
+            "kind": "glide",
+            "title": "Wind Launch Perch",
+            "goalText": "Trim the glider against the wind and reach the ledge",
+            "wind": 0,
+            "goalZ": -1.37,
+            "award": "Clockwood Dial"
+          }
+        ]
+      },
+      {
+        "kind": "climax",
+        "guide": [
+          "↔",
+          "Catch the cable load"
+        ]
+      }
     ]
   ],
   "ending": {
@@ -106,72 +199,6 @@ const GAME = {
       "goalZ": -2.74,
       "award": "Clockwood Dial"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "bridgework",
-        "title": "Canopy Bridge Repair",
-        "goalText": "Fit planks to gaps and reinforce the long span",
-        "gaps": [
-          1,
-          3,
-          2
-        ],
-        "reinforced": 1,
-        "award": "Canopy Pinion"
-      },
-      {
-        "kind": "bridgework",
-        "title": "Canopy Bridge Repair",
-        "goalText": "Fit planks to gaps and reinforce the long span",
-        "gaps": [
-          3,
-          2,
-          1
-        ],
-        "reinforced": 0,
-        "award": "Canopy Pinion"
-      },
-      {
-        "kind": "bridgework",
-        "title": "Canopy Bridge Repair",
-        "goalText": "Fit planks to gaps and reinforce the long span",
-        "gaps": [
-          2,
-          1,
-          3
-        ],
-        "reinforced": 2,
-        "award": "Canopy Pinion"
-      }
-    ],
-    [
-      {
-        "kind": "glide",
-        "title": "Wind Launch Perch",
-        "goalText": "Trim the glider against the wind and reach the ledge",
-        "wind": -1.12,
-        "goalZ": -2.74,
-        "award": "Clockwood Dial"
-      },
-      {
-        "kind": "glide",
-        "title": "Wind Launch Perch",
-        "goalText": "Trim the glider against the wind and reach the ledge",
-        "wind": 1.12,
-        "goalZ": -1.37,
-        "award": "Clockwood Dial"
-      },
-      {
-        "kind": "glide",
-        "title": "Wind Launch Perch",
-        "goalText": "Trim the glider against the wind and reach the ledge",
-        "wind": 0,
-        "goalZ": -1.37,
-        "award": "Clockwood Dial"
-      }
-    ]
   ],
   "form": "perch",
   "controls": [
@@ -279,7 +306,40 @@ function makeFirstTask(c){
   return {start,draw,swipe,dragEnd};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const target=[[4,6],[3,2],[6,9]][scenario];
+  const gear=[1,1];
+  let motor=1;
+  const result=i=>motor*gear[i];
+  function update(){
+    c.objective("Match both pulley speeds");
+    c.meter(target.join(" · ")+" rpm");
+    c.marker("engine","Change drive speed",[0,.74,2.29],()=>{
+      motor=motor%3+1;c.tone([370+motor*70]);update();
+    },{kind:"clue",caption:"Drive "+motor});
+    gear.forEach((v,i)=>c.marker("ratio"+i,i===0?"Tune left pulley":"Tune right pulley",[(i-.50)*3.34,.82,.61],()=>{
+      gear[i]=v%3+1;c.tone([337+v*81]);update();
+    },{kind:result(i)===target[i]?"good":"clue",caption:motor+"×"+v+"="+result(i)}));
+    c.marker("lift","Raise the freight pulley",[0,.74,-2.42],()=>{
+      if(gear.some((_,i)=>result(i)!==target[i])){c.mistake("Drive speed × gear ratio must match each mark");return;}
+      c.flyTo(0,-2.10,()=>c.receive([0,0,-2.42]));
+    },{kind:"hot"});
+  }
+  function draw(m,t){
+    const z=c.localZ;
+    c.item(m,"gear",0,.31,z(2.29),.98,0xe4be83,t*motor);
+    gear.forEach((_,i)=>{
+      const x=(i-.50)*3.34,speed=result(i);
+      c.item(m,"gear",x,.40,z(.61),1.45,0xd19b73,t*speed);
+      c.item(m,"gear",x,.39,z(-1.28),1.26,speed===target[i]?0x9fd3b6:trim(),-t*target[i]);
+      m.tube([0,.51,z(2.24)],[x,.51,z(.66)],.035,.035,ink(),8,5);
+      m.tube([x,.66,z(.60)],[x,.66,z(-1.29)],.036,.036,ink(),8,5);
+    });
+  }
+  return {start:update,draw};
+}
+
+function make_bridgework(c,q){
   const sizes=["Short","Medium","Long"],hues=[0xe0a979,0xc69462,0xe8ba82];
   const gapZ=i=>1.35-i*1.76;
   const width=length=>.55+length*.42;
@@ -331,7 +391,7 @@ function makeSecondTask(c,q){
   return {start,draw};
 }
 
-function makeThirdTask(c,q){
+function make_glide(c,q){
   let trimIndex=1,flaps=0,flight=null;
   const n=()=>trimIndex-1;
   const lateral=()=>q.wind+n()*1.12;
@@ -374,14 +434,53 @@ function makeThirdTask(c,q){
   return {start,tick,draw};
 }
 
+const taskFactories = {bridgework:make_bridgework, glide:make_glide};
+function makeFinalTrial(c,scenario){
+  const catchSide=[0,1,0][scenario],phase=[.22,1.12,1.89][scenario],spots=[-2.25,2.25];
+  let selected=-1,rolling=false,finished=false,time=0;
+  const px=()=>2.20*Math.sin(time*1.8+phase);
+  const ready=()=>selected===catchSide&&Math.abs(px()-spots[selected])<.56;
+  function settle(){
+    if(!ready()){c.mistake(selected!==catchSide?"Catch the cargo on the lit branch":"Wait for the pulley to reach the hook");return;}
+    rolling=false;finished=true;
+    c.flyTo(spots[selected],-.73,()=>c.receive([spots[selected],0,-.95]));
+  }
+  function update(){
+    c.objective(selected<0?"Choose the branch marked for cargo":"Catch the pulley as it passes");
+    spots.forEach((x,i)=>c.marker("hook"+i,i===0?"West hook":"East hook",[x,.83,-.86],()=>{
+      selected=i;rolling=true;c.tone([345,555]);update();
+    },{kind:selected===i?"good":"clue"}));
+    if(rolling)c.tool("catch",ready()?"Catch now":"Catch pulley",settle);
+  }
+  function tick(dt){
+    if(!rolling)return;
+    const before=ready();time+=dt;
+    if(before!==ready())update();
+  }
+  function draw(m){
+    const z=c.localZ;
+    m.tube([-2.51,1.72,z(-.88)],[2.51,1.72,z(-.88)],.035,.035,trim(),9,5);
+    m.tube([px(),1.71,z(-.88)],[px(),.79,z(-.88)],.032,.027,ink(),8,5);
+    c.item(m,"parcel",px(),.44,z(-.88),.89,0xd8a87e);
+    spots.forEach((x,i)=>{
+      m.tube([x,.14,z(-.88)],[x,1.29,z(-.88)],.062,.062,ink(),8,5);
+      m.oval(x,1.34,z(-.88),.12,.12,.12,i===catchSide?0xa0ebbd:0xe0b38b,0,1,7);
+    });
+    if(finished)c.item(m,"gear",spots[catchSide],.19,z(-1.55),.91,bright());
+  }
+  return {start:update,tick,draw};
+}
+
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

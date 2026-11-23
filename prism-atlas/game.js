@@ -60,18 +60,141 @@ const GAME = {
       0.64
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "↗",
-      "Reflect the beam"
+      {
+        "kind": "signature",
+        "guide": [
+          "↗",
+          "Reflect the beam"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "↗",
+          "Reflect the beam"
+        ]
+      }
     ],
     [
-      "◐",
-      "Join the shadows"
+      {
+        "kind": "shadow",
+        "guide": [
+          "◐",
+          "Join the shadows"
+        ],
+        "runs": [
+          {
+            "kind": "shadow",
+            "title": "Shadow Seal Gallery",
+            "goalText": "Join two shadows at the seal",
+            "align": [
+              1,
+              2
+            ],
+            "award": "Shadow Seal"
+          },
+          {
+            "kind": "shadow",
+            "title": "Shadow Seal Gallery",
+            "goalText": "Join two shadows at the seal",
+            "align": [
+              2,
+              1
+            ],
+            "award": "Shadow Seal"
+          },
+          {
+            "kind": "shadow",
+            "title": "Shadow Seal Gallery",
+            "goalText": "Join two shadows at the seal",
+            "align": [
+              2,
+              2
+            ],
+            "award": "Shadow Seal"
+          }
+        ]
+      }
     ],
     [
-      "✦",
-      "Mix the light"
+      {
+        "kind": "mix",
+        "guide": [
+          "✦",
+          "Mix the light"
+        ],
+        "runs": [
+          {
+            "kind": "mix",
+            "title": "Spectral Lens Chamber",
+            "goalText": "Tune the colored lamps for both lenses",
+            "name": "Cyan",
+            "goal": [
+              false,
+              true,
+              true
+            ],
+            "inner": [
+              "Amber",
+              [
+                true,
+                true,
+                false
+              ]
+            ],
+            "award": "Crown Prism"
+          },
+          {
+            "kind": "mix",
+            "title": "Spectral Lens Chamber",
+            "goalText": "Tune the colored lamps for both lenses",
+            "name": "Magenta",
+            "goal": [
+              true,
+              false,
+              true
+            ],
+            "inner": [
+              "Cyan",
+              [
+                false,
+                true,
+                true
+              ]
+            ],
+            "award": "Crown Prism"
+          },
+          {
+            "kind": "mix",
+            "title": "Spectral Lens Chamber",
+            "goalText": "Tune the colored lamps for both lenses",
+            "name": "Amber",
+            "goal": [
+              true,
+              true,
+              false
+            ],
+            "inner": [
+              "Magenta",
+              [
+                true,
+                false,
+                true
+              ]
+            ],
+            "award": "Crown Prism"
+          }
+        ]
+      },
+      {
+        "kind": "climax",
+        "guide": [
+          "✦",
+          "Split the beam"
+        ]
+      }
     ]
   ],
   "ending": {
@@ -116,102 +239,6 @@ const GAME = {
       ],
       "award": "Crown Prism"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "shadow",
-        "title": "Shadow Seal Gallery",
-        "goalText": "Join two shadows at the seal",
-        "align": [
-          1,
-          2
-        ],
-        "award": "Shadow Seal"
-      },
-      {
-        "kind": "shadow",
-        "title": "Shadow Seal Gallery",
-        "goalText": "Join two shadows at the seal",
-        "align": [
-          2,
-          1
-        ],
-        "award": "Shadow Seal"
-      },
-      {
-        "kind": "shadow",
-        "title": "Shadow Seal Gallery",
-        "goalText": "Join two shadows at the seal",
-        "align": [
-          2,
-          2
-        ],
-        "award": "Shadow Seal"
-      }
-    ],
-    [
-      {
-        "kind": "mix",
-        "title": "Spectral Lens Chamber",
-        "goalText": "Tune the colored lamps for both lenses",
-        "name": "Cyan",
-        "goal": [
-          false,
-          true,
-          true
-        ],
-        "inner": [
-          "Amber",
-          [
-            true,
-            true,
-            false
-          ]
-        ],
-        "award": "Crown Prism"
-      },
-      {
-        "kind": "mix",
-        "title": "Spectral Lens Chamber",
-        "goalText": "Tune the colored lamps for both lenses",
-        "name": "Magenta",
-        "goal": [
-          true,
-          false,
-          true
-        ],
-        "inner": [
-          "Cyan",
-          [
-            false,
-            true,
-            true
-          ]
-        ],
-        "award": "Crown Prism"
-      },
-      {
-        "kind": "mix",
-        "title": "Spectral Lens Chamber",
-        "goalText": "Tune the colored lamps for both lenses",
-        "name": "Amber",
-        "goal": [
-          true,
-          true,
-          false
-        ],
-        "inner": [
-          "Magenta",
-          [
-            true,
-            false,
-            true
-          ]
-        ],
-        "award": "Crown Prism"
-      }
-    ]
   ],
   "form": "vault",
   "controls": [
@@ -316,7 +343,43 @@ function makeFirstTask(c){
   return {start,tick,draw,swipe,dragEnd};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const need=[[1,2],[2,0],[0,1]][scenario];
+  const x=i=>(i-1)*1.19,z=i=>2.30-i*.71;
+  let column=1,focus=0;
+  function update(){
+    c.objective("Slide the lens to the two glowing marks");
+    c.meter("Move across · move along the rail");
+    c.marker("slide","Slide lens sideways",[x(column),.76,z(focus)],()=>{
+      column=(column+1)%3;c.tone([333+column*71]);update();
+    },{kind:"clue",caption:"←→"});
+    c.marker("focus","Slide lens forward",[x(column)+.36,.66,z(focus)-.42],()=>{
+      focus=(focus+1)%3;c.tone([397+focus*71]);update();
+    },{kind:"clue",caption:"↕"});
+    c.marker("light","Light both receivers",[0,.78,-2.31],()=>{
+      if(column!==need[0]||focus!==need[1]){c.mistake("Bring both beams onto the receiver marks");return;}
+      c.flyTo(0,-2.13,()=>c.receive([0,0,-2.44]));
+    },{kind:"hot"});
+  }
+  function draw(m){
+    const p=c.localZ,tx=x(need[0]),d=z(need[1]);
+    for(let i=0;i<3;i++){
+      m.box(x(i),.072,p(1.64),.064,.056,2.08,trim());
+      m.box(0,.079,p(z(i)),2.69,.058,.07,trim());
+    }
+    m.box(tx,.103,p(d),.74,.061,.52,0xbedfd0,0,1);
+    c.item(m,"prism",x(column),.15,p(z(focus)),1.08,0xa7d2ea);
+    m.tube([0,.71,p(3.62)],[x(column),.70,p(z(focus))],.025,.025,0xc0efd7,8,1);
+    for(const s of [-1,1]){
+      const a=s*1.08+(column-need[0])*.58,b=-2.42+(focus-need[1])*.37;
+      m.tube([x(column),.70,p(z(focus))],[a,.31,p(b)],.027,.019,s<0?0xa9ead6:0xd3b5e8,8,1);
+      m.oval(s*1.08,.31,p(-2.42),.20,.16,.20,column===need[0]&&focus===need[1]?0xb6ffd1:trim(),0,1,8);
+    }
+  }
+  return {start:update,draw};
+}
+
+function make_shadow(c,q){
   const bases=[[-1.69,1.22],[1.47,-.73]],r=[0x78bdbc,0xbf9fcf];
   let stops=[],projecting=false,lit=false;
   const aligned=()=>stops.every((v,i)=>v===q.align[i]);
@@ -355,7 +418,7 @@ function makeSecondTask(c,q){
   return {start,draw};
 }
 
-function makeThirdTask(c,q){
+function make_mix(c,q){
   const cap=["Red","Green","Blue"],ton=[0xf07667,0x78e29b,0x71acf4],x=[-2.40,0,2.40];
   let lamps=[],lens=0;
   const lensX=()=>lens===0?-1.10:1.10;
@@ -394,14 +457,48 @@ function makeThirdTask(c,q){
   return {start,draw};
 }
 
+const taskFactories = {shadow:make_shadow, mix:make_mix};
+function makeFinalTrial(c,scenario){
+  const target=[[2,3],[3,2],[1,4]][scenario];
+  let input=3,split=0;
+  function update(){
+    c.objective("Split one beam to power both receivers");
+    c.meter(split+" / "+target[0]+" left · "+(input-split)+" / "+target[1]+" right");
+    c.marker("source","Charge emitter",[-2.16,.78,1.51],()=>{
+      input=input===6?3:input+1;split=Math.min(split,input);c.tone([285+input*56]);update();
+    },{kind:"clue",caption:"Input "+input});
+    c.marker("split","Turn beam splitter",[0,.82,.32],()=>{
+      split=(split+1)%(input+1);c.tone([303+split*74]);update();
+    },{kind:"clue",caption:split+" : "+(input-split)});
+    c.marker("open","Unlock the prism crown",[0,.78,-2.70],()=>{
+      if(split!==target[0]||input-split!==target[1]){c.mistake("Match the power marks on both receivers");return;}
+      c.flyTo(0,-2.48,()=>c.receive([0,0,-2.70]));
+    },{kind:"hot"});
+  }
+  function draw(m){
+    const z=c.localZ,emit=[-2.15,.74,z(1.50)],join=[0,.74,z(.30)];
+    c.item(m,"lamp",emit[0],.07,emit[2],1.11,0xf1c579);
+    m.tube(emit,join,.017+input*.007,.023,0xf2d1a1,8,1);
+    for(let i=0;i<2;i++){
+      const x=(i-.5)*3.36,energy=i===0?split:input-split;
+      m.tube(join,[x,.74,z(-1.83)],.012+energy*.012,.018,energy===target[i]?0xa9eccc:0xcab1dd,8,1);
+      c.item(m,"prism",x,.23,z(-1.83),.88,energy===target[i]?0xb0f3d2:trim());
+      for(let n=0;n<target[i];n++)m.box(x+(n-1.5)*.13,.19,z(-1.25),.079,.22,.081,0xffda91,0,1);
+    }
+  }
+  return {start:update,draw};
+}
+
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

@@ -60,18 +60,158 @@ const GAME = {
       0
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "◉",
-      "Roll to the socket"
+      {
+        "kind": "signature",
+        "guide": [
+          "◉",
+          "Roll to the socket"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "◉",
+          "Roll to the socket"
+        ]
+      }
     ],
     [
-      "◉",
-      "Brake for each rail"
+      {
+        "kind": "brakes",
+        "guide": [
+          "◉",
+          "Brake for each rail"
+        ],
+        "runs": [
+          {
+            "kind": "brakes",
+            "title": "Marble Brake Gates",
+            "goalText": "Choose the clear rail and set its brake",
+            "forks": [
+              [
+                -1,
+                false
+              ],
+              [
+                1,
+                true
+              ],
+              [
+                -1,
+                true
+              ]
+            ],
+            "award": "Jade Bearing"
+          },
+          {
+            "kind": "brakes",
+            "title": "Marble Brake Gates",
+            "goalText": "Choose the clear rail and set its brake",
+            "forks": [
+              [
+                1,
+                true
+              ],
+              [
+                -1,
+                false
+              ],
+              [
+                1,
+                true
+              ]
+            ],
+            "award": "Jade Bearing"
+          },
+          {
+            "kind": "brakes",
+            "title": "Marble Brake Gates",
+            "goalText": "Choose the clear rail and set its brake",
+            "forks": [
+              [
+                1,
+                false
+              ],
+              [
+                1,
+                true
+              ],
+              [
+                -1,
+                false
+              ]
+            ],
+            "award": "Jade Bearing"
+          }
+        ]
+      }
     ],
     [
-      "↔",
-      "Slide into the gap"
+      {
+        "kind": "jam",
+        "guide": [
+          "↔",
+          "Slide into the gap"
+        ],
+        "runs": [
+          {
+            "kind": "jam",
+            "title": "Sliding Stone Door",
+            "goalText": "Slide the marked blocks into the door pattern",
+            "parts": [
+              "Sun",
+              "Jade",
+              "Moon"
+            ],
+            "start": [
+              1,
+              2,
+              0,
+              -1
+            ],
+            "object": "idol",
+            "award": "Solar Sphere"
+          },
+          {
+            "kind": "jam",
+            "title": "Sliding Stone Door",
+            "goalText": "Slide the marked blocks into the door pattern",
+            "parts": [
+              "Sun",
+              "Jade",
+              "Moon"
+            ],
+            "start": [
+              2,
+              0,
+              1,
+              -1
+            ],
+            "object": "idol",
+            "award": "Solar Sphere"
+          },
+          {
+            "kind": "jam",
+            "title": "Sliding Stone Door",
+            "goalText": "Slide the marked blocks into the door pattern",
+            "parts": [
+              "Sun",
+              "Jade",
+              "Moon"
+            ],
+            "start": [
+              -1,
+              2,
+              1,
+              0
+            ],
+            "object": "idol",
+            "award": "Solar Sphere"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -124,126 +264,6 @@ const GAME = {
       "object": "idol",
       "award": "Solar Sphere"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "brakes",
-        "title": "Marble Brake Gates",
-        "goalText": "Choose the clear rail and set its brake",
-        "forks": [
-          [
-            -1,
-            false
-          ],
-          [
-            1,
-            true
-          ],
-          [
-            -1,
-            true
-          ]
-        ],
-        "award": "Jade Bearing"
-      },
-      {
-        "kind": "brakes",
-        "title": "Marble Brake Gates",
-        "goalText": "Choose the clear rail and set its brake",
-        "forks": [
-          [
-            1,
-            true
-          ],
-          [
-            -1,
-            false
-          ],
-          [
-            1,
-            true
-          ]
-        ],
-        "award": "Jade Bearing"
-      },
-      {
-        "kind": "brakes",
-        "title": "Marble Brake Gates",
-        "goalText": "Choose the clear rail and set its brake",
-        "forks": [
-          [
-            1,
-            false
-          ],
-          [
-            1,
-            true
-          ],
-          [
-            -1,
-            false
-          ]
-        ],
-        "award": "Jade Bearing"
-      }
-    ],
-    [
-      {
-        "kind": "jam",
-        "title": "Sliding Stone Door",
-        "goalText": "Slide the marked blocks into the door pattern",
-        "parts": [
-          "Sun",
-          "Jade",
-          "Moon"
-        ],
-        "start": [
-          1,
-          2,
-          0,
-          -1
-        ],
-        "object": "idol",
-        "award": "Solar Sphere"
-      },
-      {
-        "kind": "jam",
-        "title": "Sliding Stone Door",
-        "goalText": "Slide the marked blocks into the door pattern",
-        "parts": [
-          "Sun",
-          "Jade",
-          "Moon"
-        ],
-        "start": [
-          2,
-          0,
-          1,
-          -1
-        ],
-        "object": "idol",
-        "award": "Solar Sphere"
-      },
-      {
-        "kind": "jam",
-        "title": "Sliding Stone Door",
-        "goalText": "Slide the marked blocks into the door pattern",
-        "parts": [
-          "Sun",
-          "Jade",
-          "Moon"
-        ],
-        "start": [
-          -1,
-          2,
-          1,
-          0
-        ],
-        "object": "idol",
-        "award": "Solar Sphere"
-      }
-    ]
   ],
   "form": "lift",
   "controls": [
@@ -367,7 +387,42 @@ function makeFirstTask(c){
   return {start,tick:step,draw,key,swipe,dragEnd};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const side=[1,0,1][scenario],power=[1,2,2][scenario],labels=["Low","Mid","High"];
+  let aim=0,charge=0,flight=null;
+  function launch(){
+    flight={at:c.clock(),x:aim===side?0:(aim?1.75:-1.75),z:charge===power?-2.53:-.62};update();
+  }
+  function update(){
+    c.objective("Bank the marble into the socket");
+    c.meter((side===0?"Left":"Right")+" rail · "+labels[power]+" power");
+    c.marker("angle","Switch rail",[aim===0?-1.62:1.62,.52,.62],()=>{aim=1-aim;update();},
+      {kind:"clue",caption:aim===0?"Left rail":"Right rail",disabled:!!flight});
+    c.marker("power","Set power",[0,.59,2.05],()=>{charge=(charge+1)%3;c.tone([325+charge*103]);update();},
+      {kind:"clue",caption:labels[charge],disabled:!!flight});
+    c.tool("roll","Release marble",launch,!!flight);
+  }
+  function tick(dt,t){
+    if(!flight||t-flight.at<.98)return;
+    const hit=flight.x===0&&flight.z<-2;
+    flight=null;
+    if(hit){c.receive([0,0,-2.53]);return;}
+    c.mistake("Follow the rail and power marks");update();
+  }
+  function draw(m,t){
+    const z=c.localZ;
+    for(const i of [-1,1]){
+      m.box(i*1.46,.17,z(-.61),.35,.31,3.29,i===(side?1:-1)?0x9ec9b0:0xa8806a,0,9);
+      m.box(i*.64,.24,z(-1.77),1.61,.23,.18,trim(),i*.42,9);
+    }
+    ring(m,0,.09,z(-2.53),.48,0xffd292,.048);
+    const f=flight?curve((t-flight.at)/.98):0;
+    c.item(m,"orb",flight?lerp(0,flight.x,f):0,.24+.13*Math.sin(f*Math.PI),z(flight?lerp(2.18,flight.z,f):2.18),.92,bright());
+  }
+  return {start:update,tick,draw};
+}
+
+function make_brakes(c,q){
   let index=0,brake=false,roll=null;
   const row=i=>2.21-i*1.73;
   const speedAt=i=>q.forks[i][1];
@@ -385,7 +440,7 @@ function makeSecondTask(c,q){
   function show(){
     c.objective("Set the brake and choose a rail");
     const slow=speedAt(index);
-    c.meter((index+1)+"/"+q.forks.length+" · "+(slow?"short rail":"jump ramp")+" · "+(brake?"brake on":"brake off"));
+    c.meter((index+1)+"/"+q.forks.length+" · "+(slow?"short rail needs brake":"jump ramp needs speed"));
     c.marker("brake",brake?"Release brake":"Set brake",[0,.74,row(index)+.64],toggle,{kind:brake?"good":"clue",disabled:!!roll});
     for(const s of [-1,1])c.marker("rail"+s,s<0?"Left rail":"Right rail",[s*1.53,.48,row(index)-.36],()=>route(s),{kind:"hot",disabled:!!roll});
   }
@@ -419,7 +474,7 @@ function makeSecondTask(c,q){
   return {start,tick,draw};
 }
 
-function makeThirdTask(c,q){
+function make_jam(c,q){
   const positions=[[-1.42,.90],[1.42,.90],[-1.42,-1.42],[1.42,-1.42]];
   const should=[0,1,2,-1],colors=[0xe88963,0x82b6b3,0xb9a0d5];
   let tiles=[],move=null,turns=0;
@@ -458,14 +513,17 @@ function makeThirdTask(c,q){
   return {start,tick,draw};
 }
 
+const taskFactories = {brakes:make_brakes, jam:make_jam};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

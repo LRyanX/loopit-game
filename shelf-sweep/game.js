@@ -60,18 +60,173 @@ const GAME = {
       -0.48
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "●",
-      "Watch the order"
+      {
+        "kind": "signature",
+        "guide": [
+          "●",
+          "Watch the order"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "●",
+          "Watch the order"
+        ]
+      }
     ],
     [
-      "⤾",
-      "Spin to find it"
+      {
+        "kind": "vision",
+        "guide": [
+          "⤾",
+          "Spin to find it"
+        ],
+        "runs": [
+          {
+            "kind": "vision",
+            "title": "Backstock Carousel",
+            "goalText": "Spin the carousel to reveal the hidden product",
+            "itemName": "Camera",
+            "object": "camera",
+            "way": 2,
+            "award": "Hidden camera recovered"
+          },
+          {
+            "kind": "vision",
+            "title": "Backstock Carousel",
+            "goalText": "Spin the carousel to reveal the hidden product",
+            "itemName": "Headset",
+            "object": "headset",
+            "way": 3,
+            "award": "Hidden camera recovered"
+          },
+          {
+            "kind": "vision",
+            "title": "Backstock Carousel",
+            "goalText": "Spin the carousel to reveal the hidden product",
+            "itemName": "Mug",
+            "object": "mug",
+            "way": 1,
+            "award": "Hidden camera recovered"
+          }
+        ]
+      }
     ],
     [
-      "!",
-      "Find the mismatch"
+      {
+        "kind": "audit",
+        "guide": [
+          "!",
+          "Find the mismatch"
+        ],
+        "runs": [
+          {
+            "kind": "audit",
+            "title": "Shelf Label Check",
+            "goalText": "Pull the label that describes the wrong product",
+            "sourceName": "stock card",
+            "object": "gift",
+            "rows": [
+              {
+                "clue": "Flash shelf holds audio only",
+                "labels": [
+                  "Headset",
+                  "Lamp",
+                  "Speaker"
+                ],
+                "wrong": 1
+              },
+              {
+                "clue": "Members tags have a gold stamp",
+                "labels": [
+                  "Gold mug",
+                  "Blue sneakers",
+                  "Gold camera"
+                ],
+                "wrong": 1
+              }
+            ],
+            "award": "Incorrect labels replaced"
+          },
+          {
+            "kind": "audit",
+            "title": "Shelf Label Check",
+            "goalText": "Pull the label that describes the wrong product",
+            "sourceName": "stock card",
+            "object": "gift",
+            "rows": [
+              {
+                "clue": "Flash shelf holds audio only",
+                "labels": [
+                  "Headset",
+                  "Lamp",
+                  "Speaker"
+                ],
+                "wrong": 1
+              },
+              {
+                "clue": "Coffee shelf holds drinkware",
+                "labels": [
+                  "Mug",
+                  "Tumbler",
+                  "Headset"
+                ],
+                "wrong": 2
+              },
+              {
+                "clue": "Clearance labels are red",
+                "labels": [
+                  "Green scarf",
+                  "Red purse",
+                  "Red boots"
+                ],
+                "wrong": 0
+              }
+            ],
+            "award": "Incorrect labels replaced"
+          },
+          {
+            "kind": "audit",
+            "title": "Shelf Label Check",
+            "goalText": "Pull the label that describes the wrong product",
+            "sourceName": "stock card",
+            "object": "gift",
+            "rows": [
+              {
+                "clue": "Members tags have a gold stamp",
+                "labels": [
+                  "Gold mug",
+                  "Blue sneakers",
+                  "Gold camera"
+                ],
+                "wrong": 1
+              },
+              {
+                "clue": "Coffee shelf holds drinkware",
+                "labels": [
+                  "Mug",
+                  "Tumbler",
+                  "Headset"
+                ],
+                "wrong": 2
+              },
+              {
+                "clue": "Clearance labels are red",
+                "labels": [
+                  "Green scarf",
+                  "Red purse",
+                  "Red boots"
+                ],
+                "wrong": 0
+              }
+            ],
+            "award": "Incorrect labels replaced"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -123,141 +278,6 @@ const GAME = {
       ],
       "award": "Incorrect labels replaced"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "vision",
-        "title": "Backstock Carousel",
-        "goalText": "Spin the carousel to reveal the hidden product",
-        "itemName": "Camera",
-        "object": "camera",
-        "way": 2,
-        "award": "Hidden camera recovered"
-      },
-      {
-        "kind": "vision",
-        "title": "Backstock Carousel",
-        "goalText": "Spin the carousel to reveal the hidden product",
-        "itemName": "Headset",
-        "object": "headset",
-        "way": 3,
-        "award": "Hidden camera recovered"
-      },
-      {
-        "kind": "vision",
-        "title": "Backstock Carousel",
-        "goalText": "Spin the carousel to reveal the hidden product",
-        "itemName": "Mug",
-        "object": "mug",
-        "way": 1,
-        "award": "Hidden camera recovered"
-      }
-    ],
-    [
-      {
-        "kind": "audit",
-        "title": "Shelf Label Check",
-        "goalText": "Pull the label that describes the wrong product",
-        "sourceName": "stock card",
-        "object": "gift",
-        "rows": [
-          {
-            "clue": "Flash shelf holds audio only",
-            "labels": [
-              "Headset",
-              "Lamp",
-              "Speaker"
-            ],
-            "wrong": 1
-          },
-          {
-            "clue": "Members tags have a gold stamp",
-            "labels": [
-              "Gold mug",
-              "Blue sneakers",
-              "Gold camera"
-            ],
-            "wrong": 1
-          }
-        ],
-        "award": "Incorrect labels replaced"
-      },
-      {
-        "kind": "audit",
-        "title": "Shelf Label Check",
-        "goalText": "Pull the label that describes the wrong product",
-        "sourceName": "stock card",
-        "object": "gift",
-        "rows": [
-          {
-            "clue": "Flash shelf holds audio only",
-            "labels": [
-              "Headset",
-              "Lamp",
-              "Speaker"
-            ],
-            "wrong": 1
-          },
-          {
-            "clue": "Coffee shelf holds drinkware",
-            "labels": [
-              "Mug",
-              "Tumbler",
-              "Headset"
-            ],
-            "wrong": 2
-          },
-          {
-            "clue": "Clearance labels are red",
-            "labels": [
-              "Green scarf",
-              "Red purse",
-              "Red boots"
-            ],
-            "wrong": 0
-          }
-        ],
-        "award": "Incorrect labels replaced"
-      },
-      {
-        "kind": "audit",
-        "title": "Shelf Label Check",
-        "goalText": "Pull the label that describes the wrong product",
-        "sourceName": "stock card",
-        "object": "gift",
-        "rows": [
-          {
-            "clue": "Members tags have a gold stamp",
-            "labels": [
-              "Gold mug",
-              "Blue sneakers",
-              "Gold camera"
-            ],
-            "wrong": 1
-          },
-          {
-            "clue": "Coffee shelf holds drinkware",
-            "labels": [
-              "Mug",
-              "Tumbler",
-              "Headset"
-            ],
-            "wrong": 2
-          },
-          {
-            "clue": "Clearance labels are red",
-            "labels": [
-              "Green scarf",
-              "Red purse",
-              "Red boots"
-            ],
-            "wrong": 0
-          }
-        ],
-        "award": "Incorrect labels replaced"
-      }
-    ]
   ],
   "form": "hub",
   "controls": [
@@ -344,7 +364,40 @@ function makeFirstTask(c){
   return {start,tick,draw};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const goods=[["Camera","camera",0x76b0bd],["Mug","mug",0xe8b582],["Shoes","shoe",0xb899bf]];
+  const order=[[1,0,2],[2,1,0],[0,2,1]][scenario];
+  let carried=null,placed=[];
+  function fit(i){
+    if(order[i]!==carried){c.mistake("Match the item's silhouette");return;}
+    c.flyTo((i-1)*1.89,-1.11,()=>{
+      placed[i]=carried;carried=null;c.tone([382,531,697]);
+      if(placed.filter(Number.isInteger).length===3){c.receive([0,0,-2.39]);return;}
+      update();
+    });
+  }
+  function update(){
+    c.objective(carried===null?"Pick a display product":"Place it on its silhouette");
+    goods.forEach(([name],i)=>{
+      if(carried===null&&!placed.includes(i))c.marker("pick"+i,"Pick "+name,[(i-1)*1.89,.64,1.70],()=>{carried=i;update();},{kind:"clue",caption:name});
+      else c.off("pick"+i);
+      if(carried!==null&&placed[i]===undefined)c.marker("slot"+i,"Display "+(i+1),[(i-1)*1.89,.66,-1.24],()=>fit(i),{kind:"hot",caption:String(i+1)});
+      else c.off("slot"+i);
+    });
+  }
+  function draw(m){
+    const z=c.localZ;
+    for(let i=0;i<3;i++){
+      const a=(i-1)*1.89;
+      if(!placed.includes(i))c.item(m,goods[i][1],a,.03,z(1.69),1.13,carried===i?0xffdc87:goods[i][2]);
+      c.pedestal(m,a,z(-1.24),1.43,trim());
+      c.item(m,goods[order[i]][1],a,.25,z(-1.25),1.09,placed[i]===undefined?ink():goods[order[i]][2]);
+    }
+  }
+  return {start:update,draw};
+}
+
+function make_vision(c,q){
   const turns=[0,Math.PI*.5,Math.PI,Math.PI*1.5];
   let angle=0,shown=0,seen=false,touch=0;
   const aligned=()=>angle===q.way&&Math.abs(Math.sin((shown-turns[angle])*.50))<.105;
@@ -385,9 +438,9 @@ function makeSecondTask(c,q){
   return {start,tick,draw,swipe,dragEnd};
 }
 
-function makeThirdTask(c,q){
+function make_audit(c,q){
   const col=[-2.35,0,2.35],badge=[0x77be9f,0xe6b16a,0xab94c8];
-  let index=0,seen=false,picked=[];
+  let index=0,seen=false,labels=[];
   function read(){
     c.flyTo(0,2.53,()=>{
       seen=true;c.tone([294,442]);c.pulse([0,.63,2.55],bright(),12);update();
@@ -396,22 +449,26 @@ function makeThirdTask(c,q){
   function choose(i){
     c.flyTo(col[i],-.51,()=>{
       if(i!==q.rows[index].wrong){c.mistake("That record matches");return;}
-      picked.push(i);seen=false;index++;
+      labels=[];seen=false;index++;
       c.pulse([col[i],.52,-1.08],0xf3cd81,18);
       if(index===q.rows.length){c.receive([col[i],0,-1.11]);return;}
       c.feedback(true,"Mismatch reported");update();
     });
   }
   function update(){
-    c.objective(seen?q.goalText:"Inspect the next "+q.sourceName.toLowerCase());
+    c.objective(seen?(q.flip&&labels.length<3?"Turn the labels to compare":q.goalText):"Inspect the next "+q.sourceName.toLowerCase());
     c.meter(seen?q.rows[index].clue:(index+"/"+q.rows.length+" checked"));
     if(!seen)c.marker("read","Read "+q.sourceName,[0,.66,2.55],read,{kind:"clue"});
     else c.off("read");
     q.rows[index].labels.forEach((name,i)=>{
-      if(seen)c.marker("doc"+i,name,[col[i],.77,-.95],()=>choose(i),{kind:"hot"});else c.off("doc"+i);
+      if(seen&&q.flip&&labels.length<3&&!labels.includes(i))c.marker("doc"+i,"Turn label "+(i+1),[col[i],.77,-.95],()=>{
+        c.flyTo(col[i],-.53,()=>{labels.push(i);c.tone([360,495]);update();});
+      },{kind:"clue"});
+      else if(seen&&(!q.flip||labels.includes(i)))c.marker("doc"+i,name,[col[i],.77,-.95],()=>choose(i),{kind:"hot",disabled:q.flip&&labels.length<3});
+      else c.off("doc"+i);
     });
   }
-  function start(){index=0;seen=false;picked=[];update();}
+  function start(){index=0;seen=false;labels=[];update();}
   function draw(m,t){
     const z=c.localZ;
     c.pedestal(m,0,z(2.55),1.32,trim());
@@ -419,20 +476,23 @@ function makeThirdTask(c,q){
     for(let i=0;i<3;i++){
       c.pedestal(m,col[i],z(-.99),1.51,badge[i]);
       c.item(m,q.object,col[i],.23,z(-1.03),1.01,badge[i]);
-      if(seen)c.item(m,"coupon",col[i]+.47,.25,z(-.64),.61,0xeed1a0);
+      if(seen)c.item(m,"coupon",col[i]+.47,.25,z(-.64),.61,0xeed1a0,q.flip&&!labels.includes(i)?Math.PI*.50:0);
     }
   }
   return {start,draw};
 }
 
+const taskFactories = {vision:make_vision, audit:make_audit};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

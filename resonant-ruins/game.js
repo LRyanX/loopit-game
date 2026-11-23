@@ -60,18 +60,88 @@ const GAME = {
       -0.28
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "♪",
-      "Match the chord"
+      {
+        "kind": "signature",
+        "guide": [
+          "♪",
+          "Match the chord"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "♪",
+          "Match the chord"
+        ]
+      }
     ],
     [
-      "♪",
-      "Tap on the pulse"
+      {
+        "kind": "rhythm",
+        "guide": [
+          "♪",
+          "Tap on the pulse"
+        ],
+        "runs": [
+          {
+            "kind": "rhythm",
+            "title": "Drum Court",
+            "goalText": "Tap in time with the gold pulse",
+            "count": 4,
+            "award": "Rain Drum"
+          },
+          {
+            "kind": "rhythm",
+            "title": "Drum Court",
+            "goalText": "Tap in time with the gold pulse",
+            "count": 5,
+            "award": "Rain Drum",
+            "period": 1.12
+          },
+          {
+            "kind": "rhythm",
+            "title": "Drum Court",
+            "goalText": "Tap in time with the gold pulse",
+            "count": 6,
+            "award": "Rain Drum",
+            "period": 1.3
+          }
+        ]
+      }
     ],
     [
-      "♪",
-      "Find the strongest echo"
+      {
+        "kind": "field",
+        "guide": [
+          "♪",
+          "Find the strongest echo"
+        ],
+        "runs": [
+          {
+            "kind": "field",
+            "title": "Echo Plinths",
+            "goalText": "Listen to the tone from each plinth",
+            "target": 1,
+            "award": "Crown Tuning Fork"
+          },
+          {
+            "kind": "field",
+            "title": "Echo Plinths",
+            "goalText": "Listen to the tone from each plinth",
+            "target": 2,
+            "award": "Crown Tuning Fork"
+          },
+          {
+            "kind": "field",
+            "title": "Echo Plinths",
+            "goalText": "Listen to the tone from each plinth",
+            "target": 0,
+            "award": "Crown Tuning Fork"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -100,56 +170,6 @@ const GAME = {
       "target": 1,
       "award": "Crown Tuning Fork"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "rhythm",
-        "title": "Drum Court",
-        "goalText": "Tap in time with the gold pulse",
-        "count": 4,
-        "award": "Rain Drum"
-      },
-      {
-        "kind": "rhythm",
-        "title": "Drum Court",
-        "goalText": "Tap in time with the gold pulse",
-        "count": 5,
-        "award": "Rain Drum",
-        "period": 1.12
-      },
-      {
-        "kind": "rhythm",
-        "title": "Drum Court",
-        "goalText": "Tap in time with the gold pulse",
-        "count": 6,
-        "award": "Rain Drum",
-        "period": 1.3
-      }
-    ],
-    [
-      {
-        "kind": "field",
-        "title": "Echo Plinths",
-        "goalText": "Listen to the tone from each plinth",
-        "target": 1,
-        "award": "Crown Tuning Fork"
-      },
-      {
-        "kind": "field",
-        "title": "Echo Plinths",
-        "goalText": "Listen to the tone from each plinth",
-        "target": 2,
-        "award": "Crown Tuning Fork"
-      },
-      {
-        "kind": "field",
-        "title": "Echo Plinths",
-        "goalText": "Listen to the tone from each plinth",
-        "target": 0,
-        "award": "Crown Tuning Fork"
-      }
-    ]
   ],
   "form": "grove",
   "controls": [
@@ -241,7 +261,46 @@ function makeFirstTask(c){
   return {start,draw};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const order=[[0,2,1,0],[2,0,1,2],[1,0,2,1]][scenario];
+  const notes=[294,428,607],names=["Low","Middle","High"],colors=[0xefb58a,0xa9d1b4,0xcbb4e7];
+  let step=0,heard=false,preview=0,lit=-1;
+  function listen(){heard=false;step=0;preview=c.clock()+.03;update();}
+  function answer(i){
+    if(i!==order[step]){c.mistake("Play the same four tones back");listen();return;}
+    c.tone([notes[i],notes[i]*1.5]);c.pulse([(i-1)*1.87,.50,-.69],colors[i],12);step++;
+    if(step===order.length){c.receive([0,0,-2.46]);return;}
+    update();
+  }
+  const count=()=>Math.max(0,Math.floor((c.clock()-preview)/.60));
+  function update(){
+    c.objective(!heard?"Listen to four tones":"Play the same tones back");
+    c.meter("●".repeat(step)+"○".repeat(order.length-step));
+    if(!preview||heard)c.marker("hear",heard?"Hear sequence again":"Listen to sequence",[0,.68,2.03],listen,{kind:"clue"});
+    else c.off("hear");
+    notes.forEach((_,i)=>{
+      if(heard)c.marker("note"+i,names[i]+" tone",[(i-1)*1.87,.77,-.69],()=>answer(i),{kind:"hot",caption:names[i]});
+      else c.off("note"+i);
+    });
+  }
+  function tick(){
+    if(!preview||heard)return;
+    const index=count();
+    if(index>=order.length){heard=true;lit=-1;update();return;}
+    if(lit!==index){lit=index;c.tone([notes[order[index]]],.06,.12);}
+  }
+  function draw(m){
+    notes.forEach((_,i)=>{
+      const x=(i-1)*1.87,z=c.localZ(-.68);
+      c.item(m,"bell",x,.38,z,1.25,lit>=0&&order[lit]===i?0xffe5a1:colors[i]);
+      if(lit>=0&&order[lit]===i)ring(m,x,.07,z,.74,colors[i],.042);
+    });
+    c.item(m,"idol",0,.06,c.localZ(2.07),.83,trim());
+  }
+  return {start:update,tick,draw};
+}
+
+function make_rhythm(c,q){
   let t=0,beat=-1,heard=false,total=0,lastNote=-2;
   const period=q.period??1.20;
   const phase=()=>t%period;
@@ -278,7 +337,7 @@ function makeSecondTask(c,q){
   return {start,tick,draw};
 }
 
-function makeThirdTask(c,q){
+function make_field(c,q){
   const spots=[[-2.51,.28],[0,-2.07],[2.47,.47]],colors=[0xe2aa79,0x91cab0,0xb4a4d8];
   let reading=[],measured=null;
   const strength=i=>Math.round(98-12.4*Math.hypot(spots[i][0]-spots[q.target][0],spots[i][1]-spots[q.target][1]));
@@ -321,14 +380,17 @@ function makeThirdTask(c,q){
   return {start,draw};
 }
 
+const taskFactories = {rhythm:make_rhythm, field:make_field};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

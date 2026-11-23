@@ -60,18 +60,248 @@ const GAME = {
       -0.12
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "◇",
-      "Align the shards"
+      {
+        "kind": "signature",
+        "guide": [
+          "◇",
+          "Align the shards"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "◇",
+          "Align the shards"
+        ]
+      }
     ],
     [
-      "→",
-      "Reach the gold exit"
+      {
+        "kind": "maze",
+        "guide": [
+          "→",
+          "Reach the gold exit"
+        ],
+        "runs": [
+          {
+            "kind": "maze",
+            "title": "Glacier Crevasses",
+            "goalText": "Navigate around the ice fissure markers",
+            "start": [
+              1,
+              3
+            ],
+            "exit": [
+              3,
+              0
+            ],
+            "blocks": [
+              [
+                1,
+                2
+              ],
+              [
+                2,
+                2
+              ],
+              [
+                2,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "thin": [
+              [
+                2,
+                3
+              ],
+              [
+                3,
+                2
+              ],
+              [
+                3,
+                1
+              ],
+              [
+                1,
+                1
+              ]
+            ],
+            "object": "ice",
+            "blockHint": "Crevasse · find solid ice",
+            "award": "Polar Signet"
+          },
+          {
+            "kind": "maze",
+            "title": "Glacier Crevasses",
+            "goalText": "Navigate around the ice fissure markers",
+            "start": [
+              2,
+              3
+            ],
+            "exit": [
+              0,
+              0
+            ],
+            "blocks": [
+              [
+                2,
+                2
+              ],
+              [
+                1,
+                2
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                3,
+                1
+              ]
+            ],
+            "thin": [
+              [
+                1,
+                3
+              ],
+              [
+                0,
+                2
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                2,
+                1
+              ]
+            ],
+            "object": "ice",
+            "blockHint": "Crevasse · find solid ice",
+            "award": "Polar Signet"
+          },
+          {
+            "kind": "maze",
+            "title": "Glacier Crevasses",
+            "goalText": "Navigate around the ice fissure markers",
+            "start": [
+              0,
+              2
+            ],
+            "exit": [
+              3,
+              0
+            ],
+            "blocks": [
+              [
+                1,
+                2
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                1
+              ],
+              [
+                2,
+                3
+              ]
+            ],
+            "thin": [
+              [
+                0,
+                1
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                2,
+                0
+              ],
+              [
+                2,
+                2
+              ]
+            ],
+            "object": "ice",
+            "blockHint": "Crevasse · find solid ice",
+            "award": "Polar Signet"
+          }
+        ]
+      }
     ],
     [
-      "◎",
-      "Line up the rings"
+      {
+        "kind": "lattice",
+        "guide": [
+          "◎",
+          "Line up the rings"
+        ],
+        "runs": [
+          {
+            "kind": "lattice",
+            "title": "Ice Rosette Gate",
+            "goalText": "Align the linked ice rings with their markers",
+            "target": [
+              2,
+              1,
+              4
+            ],
+            "links": [
+              1,
+              2,
+              -1
+            ],
+            "award": "Aurora Shard"
+          },
+          {
+            "kind": "lattice",
+            "title": "Ice Rosette Gate",
+            "goalText": "Align the linked ice rings with their markers",
+            "target": [
+              4,
+              2,
+              3
+            ],
+            "links": [
+              -1,
+              0,
+              1
+            ],
+            "award": "Aurora Shard"
+          },
+          {
+            "kind": "lattice",
+            "title": "Ice Rosette Gate",
+            "goalText": "Align the linked ice rings with their markers",
+            "target": [
+              1,
+              5,
+              2
+            ],
+            "links": [
+              2,
+              -1,
+              1
+            ],
+            "award": "Aurora Shard"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -116,6 +346,24 @@ const GAME = {
           1
         ]
       ],
+      "thin": [
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ],
       "object": "ice",
       "blockHint": "Crevasse · find solid ice",
       "award": "Polar Signet"
@@ -136,162 +384,6 @@ const GAME = {
       ],
       "award": "Aurora Shard"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "maze",
-        "title": "Glacier Crevasses",
-        "goalText": "Navigate around the ice fissure markers",
-        "start": [
-          1,
-          3
-        ],
-        "exit": [
-          3,
-          0
-        ],
-        "blocks": [
-          [
-            1,
-            2
-          ],
-          [
-            2,
-            2
-          ],
-          [
-            2,
-            0
-          ],
-          [
-            0,
-            1
-          ]
-        ],
-        "object": "ice",
-        "blockHint": "Crevasse · find solid ice",
-        "award": "Polar Signet"
-      },
-      {
-        "kind": "maze",
-        "title": "Glacier Crevasses",
-        "goalText": "Navigate around the ice fissure markers",
-        "start": [
-          2,
-          3
-        ],
-        "exit": [
-          0,
-          0
-        ],
-        "blocks": [
-          [
-            2,
-            2
-          ],
-          [
-            1,
-            2
-          ],
-          [
-            1,
-            0
-          ],
-          [
-            3,
-            1
-          ]
-        ],
-        "object": "ice",
-        "blockHint": "Crevasse · find solid ice",
-        "award": "Polar Signet"
-      },
-      {
-        "kind": "maze",
-        "title": "Glacier Crevasses",
-        "goalText": "Navigate around the ice fissure markers",
-        "start": [
-          0,
-          2
-        ],
-        "exit": [
-          3,
-          0
-        ],
-        "blocks": [
-          [
-            1,
-            2
-          ],
-          [
-            1,
-            1
-          ],
-          [
-            3,
-            1
-          ],
-          [
-            2,
-            3
-          ]
-        ],
-        "object": "ice",
-        "blockHint": "Crevasse · find solid ice",
-        "award": "Polar Signet"
-      }
-    ],
-    [
-      {
-        "kind": "lattice",
-        "title": "Ice Rosette Gate",
-        "goalText": "Align the linked ice rings with their markers",
-        "target": [
-          2,
-          1,
-          4
-        ],
-        "links": [
-          1,
-          2,
-          -1
-        ],
-        "award": "Aurora Shard"
-      },
-      {
-        "kind": "lattice",
-        "title": "Ice Rosette Gate",
-        "goalText": "Align the linked ice rings with their markers",
-        "target": [
-          4,
-          2,
-          3
-        ],
-        "links": [
-          -1,
-          0,
-          1
-        ],
-        "award": "Aurora Shard"
-      },
-      {
-        "kind": "lattice",
-        "title": "Ice Rosette Gate",
-        "goalText": "Align the linked ice rings with their markers",
-        "target": [
-          1,
-          5,
-          2
-        ],
-        "links": [
-          2,
-          -1,
-          1
-        ],
-        "award": "Aurora Shard"
-      }
-    ]
   ],
   "form": "ice",
   "controls": [
@@ -386,30 +478,78 @@ function makeFirstTask(c){
   return {start,tick,draw};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const safe=[[0,2,1],[2,1,0],[1,0,2]][scenario],names=["left","middle","right"];
+  const x=i=>(i-1)*1.59,z=i=>2.12-i*1.64;
+  let row=0,probe=-1;
+  function step(){
+    if(probe!==safe[row]){c.mistake("Probe again for solid ice");return;}
+    c.flyTo(x(probe),z(row),()=>{
+      c.pulse([x(probe),.13,z(row)],0xa5e9ef,16);probe=-1;row++;
+      if(row===safe.length){c.receive([0,0,-2.31]);return;}
+      update();
+    });
+  }
+  function update(){
+    c.objective(probe===-1?"Probe for solid ice":probe===safe[row]?"Solid ice · step here":"Thin ice · probe another slab");
+    c.meter((row+1)+"/"+safe.length+" ice shelves");
+    for(let i=0;i<3;i++)c.marker("probe"+i,"Probe "+names[i],[x(i),.21,z(row)],()=>{probe=i;c.tone([i===safe[row]?578:230]);update();},
+      {tile:true,caption:probe===i?(i===safe[row]?"✓":"×"):"·"});
+    if(probe===safe[row])c.marker("step","Step onto solid ice",[x(probe),.48,z(row)-.27],step,{kind:"good"});
+    else c.off("step");
+  }
+  function draw(m){
+    for(let r=0;r<3;r++)for(let i=0;i<3;i++){
+      const selected=r===row&&probe===i;
+      m.box(x(i),.095,c.localZ(z(r)),1.46,.18,1.42,selected?(i===safe[r]?0x99dacd:0xb08fb1):0x94b3cc,0,6);
+      if(selected&&i!==safe[r])for(let j=0;j<3;j++)
+        m.box(x(i)+(j-1)*.19,.201,c.localZ(z(r)+.16*j),.26,.011,.03,0x586782,j*.73);
+    }
+  }
+  return {start:update,draw};
+}
+
+function make_maze(c,q){
   const dirs=[[-1,0],[1,0],[0,-1],[0,1]],names=["Left","Right","Forward","Back"];
   const X=x=>(x-1.5)*1.48,Z=y=>y*1.59-2.79;
   let at=[],shown=[],anim=null,moved=0,axis=null;
+  let picked=false,anchored=false,spent=new Set();
   const is=(a,b)=>a[0]===b[0]&&a[1]===b[1];
+  const thin=p=>q.thin?.some(v=>is(v,p));
+  const blocked=p=>p.some(v=>v<0||v>3)||q.blocks.some(v=>is(p,v))||spent.has(p.join(","));
+  const drift=p=>q.currents?.find(([cell])=>is(cell,p))?.[1];
   function go(i){
     if(anim)return;
     const d=dirs[i],next=[at[0]+d[0],at[1]+d[1]];
-    if(next.some(v=>v<0||v>3)||q.blocks.some(v=>is(next,v))){c.mistake(q.blockHint||"Blocked · follow the clear lane");return;}
-    anim={from:at.slice(),to:next,t:0};c.tone([285,402],.064,.073);controls();
+    if(blocked(next)){c.mistake(spent.has(next.join(","))?"That ice slab has already broken":q.blockHint||"Blocked · follow the clear lane");return;}
+    const flow=!anchored&&drift(next),landing=flow?[next[0]+flow[0],next[1]+flow[1]]:next;
+    const carried=Boolean(flow&&!blocked(landing));
+    anim={from:at.slice(),through:carried?next:null,to:carried?landing:next,t:0};
+    anchored=false;
+    if(thin(at))spent.add(at.join(","));
+    c.tone(carried?[281,393,495]:[285,402],.064,.073);controls();
   }
   function controls(){
-    c.objective(q.goalText);
-    c.meter(moved+" moves · reach the gold exit");
+    c.objective(q.pickup&&!picked?"Collect the pickup before the exit":q.thin?"Cracked ice breaks behind you":
+      q.currents?"Currents push you one tile":q.goalText);
+    c.meter(q.currents?(anchored?"Anchor set":"Tap the diver to set the anchor"):moved+" moves · gold exit");
+    if(q.currents)c.marker("anchor",anchored?"Release anchor":"Drop anchor",[X(at[0]),.70,Z(at[1])],()=>{
+      anchored=!anchored;c.tone([anchored?292:450]);controls();
+    },{kind:anchored?"good":"clue",caption:anchored?"Anchored":"Anchor",disabled:!!anim});
     names.forEach((n,i)=>c.tool("dir"+i,n,()=>go(i),Boolean(anim)));
   }
-  function start(){at=q.start.slice();shown=at.slice();anim=null;moved=0;axis=null;controls();}
+  function start(){at=q.start.slice();shown=at.slice();anim=null;moved=0;axis=null;picked=!q.pickup;anchored=false;spent.clear();controls();}
   function tick(dt){
     if(anim){
-      anim.t=clamp(anim.t+dt*5.4,0,1);
-      shown=anim.from.map((v,i)=>lerp(v,anim.to[i],curve(anim.t)));
+      anim.t=clamp(anim.t+dt*(anim.through?3.6:5.4),0,1);
+      const via=anim.through,left=via&&anim.t<.5;
+      const from=!via||left?anim.from:via,to=left?via:anim.to;
+      const time=via?(left?anim.t*2:(anim.t-.5)*2):anim.t;
+      shown=from.map((v,i)=>lerp(v,to[i],curve(time)));
       if(anim.t===1){
         at=anim.to;anim=null;moved++;
-        if(is(at,q.exit)){c.receive([X(at[0]),0,Z(at[1])]);return;}
+        if(q.pickup&&!picked&&is(at,q.pickup)){picked=true;c.pulse([X(at[0]),.47,Z(at[1])],0xa7dfb5,18);}
+        if(is(at,q.exit)&&picked){c.receive([X(at[0]),0,Z(at[1])]);return;}
         controls();
       }
     }
@@ -419,8 +559,18 @@ function makeSecondTask(c,q){
     const z=c.localZ;
     for(let i=0;i<4;i++)for(let j=0;j<4;j++){
       const x=X(i),p=[i,j],row=Z(j),wall=q.blocks.some(v=>is(p,v)),out=is(p,q.exit);
-      m.box(x,.034,z(row),1.30,.05,1.37,out?0xe9b868:wall?ink():(i+j)%2===0?flat():GAME.palette.tile2);
+      const broken=spent.has(p.join(","));
+      m.box(x,broken?-.20:.034,z(row),1.30,.05,1.37,broken?0x3f5666:out?0xe9b868:wall?ink():
+        thin(p)?0x9eb2c6:(i+j)%2===0?flat():GAME.palette.tile2);
       if(wall)c.item(m,q.object,x,.08,z(row),.90,trim(),i*.17-j*.19);
+      if(q.pickup&&!picked&&is(p,q.pickup))c.item(m,"receipt",x,.11,z(row),.75,0xa4e6be);
+      if(thin(p)&&!broken)m.box(x,.070,z(row),.73,.013,.034,0x556b87,.71);
+      const flow=drift(p);
+      if(flow){
+        const [dx,dz]=flow,f=(t*.83)%1;
+        const a=[x-dx*.42,.092,z(row-dz*.42)],b=[x+dx*(.15+f*.27),.092,z(row+dz*(.15+f*.27))];
+        m.tube(a,b,.035,.018,0x9af1e0,6,1);
+      }
       if(out)c.ring(m,x,.073,z(row),.40,0xffdc86,.029);
     }
   }
@@ -434,7 +584,7 @@ function makeSecondTask(c,q){
   return {start,tick,draw,swipe,dragEnd,key,lockMove:true};
 }
 
-function makeThirdTask(c,q){
+function make_lattice(c,q){
   let rings=[],angles=[],active=false,turning=0;
   const rad=[.53,.98,1.48],hues=[0x8ed5d4,0xa8a0df,0xf0bc86];
   const names=["Inner","Middle","Outer"];
@@ -487,14 +637,17 @@ function makeThirdTask(c,q){
   return {start,tick,draw};
 }
 
+const taskFactories = {maze:make_maze, lattice:make_lattice};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

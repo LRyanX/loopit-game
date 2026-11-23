@@ -2,7 +2,7 @@
 
 Twenty standalone 3D H5 games across two briefs. Each folder contains a complete game with its own WebGL scene, English UI, sound, three physically connected spaces with different objectives, and replay.
 
-Each game has seven challenges across its three rooms. Later challenges change the current order, board, route, or operating condition. Play again changes the opening scenario in each room.
+Each game has four or five distinct challenges across three rooms, including mechanics designed exclusively for that game. Play again changes the orders, boards, routes, and operating conditions.
 
 Each room starts with three tries. Committed errors spend a try. Each challenge timer begins after the first gameplay action. Retry keeps completed challenges and earlier room rewards.
 

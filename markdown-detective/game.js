@@ -60,18 +60,240 @@ const GAME = {
       0.46
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "$",
-      "Find the best deal"
+      {
+        "kind": "signature",
+        "guide": [
+          "$",
+          "Find the best deal"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "$",
+          "Find the best deal"
+        ]
+      }
     ],
     [
-      "!",
-      "Find the mismatch"
+      {
+        "kind": "audit",
+        "guide": [
+          "!",
+          "Find the mismatch"
+        ],
+        "runs": [
+          {
+            "kind": "audit",
+            "title": "Offer Audit Desk",
+            "goalText": "Flag the price card that breaks the posted rules",
+            "sourceName": "sign",
+            "object": "coupon",
+            "rows": [
+              {
+                "clue": "Headsets $22–30 · sticker R",
+                "labels": [
+                  "R · $24",
+                  "R · $27",
+                  "X · $29"
+                ],
+                "wrong": 2
+              },
+              {
+                "clue": "Kitchen deals $30–40",
+                "labels": [
+                  "Kettle $28",
+                  "Mug $35",
+                  "Lamp $38"
+                ],
+                "wrong": 0
+              }
+            ],
+            "award": "Expired promos reported"
+          },
+          {
+            "kind": "audit",
+            "title": "Offer Audit Desk",
+            "goalText": "Flag the price card that breaks the posted rules",
+            "sourceName": "sign",
+            "object": "coupon",
+            "rows": [
+              {
+                "clue": "Headsets $22–30 · sticker R",
+                "labels": [
+                  "R · $24",
+                  "R · $27",
+                  "X · $29"
+                ],
+                "wrong": 2
+              },
+              {
+                "clue": "Cameras $45–55 · tag G",
+                "labels": [
+                  "G · $52",
+                  "G · $39",
+                  "G · $48"
+                ],
+                "wrong": 1
+              },
+              {
+                "clue": "Footwear $24–32",
+                "labels": [
+                  "Boots $28",
+                  "Shoes $26",
+                  "Slippers $35"
+                ],
+                "wrong": 2
+              }
+            ],
+            "award": "Expired promos reported"
+          },
+          {
+            "kind": "audit",
+            "title": "Offer Audit Desk",
+            "goalText": "Flag the price card that breaks the posted rules",
+            "sourceName": "sign",
+            "object": "coupon",
+            "rows": [
+              {
+                "clue": "Kitchen deals $30–40",
+                "labels": [
+                  "Kettle $28",
+                  "Mug $35",
+                  "Lamp $38"
+                ],
+                "wrong": 0
+              },
+              {
+                "clue": "Cameras $45–55 · tag G",
+                "labels": [
+                  "G · $52",
+                  "G · $39",
+                  "G · $48"
+                ],
+                "wrong": 1
+              },
+              {
+                "clue": "Footwear $24–32",
+                "labels": [
+                  "Boots $28",
+                  "Shoes $26",
+                  "Slippers $35"
+                ],
+                "wrong": 2
+              }
+            ],
+            "award": "Expired promos reported"
+          }
+        ]
+      }
     ],
     [
-      "⇄",
-      "Match items to bins"
+      {
+        "kind": "sort",
+        "guide": [
+          "⇄",
+          "Match items to bins"
+        ],
+        "runs": [
+          {
+            "kind": "sort",
+            "title": "Customer Refunds",
+            "goalText": "Route rebate claims to their processing bins",
+            "name": "claim",
+            "bins": [
+              "Valid claims",
+              "Expired claims"
+            ],
+            "items": [
+              [
+                "Current claim",
+                "receipt",
+                0
+              ],
+              [
+                "Expired claim",
+                "coupon",
+                1
+              ],
+              [
+                "Verified claim",
+                "receipt",
+                0
+              ]
+            ],
+            "award": "Rebates filed"
+          },
+          {
+            "kind": "sort",
+            "title": "Customer Refunds",
+            "goalText": "Route rebate claims to their processing bins",
+            "name": "claim",
+            "bins": [
+              "Valid claims",
+              "Expired claims"
+            ],
+            "items": [
+              [
+                "Out-of-date receipt",
+                "receipt",
+                1
+              ],
+              [
+                "Current claim",
+                "receipt",
+                0
+              ],
+              [
+                "Expired claim",
+                "coupon",
+                1
+              ],
+              [
+                "Verified claim",
+                "receipt",
+                0
+              ]
+            ],
+            "award": "Rebates filed"
+          },
+          {
+            "kind": "sort",
+            "title": "Customer Refunds",
+            "goalText": "Route rebate claims to their processing bins",
+            "name": "claim",
+            "bins": [
+              "Valid claims",
+              "Expired claims"
+            ],
+            "items": [
+              [
+                "In-date voucher",
+                "coupon",
+                0
+              ],
+              [
+                "Expired claim",
+                "coupon",
+                1
+              ],
+              [
+                "Verified claim",
+                "receipt",
+                0
+              ],
+              [
+                "Current claim",
+                "receipt",
+                0
+              ]
+            ],
+            "award": "Rebates filed"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -142,208 +364,6 @@ const GAME = {
       ],
       "award": "Rebates filed"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "audit",
-        "title": "Offer Audit Desk",
-        "goalText": "Flag the price card that breaks the posted rules",
-        "sourceName": "sign",
-        "object": "coupon",
-        "rows": [
-          {
-            "clue": "Headsets $22–30 · sticker R",
-            "labels": [
-              "R · $24",
-              "R · $27",
-              "X · $29"
-            ],
-            "wrong": 2
-          },
-          {
-            "clue": "Kitchen deals $30–40",
-            "labels": [
-              "Kettle $28",
-              "Mug $35",
-              "Lamp $38"
-            ],
-            "wrong": 0
-          }
-        ],
-        "award": "Expired promos reported"
-      },
-      {
-        "kind": "audit",
-        "title": "Offer Audit Desk",
-        "goalText": "Flag the price card that breaks the posted rules",
-        "sourceName": "sign",
-        "object": "coupon",
-        "rows": [
-          {
-            "clue": "Headsets $22–30 · sticker R",
-            "labels": [
-              "R · $24",
-              "R · $27",
-              "X · $29"
-            ],
-            "wrong": 2
-          },
-          {
-            "clue": "Cameras $45–55 · tag G",
-            "labels": [
-              "G · $52",
-              "G · $39",
-              "G · $48"
-            ],
-            "wrong": 1
-          },
-          {
-            "clue": "Footwear $24–32",
-            "labels": [
-              "Boots $28",
-              "Shoes $26",
-              "Slippers $35"
-            ],
-            "wrong": 2
-          }
-        ],
-        "award": "Expired promos reported"
-      },
-      {
-        "kind": "audit",
-        "title": "Offer Audit Desk",
-        "goalText": "Flag the price card that breaks the posted rules",
-        "sourceName": "sign",
-        "object": "coupon",
-        "rows": [
-          {
-            "clue": "Kitchen deals $30–40",
-            "labels": [
-              "Kettle $28",
-              "Mug $35",
-              "Lamp $38"
-            ],
-            "wrong": 0
-          },
-          {
-            "clue": "Cameras $45–55 · tag G",
-            "labels": [
-              "G · $52",
-              "G · $39",
-              "G · $48"
-            ],
-            "wrong": 1
-          },
-          {
-            "clue": "Footwear $24–32",
-            "labels": [
-              "Boots $28",
-              "Shoes $26",
-              "Slippers $35"
-            ],
-            "wrong": 2
-          }
-        ],
-        "award": "Expired promos reported"
-      }
-    ],
-    [
-      {
-        "kind": "sort",
-        "title": "Customer Refunds",
-        "goalText": "Route rebate claims to their processing bins",
-        "name": "claim",
-        "bins": [
-          "Valid claims",
-          "Expired claims"
-        ],
-        "items": [
-          [
-            "Current claim",
-            "receipt",
-            0
-          ],
-          [
-            "Expired claim",
-            "coupon",
-            1
-          ],
-          [
-            "Verified claim",
-            "receipt",
-            0
-          ]
-        ],
-        "award": "Rebates filed"
-      },
-      {
-        "kind": "sort",
-        "title": "Customer Refunds",
-        "goalText": "Route rebate claims to their processing bins",
-        "name": "claim",
-        "bins": [
-          "Valid claims",
-          "Expired claims"
-        ],
-        "items": [
-          [
-            "Out-of-date receipt",
-            "receipt",
-            1
-          ],
-          [
-            "Current claim",
-            "receipt",
-            0
-          ],
-          [
-            "Expired claim",
-            "coupon",
-            1
-          ],
-          [
-            "Verified claim",
-            "receipt",
-            0
-          ]
-        ],
-        "award": "Rebates filed"
-      },
-      {
-        "kind": "sort",
-        "title": "Customer Refunds",
-        "goalText": "Route rebate claims to their processing bins",
-        "name": "claim",
-        "bins": [
-          "Valid claims",
-          "Expired claims"
-        ],
-        "items": [
-          [
-            "In-date voucher",
-            "coupon",
-            0
-          ],
-          [
-            "Expired claim",
-            "coupon",
-            1
-          ],
-          [
-            "Verified claim",
-            "receipt",
-            0
-          ],
-          [
-            "Current claim",
-            "receipt",
-            0
-          ]
-        ],
-        "award": "Rebates filed"
-      }
-    ]
   ],
   "form": "mall",
   "controls": [
@@ -421,9 +441,41 @@ function makeFirstTask(c){
   return {start,draw};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const [base,percent,credit,cashFirst]=[[50,20,5,false],[75,20,10,true],[60,25,8,false]][scenario];
+  const apply=(p,i)=>i===0?Math.round(p*(100-percent))/100:p-credit;
+  const target=apply(apply(base,cashFirst?1:0),cashFirst?0:1);
+  let price=base,used=[];
+  function update(){
+    c.objective("Apply both discounts to hit the total");
+    c.meter("$"+price.toFixed(2)+" → $"+target.toFixed(2));
+    ["Apply percent","Use credit"].forEach((name,i)=>{
+      if(used.includes(i))c.off("coupon"+i);
+      else c.marker("coupon"+i,name,[(i-.5)*3.7,.73,.73],()=>{
+        price=apply(price,i);used.push(i);c.tone([333+i*93]);update();
+      },{kind:"clue",caption:i===0?"−"+percent+"%":"−$"+credit});
+    });
+    if(used.length===2){
+      c.marker("receipt","Approve total",[0,.65,-2.22],()=>{
+        if(price!==target){c.mistake("Try the discounts in the other order");return;}
+        c.flyTo(0,-2.02,()=>c.receive([0,0,-2.34]));
+      },{kind:"hot"});
+      c.tool("reset","Reset discounts",()=>{used=[];price=base;c.hideTools();update();});
+    }else c.off("receipt");
+  }
+  function draw(m){
+    c.item(m,"register",0,.05,c.localZ(-2.32),1.45,bright());
+    for(let i=0;i<2;i++){
+      const x=(i-.5)*3.7,p=used.indexOf(i);
+      c.item(m,"coupon",p<0?x:(p-.5)*.64,.27,c.localZ(p<0?.73:-1.28),1.49,i===0?0x94d9bd:0xf0bd82);
+    }
+  }
+  return {start:update,draw};
+}
+
+function make_audit(c,q){
   const col=[-2.35,0,2.35],badge=[0x77be9f,0xe6b16a,0xab94c8];
-  let index=0,seen=false,picked=[];
+  let index=0,seen=false,labels=[];
   function read(){
     c.flyTo(0,2.53,()=>{
       seen=true;c.tone([294,442]);c.pulse([0,.63,2.55],bright(),12);update();
@@ -432,22 +484,26 @@ function makeSecondTask(c,q){
   function choose(i){
     c.flyTo(col[i],-.51,()=>{
       if(i!==q.rows[index].wrong){c.mistake("That record matches");return;}
-      picked.push(i);seen=false;index++;
+      labels=[];seen=false;index++;
       c.pulse([col[i],.52,-1.08],0xf3cd81,18);
       if(index===q.rows.length){c.receive([col[i],0,-1.11]);return;}
       c.feedback(true,"Mismatch reported");update();
     });
   }
   function update(){
-    c.objective(seen?q.goalText:"Inspect the next "+q.sourceName.toLowerCase());
+    c.objective(seen?(q.flip&&labels.length<3?"Turn the labels to compare":q.goalText):"Inspect the next "+q.sourceName.toLowerCase());
     c.meter(seen?q.rows[index].clue:(index+"/"+q.rows.length+" checked"));
     if(!seen)c.marker("read","Read "+q.sourceName,[0,.66,2.55],read,{kind:"clue"});
     else c.off("read");
     q.rows[index].labels.forEach((name,i)=>{
-      if(seen)c.marker("doc"+i,name,[col[i],.77,-.95],()=>choose(i),{kind:"hot"});else c.off("doc"+i);
+      if(seen&&q.flip&&labels.length<3&&!labels.includes(i))c.marker("doc"+i,"Turn label "+(i+1),[col[i],.77,-.95],()=>{
+        c.flyTo(col[i],-.53,()=>{labels.push(i);c.tone([360,495]);update();});
+      },{kind:"clue"});
+      else if(seen&&(!q.flip||labels.includes(i)))c.marker("doc"+i,name,[col[i],.77,-.95],()=>choose(i),{kind:"hot",disabled:q.flip&&labels.length<3});
+      else c.off("doc"+i);
     });
   }
-  function start(){index=0;seen=false;picked=[];update();}
+  function start(){index=0;seen=false;labels=[];update();}
   function draw(m,t){
     const z=c.localZ;
     c.pedestal(m,0,z(2.55),1.32,trim());
@@ -455,33 +511,38 @@ function makeSecondTask(c,q){
     for(let i=0;i<3;i++){
       c.pedestal(m,col[i],z(-.99),1.51,badge[i]);
       c.item(m,q.object,col[i],.23,z(-1.03),1.01,badge[i]);
-      if(seen)c.item(m,"coupon",col[i]+.47,.25,z(-.64),.61,0xeed1a0);
+      if(seen)c.item(m,"coupon",col[i]+.47,.25,z(-.64),.61,0xeed1a0,q.flip&&!labels.includes(i)?Math.PI*.50:0);
     }
   }
   return {start,draw};
 }
 
-function makeThirdTask(c,q){
+function make_sort(c,q){
   const x=[-2.47,2.47];
-  let index=0,held=false,settled=[];
+  let index=0,held=false,settled=[],tested=false;
   function grab(){c.flyTo(0,1.80,()=>{held=true;c.tone([315,498]);update();});}
   function drop(side){
     c.flyTo(x[side],-.88,()=>{
       const part=q.items[index];
       if(side!==part[2]){c.mistake("Look at the label and choose another bin");return;}
-      settled.push({side,part:index});held=false;index++;
+      settled.push({side,part:index});held=false;tested=false;index++;
       c.pulse([x[side],.48,-1.68],bright(),18);
       if(index===q.items.length){c.receive([x[side],0,-2.42]);return;}
       c.feedback(true,"Item accepted");update();
     });
   }
   function update(){
-    c.objective(held?q.goalText:"Pick up the next "+q.name.toLowerCase());
-    c.meter(index+"/"+q.items.length+" · "+q.items[index][0]);
+    c.objective(held?(q.magnet&&!tested?"Bring the sample to the magnet":q.goalText):"Pick up the next "+q.name.toLowerCase());
+    c.meter(index+"/"+q.items.length+" · "+(q.magnet&&tested?(q.items[index][2]===0?"Pulled by magnet":"No movement"):q.items[index][0]));
     if(!held)c.marker("grab","Pick "+q.items[index][0],[0,.78,1.94],grab,{kind:"clue"});else c.off("grab");
-    q.bins.forEach((name,i)=>{if(held)c.marker("bin"+i,name,[x[i],.77,-1.65],()=>drop(i),{kind:"hot"});else c.off("bin"+i);});
+    if(q.magnet&&held&&!tested)c.marker("probe","Test with magnet",[0,.81,-.15],()=>c.flyTo(0,.19,()=>{
+      tested=true;c.tone(q.items[index][2]===0?[312,553,783]:[315]);
+      if(q.items[index][2]===0)c.pulse([0,.93,-.14],0xa8d7ed,18);update();
+    }),{kind:"clue"});
+    else c.off("probe");
+    q.bins.forEach((name,i)=>{if(held&&(!q.magnet||tested))c.marker("bin"+i,name,[x[i],.77,-1.65],()=>drop(i),{kind:"hot"});else c.off("bin"+i);});
   }
-  function start(){index=0;held=false;settled=[];update();}
+  function start(){index=0;held=false;tested=false;settled=[];update();}
   function draw(m){
     const z=c.localZ;
     for(let i=0;i<2;i++){
@@ -492,20 +553,24 @@ function makeThirdTask(c,q){
     settled.forEach(({side,part},i)=>c.item(m,q.items[part][1],x[side]+(i%2-.5)*.50,.54,z(-1.67),.50,i%2?0xf1bb6b:bright()));
     const item=q.items[index];
     if(!item)return;
+    if(q.magnet)c.item(m,"magnet",0,.34,z(-.15),1.0,tested&&item[2]===0?0xa8e8ec:trim());
     c.pedestal(m,0,z(1.94),1.36,trim());
     c.item(m,item[1],held?c.player.x:0,held?.76:.24,held?c.player.z:z(1.94),1.1,!held?bright():0xf0bb73);
   }
   return {start,draw};
 }
 
+const taskFactories = {audit:make_audit, sort:make_sort};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

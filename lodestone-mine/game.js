@@ -60,18 +60,213 @@ const GAME = {
       0
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "↔",
-      "Move the metal key"
+      {
+        "kind": "signature",
+        "guide": [
+          "↔",
+          "Move the metal key"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "↔",
+          "Move the metal key"
+        ]
+      }
     ],
     [
-      "⇄",
-      "Match items to bins"
+      {
+        "kind": "sort",
+        "guide": [
+          "⇄",
+          "Match items to bins"
+        ],
+        "runs": [
+          {
+            "kind": "sort",
+            "title": "Ore Sorting Silo",
+            "goalText": "Sort the ore by whether a magnet can pull it",
+            "name": "sample",
+            "bins": [
+              "Magnetic ore",
+              "Nonmagnetic ore"
+            ],
+            "items": [
+              [
+                "Iron",
+                "rock",
+                0
+              ],
+              [
+                "Quartz",
+                "gem",
+                1
+              ],
+              [
+                "Steel",
+                "key",
+                0
+              ]
+            ],
+            "magnet": true,
+            "award": "Iron Key"
+          },
+          {
+            "kind": "sort",
+            "title": "Ore Sorting Silo",
+            "goalText": "Sort the ore by whether a magnet can pull it",
+            "name": "sample",
+            "bins": [
+              "Magnetic ore",
+              "Nonmagnetic ore"
+            ],
+            "items": [
+              [
+                "Lodestone",
+                "magnet",
+                0
+              ],
+              [
+                "Iron",
+                "rock",
+                0
+              ],
+              [
+                "Quartz",
+                "gem",
+                1
+              ],
+              [
+                "Steel",
+                "key",
+                0
+              ]
+            ],
+            "magnet": true,
+            "award": "Iron Key"
+          },
+          {
+            "kind": "sort",
+            "title": "Ore Sorting Silo",
+            "goalText": "Sort the ore by whether a magnet can pull it",
+            "name": "sample",
+            "bins": [
+              "Magnetic ore",
+              "Nonmagnetic ore"
+            ],
+            "items": [
+              [
+                "Amber",
+                "gem",
+                1
+              ],
+              [
+                "Quartz",
+                "gem",
+                1
+              ],
+              [
+                "Steel",
+                "key",
+                0
+              ],
+              [
+                "Iron",
+                "rock",
+                0
+              ]
+            ],
+            "magnet": true,
+            "award": "Iron Key"
+          }
+        ]
+      }
     ],
     [
-      "⤾",
-      "Connect the sections"
+      {
+        "kind": "connect",
+        "guide": [
+          "⤾",
+          "Connect the sections"
+        ],
+        "runs": [
+          {
+            "kind": "connect",
+            "title": "Electric Lift Room",
+            "goalText": "Turn the contacts to bridge the live circuit",
+            "start": [
+              0,
+              0,
+              0
+            ],
+            "target": [
+              3,
+              2,
+              1
+            ],
+            "links": [
+              1,
+              2,
+              -1
+            ],
+            "finalText": "Circuit complete · run the lift",
+            "finish": "Power lift",
+            "object": "magnet",
+            "award": "Magnet Crown"
+          },
+          {
+            "kind": "connect",
+            "title": "Electric Lift Room",
+            "goalText": "Turn the contacts to bridge the live circuit",
+            "start": [
+              1,
+              0,
+              2
+            ],
+            "target": [
+              0,
+              0,
+              0
+            ],
+            "links": [
+              1,
+              2,
+              -1
+            ],
+            "finalText": "Circuit complete · run the lift",
+            "finish": "Power lift",
+            "object": "magnet",
+            "award": "Magnet Crown"
+          },
+          {
+            "kind": "connect",
+            "title": "Electric Lift Room",
+            "goalText": "Turn the contacts to bridge the live circuit",
+            "start": [
+              2,
+              3,
+              0
+            ],
+            "target": [
+              1,
+              2,
+              3
+            ],
+            "links": [
+              1,
+              2,
+              -1
+            ],
+            "finalText": "Circuit complete · run the lift",
+            "finish": "Power lift",
+            "object": "magnet",
+            "award": "Magnet Crown"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -112,6 +307,7 @@ const GAME = {
           0
         ]
       ],
+      "magnet": true,
       "award": "Iron Key"
     },
     {
@@ -128,168 +324,16 @@ const GAME = {
         2,
         1
       ],
+      "links": [
+        1,
+        2,
+        -1
+      ],
       "finalText": "Circuit complete · run the lift",
       "finish": "Power lift",
       "object": "magnet",
       "award": "Magnet Crown"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "sort",
-        "title": "Ore Sorting Silo",
-        "goalText": "Sort the ore by whether a magnet can pull it",
-        "name": "sample",
-        "bins": [
-          "Magnetic ore",
-          "Nonmagnetic ore"
-        ],
-        "items": [
-          [
-            "Iron",
-            "rock",
-            0
-          ],
-          [
-            "Quartz",
-            "gem",
-            1
-          ],
-          [
-            "Steel",
-            "key",
-            0
-          ]
-        ],
-        "award": "Iron Key"
-      },
-      {
-        "kind": "sort",
-        "title": "Ore Sorting Silo",
-        "goalText": "Sort the ore by whether a magnet can pull it",
-        "name": "sample",
-        "bins": [
-          "Magnetic ore",
-          "Nonmagnetic ore"
-        ],
-        "items": [
-          [
-            "Lodestone",
-            "magnet",
-            0
-          ],
-          [
-            "Iron",
-            "rock",
-            0
-          ],
-          [
-            "Quartz",
-            "gem",
-            1
-          ],
-          [
-            "Steel",
-            "key",
-            0
-          ]
-        ],
-        "award": "Iron Key"
-      },
-      {
-        "kind": "sort",
-        "title": "Ore Sorting Silo",
-        "goalText": "Sort the ore by whether a magnet can pull it",
-        "name": "sample",
-        "bins": [
-          "Magnetic ore",
-          "Nonmagnetic ore"
-        ],
-        "items": [
-          [
-            "Amber",
-            "gem",
-            1
-          ],
-          [
-            "Quartz",
-            "gem",
-            1
-          ],
-          [
-            "Steel",
-            "key",
-            0
-          ],
-          [
-            "Iron",
-            "rock",
-            0
-          ]
-        ],
-        "award": "Iron Key"
-      }
-    ],
-    [
-      {
-        "kind": "connect",
-        "title": "Electric Lift Room",
-        "goalText": "Turn the contacts to bridge the live circuit",
-        "start": [
-          0,
-          0,
-          0
-        ],
-        "target": [
-          3,
-          2,
-          1
-        ],
-        "finalText": "Circuit complete · run the lift",
-        "finish": "Power lift",
-        "object": "magnet",
-        "award": "Magnet Crown"
-      },
-      {
-        "kind": "connect",
-        "title": "Electric Lift Room",
-        "goalText": "Turn the contacts to bridge the live circuit",
-        "start": [
-          1,
-          0,
-          2
-        ],
-        "target": [
-          0,
-          0,
-          0
-        ],
-        "finalText": "Circuit complete · run the lift",
-        "finish": "Power lift",
-        "object": "magnet",
-        "award": "Magnet Crown"
-      },
-      {
-        "kind": "connect",
-        "title": "Electric Lift Room",
-        "goalText": "Turn the contacts to bridge the live circuit",
-        "start": [
-          2,
-          3,
-          0
-        ],
-        "target": [
-          1,
-          2,
-          3
-        ],
-        "finalText": "Circuit complete · run the lift",
-        "finish": "Power lift",
-        "object": "magnet",
-        "award": "Magnet Crown"
-      }
-    ]
   ],
   "form": "lift",
   "controls": [
@@ -385,27 +429,61 @@ function makeFirstTask(c){
   return {start,tick,draw};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const need=[[1,0,1],[1,1,0],[0,1,1]][scenario];
+  let coils=[0,0,0];
+  const polarity=v=>v?"+":"−";
+  function update(){
+    c.objective("Set the coil poles to the etched signs");
+    c.meter(need.map(polarity).join(" · "));
+    coils.forEach((v,i)=>c.marker("coil"+i,"Flip coil "+(i+1),[(i-1)*1.72,.74,.45],()=>{
+      coils[i]=1-v;c.tone([v?297:453]);update();
+    },{kind:"clue",caption:polarity(v)}));
+    c.marker("power","Pulse the rail",[0,.84,-2.46],()=>{
+      if(coils.some((v,i)=>v!==need[i])){c.mistake("Check the etched pole signs");return;}
+      c.flyTo(0,-2.04,()=>c.receive([0,0,-2.43]));
+    },{kind:"hot"});
+  }
+  function draw(m){
+    const z=c.localZ;
+    coils.forEach((v,i)=>{
+      const x=(i-1)*1.72;
+      c.item(m,"magnet",x,.08,z(.44),1.14,v?0xc88376:0x93b7ce,v?Math.PI:0);
+      m.box(x,.47,z(-1.41),.57,.095,.69,need[i]?0xcc8e7e:0x93b7ce,0,1);
+      if(need[i])m.box(x,.54,z(-1.41),.078,.041,.46,0xf8d6bc,0,1);
+      m.box(x,.54,z(-1.41),.42,.041,.075,0xf8d6bc,0,1);
+    });
+    c.item(m,"key",0,.06,z(-2.39),1.15,bright());
+  }
+  return {start:update,draw};
+}
+
+function make_sort(c,q){
   const x=[-2.47,2.47];
-  let index=0,held=false,settled=[];
+  let index=0,held=false,settled=[],tested=false;
   function grab(){c.flyTo(0,1.80,()=>{held=true;c.tone([315,498]);update();});}
   function drop(side){
     c.flyTo(x[side],-.88,()=>{
       const part=q.items[index];
       if(side!==part[2]){c.mistake("Look at the label and choose another bin");return;}
-      settled.push({side,part:index});held=false;index++;
+      settled.push({side,part:index});held=false;tested=false;index++;
       c.pulse([x[side],.48,-1.68],bright(),18);
       if(index===q.items.length){c.receive([x[side],0,-2.42]);return;}
       c.feedback(true,"Item accepted");update();
     });
   }
   function update(){
-    c.objective(held?q.goalText:"Pick up the next "+q.name.toLowerCase());
-    c.meter(index+"/"+q.items.length+" · "+q.items[index][0]);
+    c.objective(held?(q.magnet&&!tested?"Bring the sample to the magnet":q.goalText):"Pick up the next "+q.name.toLowerCase());
+    c.meter(index+"/"+q.items.length+" · "+(q.magnet&&tested?(q.items[index][2]===0?"Pulled by magnet":"No movement"):q.items[index][0]));
     if(!held)c.marker("grab","Pick "+q.items[index][0],[0,.78,1.94],grab,{kind:"clue"});else c.off("grab");
-    q.bins.forEach((name,i)=>{if(held)c.marker("bin"+i,name,[x[i],.77,-1.65],()=>drop(i),{kind:"hot"});else c.off("bin"+i);});
+    if(q.magnet&&held&&!tested)c.marker("probe","Test with magnet",[0,.81,-.15],()=>c.flyTo(0,.19,()=>{
+      tested=true;c.tone(q.items[index][2]===0?[312,553,783]:[315]);
+      if(q.items[index][2]===0)c.pulse([0,.93,-.14],0xa8d7ed,18);update();
+    }),{kind:"clue"});
+    else c.off("probe");
+    q.bins.forEach((name,i)=>{if(held&&(!q.magnet||tested))c.marker("bin"+i,name,[x[i],.77,-1.65],()=>drop(i),{kind:"hot"});else c.off("bin"+i);});
   }
-  function start(){index=0;held=false;settled=[];update();}
+  function start(){index=0;held=false;tested=false;settled=[];update();}
   function draw(m){
     const z=c.localZ;
     for(let i=0;i<2;i++){
@@ -416,26 +494,31 @@ function makeSecondTask(c,q){
     settled.forEach(({side,part},i)=>c.item(m,q.items[part][1],x[side]+(i%2-.5)*.50,.54,z(-1.67),.50,i%2?0xf1bb6b:bright()));
     const item=q.items[index];
     if(!item)return;
+    if(q.magnet)c.item(m,"magnet",0,.34,z(-.15),1.0,tested&&item[2]===0?0xa8e8ec:trim());
     c.pedestal(m,0,z(1.94),1.36,trim());
     c.item(m,item[1],held?c.player.x:0,held?.76:.24,held?c.player.z:z(1.94),1.1,!held?bright():0xf0bb73);
   }
   return {start,draw};
 }
 
-function makeThirdTask(c,q){
+function make_connect(c,q){
   const spots=[[-1.88,1.66],[1.60,.03],[-.61,-2.28]];
   const palette=[0xefbb7e,0x7eb986,0x89c8df,0xc6a2df];
   let stops=[],shown=[],cleared=false;
   const fixed=()=>stops.every((v,i)=>v===q.target[i]);
   function turn(i){
+    if(q.ordered&&stops.slice(0,i).some((v,j)=>v!==q.target[j])){c.feedback(false,"Open the upstream section first");return;}
     stops[i]=(stops[i]+1)%4;
+    const linked=q.links?.[i];
+    if(linked>=0)stops[linked]=(stops[linked]+1)%4;
     c.tone([275+stops[i]*87],.056,.10);
     if(stops[i]===q.target[i])c.pulse([spots[i][0],.21,spots[i][1]],palette[i],11);
     refresh();
   }
   function refresh(){
     c.objective(fixed()?q.finalText:q.goalText);
-    c.meter(stops.filter((n,i)=>n===q.target[i]).length+"/3 sections connected");
+    c.meter(q.links?"A also turns B · B turns C":q.ordered?"Upstream A → B → outlet C":
+      stops.filter((n,i)=>n===q.target[i]).length+"/3 sections connected");
     spots.forEach(([x,z],i)=>c.marker("piece"+i,"Turn "+String.fromCharCode(65+i),[x,.58,z],()=>turn(i),{kind:stops[i]===q.target[i]?"good":"clue"}));
     if(fixed())c.marker("switch",q.finish,[0,.71,-3.46],()=>{
       cleared=true;c.flyTo(0,-3.20,()=>c.receive([0,0,-3.49]));
@@ -455,20 +538,25 @@ function makeThirdTask(c,q){
       const u=Math.sin(angle),v=Math.cos(angle);
       m.box(x,.47,z(s),.74,.17,.21,lit?palette[i]:GAME.palette.accent,angle,1);
       m.tube([x,.46,z(s)],[x+u*.64,.46,z(s)+v*.64],.078,.044,lit?palette[i]:0xb58a67,8,1);
+      const to=q.links?.[i];
+      if(to>=0)m.tube([x,.26,z(s)],[spots[to][0],.26,z(spots[to][1])],.022,.022,palette[i],6,1);
     });
     c.item(m,q.object,0,.04,z(-3.55),1.1,cleared?0x98dfb4:bright());
   }
   return {start,tick,draw};
 }
 
+const taskFactories = {sort:make_sort, connect:make_connect};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

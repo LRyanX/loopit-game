@@ -60,18 +60,151 @@ const GAME = {
       -0.48
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "≈",
-      "Raise the water"
+      {
+        "kind": "signature",
+        "guide": [
+          "≈",
+          "Raise the water"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "≈",
+          "Raise the water"
+        ]
+      }
     ],
     [
-      "⤾",
-      "Connect the sections"
+      {
+        "kind": "connect",
+        "guide": [
+          "⤾",
+          "Connect the sections"
+        ],
+        "runs": [
+          {
+            "kind": "connect",
+            "title": "Stone Channel Gallery",
+            "goalText": "Turn the channel sections to carry water to the gate",
+            "start": [
+              0,
+              0,
+              0
+            ],
+            "target": [
+              2,
+              1,
+              3
+            ],
+            "ordered": true,
+            "finalText": "Water reaches the gate",
+            "finish": "Release water gate",
+            "object": "orb",
+            "award": "Sluice Badge"
+          },
+          {
+            "kind": "connect",
+            "title": "Stone Channel Gallery",
+            "goalText": "Turn the channel sections to carry water to the gate",
+            "start": [
+              1,
+              0,
+              2
+            ],
+            "target": [
+              3,
+              3,
+              2
+            ],
+            "ordered": true,
+            "finalText": "Water reaches the gate",
+            "finish": "Release water gate",
+            "object": "orb",
+            "award": "Sluice Badge"
+          },
+          {
+            "kind": "connect",
+            "title": "Stone Channel Gallery",
+            "goalText": "Turn the channel sections to carry water to the gate",
+            "start": [
+              2,
+              3,
+              0
+            ],
+            "target": [
+              0,
+              1,
+              1
+            ],
+            "ordered": true,
+            "finalText": "Water reaches the gate",
+            "finish": "Release water gate",
+            "object": "orb",
+            "award": "Sluice Badge"
+          }
+        ]
+      }
     ],
     [
-      "≈",
-      "Crank both sides"
+      {
+        "kind": "winch",
+        "guide": [
+          "≈",
+          "Crank both sides"
+        ],
+        "runs": [
+          {
+            "kind": "winch",
+            "title": "Winch Basin",
+            "goalText": "Counter the current before bringing the raft ashore",
+            "length": 3,
+            "current": [
+              0,
+              1,
+              0
+            ],
+            "award": "Coral Seal"
+          },
+          {
+            "kind": "winch",
+            "title": "Winch Basin",
+            "goalText": "Counter the current before bringing the raft ashore",
+            "length": 4,
+            "current": [
+              1,
+              0,
+              1,
+              0
+            ],
+            "award": "Coral Seal",
+            "start": [
+              1,
+              0
+            ]
+          },
+          {
+            "kind": "winch",
+            "title": "Winch Basin",
+            "goalText": "Counter the current before bringing the raft ashore",
+            "length": 5,
+            "current": [
+              0,
+              1,
+              1,
+              0,
+              1
+            ],
+            "award": "Coral Seal",
+            "start": [
+              0,
+              1
+            ]
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -100,6 +233,7 @@ const GAME = {
         1,
         3
       ],
+      "ordered": true,
       "finalText": "Water reaches the gate",
       "finish": "Release water gate",
       "object": "orb",
@@ -117,116 +251,6 @@ const GAME = {
       ],
       "award": "Coral Seal"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "connect",
-        "title": "Stone Channel Gallery",
-        "goalText": "Turn the channel sections to carry water to the gate",
-        "start": [
-          0,
-          0,
-          0
-        ],
-        "target": [
-          2,
-          1,
-          3
-        ],
-        "finalText": "Water reaches the gate",
-        "finish": "Release water gate",
-        "object": "orb",
-        "award": "Sluice Badge"
-      },
-      {
-        "kind": "connect",
-        "title": "Stone Channel Gallery",
-        "goalText": "Turn the channel sections to carry water to the gate",
-        "start": [
-          1,
-          0,
-          2
-        ],
-        "target": [
-          3,
-          3,
-          2
-        ],
-        "finalText": "Water reaches the gate",
-        "finish": "Release water gate",
-        "object": "orb",
-        "award": "Sluice Badge"
-      },
-      {
-        "kind": "connect",
-        "title": "Stone Channel Gallery",
-        "goalText": "Turn the channel sections to carry water to the gate",
-        "start": [
-          2,
-          3,
-          0
-        ],
-        "target": [
-          0,
-          1,
-          1
-        ],
-        "finalText": "Water reaches the gate",
-        "finish": "Release water gate",
-        "object": "orb",
-        "award": "Sluice Badge"
-      }
-    ],
-    [
-      {
-        "kind": "winch",
-        "title": "Winch Basin",
-        "goalText": "Counter the current before bringing the raft ashore",
-        "length": 3,
-        "current": [
-          0,
-          1,
-          0
-        ],
-        "award": "Coral Seal"
-      },
-      {
-        "kind": "winch",
-        "title": "Winch Basin",
-        "goalText": "Counter the current before bringing the raft ashore",
-        "length": 4,
-        "current": [
-          1,
-          0,
-          1,
-          0
-        ],
-        "award": "Coral Seal",
-        "start": [
-          1,
-          0
-        ]
-      },
-      {
-        "kind": "winch",
-        "title": "Winch Basin",
-        "goalText": "Counter the current before bringing the raft ashore",
-        "length": 5,
-        "current": [
-          0,
-          1,
-          1,
-          0,
-          1
-        ],
-        "award": "Coral Seal",
-        "start": [
-          0,
-          1
-        ]
-      }
-    ]
   ],
   "form": "basins",
   "controls": [
@@ -326,20 +350,59 @@ function makeFirstTask(c){
   return {start,tick,draw,swipe,dragEnd};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const target=[[1,2,1],[0,1,3],[2,0,2]][scenario];
+  const names=["West","Centre","East"],x=[-2.28,0,2.28];
+  let levels=[3,0,1],from=null;
+  function pour(i){
+    if(from===i){from=null;update();return;}
+    if(levels[i]>=3){c.feedback(false,"That basin is full");return;}
+    levels[from]--;levels[i]++;from=null;
+    c.pulse([x[i],.87,.34],0x8de3d5,12);c.tone([300+levels[i]*81]);update();
+  }
+  function update(){
+    c.objective(from===null?"Select a basin with water":"Send one measure to a basin");
+    c.meter(levels.join(" · ")+" → "+target.join(" · "));
+    x.forEach((a,i)=>{
+      if(from===null&&levels[i]>0)c.marker("basin"+i,"Draw "+names[i],[a,.81,.34],()=>{from=i;update();},{kind:"clue",caption:names[i]});
+      else if(from!==null)c.marker("basin"+i,i===from?"Cancel flow":"Fill "+names[i],[a,.81,.34],()=>pour(i),
+        {kind:i===from?"clue":"hot",caption:i===from?"Cancel":names[i]});
+      else c.off("basin"+i);
+    });
+    if(levels.every((v,i)=>v===target[i]))c.marker("sluice","Open transfer gate",[0,.72,-2.37],
+      ()=>c.flyTo(0,-1.92,()=>c.receive([0,0,-2.37])),{kind:"good"});
+    else c.off("sluice");
+  }
+  function draw(m){
+    x.forEach((a,i)=>{
+      const z=c.localZ,p=levels[i]*.24;
+      m.box(a,.15,z(.37),1.79,.28,2.22,ink(),0,9);
+      if(p)m.box(a,p*.50+.31,z(.37),1.62,p,1.97,0x73bad0,0,7);
+      m.box(a+.74,.36+target[i]*.24,z(.33),.21,.063,1.78,0xf7cf7d,0,1);
+      if(from===i)ring(m,a,.34+p,z(.36),.53,0x91e6d7,.028);
+    });
+  }
+  return {start:update,draw};
+}
+
+function make_connect(c,q){
   const spots=[[-1.88,1.66],[1.60,.03],[-.61,-2.28]];
   const palette=[0xefbb7e,0x7eb986,0x89c8df,0xc6a2df];
   let stops=[],shown=[],cleared=false;
   const fixed=()=>stops.every((v,i)=>v===q.target[i]);
   function turn(i){
+    if(q.ordered&&stops.slice(0,i).some((v,j)=>v!==q.target[j])){c.feedback(false,"Open the upstream section first");return;}
     stops[i]=(stops[i]+1)%4;
+    const linked=q.links?.[i];
+    if(linked>=0)stops[linked]=(stops[linked]+1)%4;
     c.tone([275+stops[i]*87],.056,.10);
     if(stops[i]===q.target[i])c.pulse([spots[i][0],.21,spots[i][1]],palette[i],11);
     refresh();
   }
   function refresh(){
     c.objective(fixed()?q.finalText:q.goalText);
-    c.meter(stops.filter((n,i)=>n===q.target[i]).length+"/3 sections connected");
+    c.meter(q.links?"A also turns B · B turns C":q.ordered?"Upstream A → B → outlet C":
+      stops.filter((n,i)=>n===q.target[i]).length+"/3 sections connected");
     spots.forEach(([x,z],i)=>c.marker("piece"+i,"Turn "+String.fromCharCode(65+i),[x,.58,z],()=>turn(i),{kind:stops[i]===q.target[i]?"good":"clue"}));
     if(fixed())c.marker("switch",q.finish,[0,.71,-3.46],()=>{
       cleared=true;c.flyTo(0,-3.20,()=>c.receive([0,0,-3.49]));
@@ -359,13 +422,15 @@ function makeSecondTask(c,q){
       const u=Math.sin(angle),v=Math.cos(angle);
       m.box(x,.47,z(s),.74,.17,.21,lit?palette[i]:GAME.palette.accent,angle,1);
       m.tube([x,.46,z(s)],[x+u*.64,.46,z(s)+v*.64],.078,.044,lit?palette[i]:0xb58a67,8,1);
+      const to=q.links?.[i];
+      if(to>=0)m.tube([x,.26,z(s)],[spots[to][0],.26,z(spots[to][1])],.022,.022,palette[i],6,1);
     });
     c.item(m,q.object,0,.04,z(-3.55),1.1,cleared?0x98dfb4:bright());
   }
   return {start,tick,draw};
 }
 
-function makeThirdTask(c,q){
+function make_winch(c,q){
   let tension=[],shown=[];
   const bridge=-3.0,mid=2.63;
   const current=()=>q.current[Math.min(tension[0],tension[1])];
@@ -410,14 +475,17 @@ function makeThirdTask(c,q){
   return {start,tick,draw};
 }
 
+const taskFactories = {connect:make_connect, winch:make_winch};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

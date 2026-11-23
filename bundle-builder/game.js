@@ -60,18 +60,143 @@ const GAME = {
       -0.44
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "◇",
-      "Build the bundle"
+      {
+        "kind": "signature",
+        "guide": [
+          "◇",
+          "Build the bundle"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "◇",
+          "Build the bundle"
+        ]
+      }
     ],
     [
-      "↪",
-      "Fold the gift wrap"
+      {
+        "kind": "fold",
+        "guide": [
+          "↪",
+          "Fold the gift wrap"
+        ],
+        "runs": [
+          {
+            "kind": "fold",
+            "title": "Gift Wrapping Bench",
+            "goalText": "Fold the wrapping so the seams overlap in order",
+            "order": [
+              2,
+              0,
+              1,
+              3
+            ],
+            "award": "Gift paper sealed"
+          },
+          {
+            "kind": "fold",
+            "title": "Gift Wrapping Bench",
+            "goalText": "Fold the wrapping so the seams overlap in order",
+            "order": [
+              3,
+              1,
+              0,
+              2
+            ],
+            "award": "Gift paper sealed"
+          },
+          {
+            "kind": "fold",
+            "title": "Gift Wrapping Bench",
+            "goalText": "Fold the wrapping so the seams overlap in order",
+            "order": [
+              0,
+              2,
+              3,
+              1
+            ],
+            "award": "Gift paper sealed"
+          }
+        ]
+      }
     ],
     [
-      "∞",
-      "Match the ribbons"
+      {
+        "kind": "ties",
+        "guide": [
+          "∞",
+          "Match the ribbons"
+        ],
+        "runs": [
+          {
+            "kind": "ties",
+            "title": "Ribbon Workshop",
+            "goalText": "Match each ribbon, then choose its knot",
+            "names": [
+              "Orange",
+              "Mint",
+              "Violet"
+            ],
+            "end": [
+              1,
+              2,
+              0
+            ],
+            "knots": [
+              0,
+              1,
+              0
+            ],
+            "award": "Gift set wrapped"
+          },
+          {
+            "kind": "ties",
+            "title": "Ribbon Workshop",
+            "goalText": "Match each ribbon, then choose its knot",
+            "names": [
+              "Orange",
+              "Mint",
+              "Violet"
+            ],
+            "end": [
+              2,
+              0,
+              1
+            ],
+            "knots": [
+              1,
+              0,
+              1
+            ],
+            "award": "Gift set wrapped"
+          },
+          {
+            "kind": "ties",
+            "title": "Ribbon Workshop",
+            "goalText": "Match each ribbon, then choose its knot",
+            "names": [
+              "Orange",
+              "Mint",
+              "Violet"
+            ],
+            "end": [
+              0,
+              2,
+              1
+            ],
+            "knots": [
+              0,
+              1,
+              1
+            ],
+            "award": "Gift set wrapped"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -119,111 +244,6 @@ const GAME = {
       ],
       "award": "Gift set wrapped"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "fold",
-        "title": "Gift Wrapping Bench",
-        "goalText": "Fold the wrapping so the seams overlap in order",
-        "order": [
-          2,
-          0,
-          1,
-          3
-        ],
-        "award": "Gift paper sealed"
-      },
-      {
-        "kind": "fold",
-        "title": "Gift Wrapping Bench",
-        "goalText": "Fold the wrapping so the seams overlap in order",
-        "order": [
-          3,
-          1,
-          0,
-          2
-        ],
-        "award": "Gift paper sealed"
-      },
-      {
-        "kind": "fold",
-        "title": "Gift Wrapping Bench",
-        "goalText": "Fold the wrapping so the seams overlap in order",
-        "order": [
-          0,
-          2,
-          3,
-          1
-        ],
-        "award": "Gift paper sealed"
-      }
-    ],
-    [
-      {
-        "kind": "ties",
-        "title": "Ribbon Workshop",
-        "goalText": "Match each ribbon, then choose its knot",
-        "names": [
-          "Orange",
-          "Mint",
-          "Violet"
-        ],
-        "end": [
-          1,
-          2,
-          0
-        ],
-        "knots": [
-          0,
-          1,
-          0
-        ],
-        "award": "Gift set wrapped"
-      },
-      {
-        "kind": "ties",
-        "title": "Ribbon Workshop",
-        "goalText": "Match each ribbon, then choose its knot",
-        "names": [
-          "Orange",
-          "Mint",
-          "Violet"
-        ],
-        "end": [
-          2,
-          0,
-          1
-        ],
-        "knots": [
-          1,
-          0,
-          1
-        ],
-        "award": "Gift set wrapped"
-      },
-      {
-        "kind": "ties",
-        "title": "Ribbon Workshop",
-        "goalText": "Match each ribbon, then choose its knot",
-        "names": [
-          "Orange",
-          "Mint",
-          "Violet"
-        ],
-        "end": [
-          0,
-          2,
-          1
-        ],
-        "knots": [
-          0,
-          1,
-          1
-        ],
-        "award": "Gift set wrapped"
-      }
-    ]
   ],
   "form": "counter",
   "controls": [
@@ -308,7 +328,31 @@ function makeFirstTask(c){
   return {start,draw,tap};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const sizeNames=["Small","Medium","Large"],tags=["Thank you","Birthday","Holiday"];
+  const [needSize,needTag]=[[1,2],[2,0],[0,1]][scenario];
+  let size=0,tag=0;
+  function update(){
+    c.objective("Fit the sleeve and match the gift tag");
+    c.meter(sizeNames[needSize]+" · "+tags[needTag]);
+    c.marker("size","Change sleeve",[-1.71,.71,.91],()=>{size=(size+1)%3;c.tone();update();},{kind:"clue",caption:sizeNames[size]});
+    c.marker("tag","Change gift tag",[1.72,.72,.90],()=>{tag=(tag+1)%3;c.tone();update();},{kind:"clue",caption:tags[tag]});
+    c.marker("ship","Print gift sleeve",[0,.71,-2.22],()=>{
+      if(size!==needSize||tag!==needTag){c.mistake("Match the sleeve and tag on the order");return;}
+      c.flyTo(0,-2.07,()=>c.receive([0,0,-2.47]));
+    },{kind:"hot"});
+  }
+  function draw(m){
+    const z=c.localZ,wide=.72+size*.31;
+    m.box(-1.72,.34,z(.84),wide,.55,.76,0xe9be8b,0,5);
+    m.box(-1.72,.52,z(.86),wide+.11,.075,.84,0x8fbdaa);
+    c.item(m,"coupon",1.72,.18,z(.89),1.28,[0xf4cd8a,0xd1a5c2,0x94cbab][tag]);
+    c.item(m,"gift",0,.03,z(-2.22),1.28,0xeabd84);
+  }
+  return {start:update,draw};
+}
+
+function make_fold(c,q){
   const slots=[[-1.57,.23],[1.57,.23],[0,-1.43],[0,1.82]];
   const names=["Left flap","Right flap","Back flap","Front flap"];
   const hues=[0xeeb577,0x89c7b6,0xa2afd6,0xc78c9b];
@@ -350,7 +394,7 @@ function makeSecondTask(c,q){
   return {start,tick,draw,tap};
 }
 
-function makeThirdTask(c,q){
+function make_ties(c,q){
   const shades=[0xeaa66b,0x85c8ac,0xb5a8e3],startX=-2.02,endX=2.02;
   let lead=null,tied=[],line=null,pending=null;
   const zval=i=>(i-1)*1.88+.18;
@@ -418,14 +462,17 @@ function makeThirdTask(c,q){
   return {start,draw,swipe,dragEnd};
 }
 
+const taskFactories = {fold:make_fold, ties:make_ties};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

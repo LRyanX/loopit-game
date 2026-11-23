@@ -60,18 +60,155 @@ const GAME = {
       0.51
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "⑂",
-      "Route the coupon"
+      {
+        "kind": "signature",
+        "guide": [
+          "⑂",
+          "Route the coupon"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "⑂",
+          "Route the coupon"
+        ]
+      }
     ],
     [
-      "⤾",
-      "Connect the sections"
+      {
+        "kind": "connect",
+        "guide": [
+          "⤾",
+          "Connect the sections"
+        ],
+        "runs": [
+          {
+            "kind": "connect",
+            "title": "Punch Card Station",
+            "goalText": "Rotate the three cutouts to make a readable strip",
+            "finalText": "The strip is aligned · run the reader",
+            "finish": "Read discount strip",
+            "object": "coupon",
+            "start": [
+              0,
+              0,
+              0
+            ],
+            "target": [
+              1,
+              3,
+              2
+            ],
+            "award": "Punch strip scanned"
+          },
+          {
+            "kind": "connect",
+            "title": "Punch Card Station",
+            "goalText": "Rotate the three cutouts to make a readable strip",
+            "finalText": "The strip is aligned · run the reader",
+            "finish": "Read discount strip",
+            "object": "coupon",
+            "start": [
+              1,
+              0,
+              2
+            ],
+            "target": [
+              2,
+              1,
+              1
+            ],
+            "award": "Punch strip scanned"
+          },
+          {
+            "kind": "connect",
+            "title": "Punch Card Station",
+            "goalText": "Rotate the three cutouts to make a readable strip",
+            "finalText": "The strip is aligned · run the reader",
+            "finish": "Read discount strip",
+            "object": "coupon",
+            "start": [
+              2,
+              3,
+              0
+            ],
+            "target": [
+              3,
+              3,
+              0
+            ],
+            "award": "Punch strip scanned"
+          }
+        ]
+      }
     ],
     [
-      "↔",
-      "Slide into the gap"
+      {
+        "kind": "jam",
+        "guide": [
+          "↔",
+          "Slide into the gap"
+        ],
+        "runs": [
+          {
+            "kind": "jam",
+            "title": "Conveyor Service Bay",
+            "goalText": "Slide the packages to unblock the feed",
+            "parts": [
+              "Red",
+              "Mint",
+              "Violet"
+            ],
+            "start": [
+              2,
+              0,
+              -1,
+              1
+            ],
+            "object": "parcel",
+            "award": "Feed running again"
+          },
+          {
+            "kind": "jam",
+            "title": "Conveyor Service Bay",
+            "goalText": "Slide the packages to unblock the feed",
+            "parts": [
+              "Red",
+              "Mint",
+              "Violet"
+            ],
+            "start": [
+              2,
+              0,
+              1,
+              -1
+            ],
+            "object": "parcel",
+            "award": "Feed running again"
+          },
+          {
+            "kind": "jam",
+            "title": "Conveyor Service Bay",
+            "goalText": "Slide the packages to unblock the feed",
+            "parts": [
+              "Red",
+              "Mint",
+              "Violet"
+            ],
+            "start": [
+              -1,
+              2,
+              1,
+              0
+            ],
+            "object": "parcel",
+            "award": "Feed running again"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -123,123 +260,6 @@ const GAME = {
       "object": "parcel",
       "award": "Feed running again"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "connect",
-        "title": "Punch Card Station",
-        "goalText": "Rotate the three cutouts to make a readable strip",
-        "finalText": "The strip is aligned · run the reader",
-        "finish": "Read discount strip",
-        "object": "coupon",
-        "start": [
-          0,
-          0,
-          0
-        ],
-        "target": [
-          1,
-          3,
-          2
-        ],
-        "award": "Punch strip scanned"
-      },
-      {
-        "kind": "connect",
-        "title": "Punch Card Station",
-        "goalText": "Rotate the three cutouts to make a readable strip",
-        "finalText": "The strip is aligned · run the reader",
-        "finish": "Read discount strip",
-        "object": "coupon",
-        "start": [
-          1,
-          0,
-          2
-        ],
-        "target": [
-          2,
-          1,
-          1
-        ],
-        "award": "Punch strip scanned"
-      },
-      {
-        "kind": "connect",
-        "title": "Punch Card Station",
-        "goalText": "Rotate the three cutouts to make a readable strip",
-        "finalText": "The strip is aligned · run the reader",
-        "finish": "Read discount strip",
-        "object": "coupon",
-        "start": [
-          2,
-          3,
-          0
-        ],
-        "target": [
-          3,
-          3,
-          0
-        ],
-        "award": "Punch strip scanned"
-      }
-    ],
-    [
-      {
-        "kind": "jam",
-        "title": "Conveyor Service Bay",
-        "goalText": "Slide the packages to unblock the feed",
-        "parts": [
-          "Red",
-          "Mint",
-          "Violet"
-        ],
-        "start": [
-          2,
-          0,
-          -1,
-          1
-        ],
-        "object": "parcel",
-        "award": "Feed running again"
-      },
-      {
-        "kind": "jam",
-        "title": "Conveyor Service Bay",
-        "goalText": "Slide the packages to unblock the feed",
-        "parts": [
-          "Red",
-          "Mint",
-          "Violet"
-        ],
-        "start": [
-          2,
-          0,
-          1,
-          -1
-        ],
-        "object": "parcel",
-        "award": "Feed running again"
-      },
-      {
-        "kind": "jam",
-        "title": "Conveyor Service Bay",
-        "goalText": "Slide the packages to unblock the feed",
-        "parts": [
-          "Red",
-          "Mint",
-          "Violet"
-        ],
-        "start": [
-          -1,
-          2,
-          1,
-          0
-        ],
-        "object": "parcel",
-        "award": "Feed running again"
-      }
-    ]
   ],
   "form": "machine",
   "controls": [
@@ -353,20 +373,52 @@ function makeFirstTask(c){
   return {start,tick,draw,swipe,dragEnd};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const shapes=[[true,false,true,false,true,false],[false,true,true,true,false,true],[true,true,false,true,false,true]];
+  const slots=shapes[scenario];
+  let cut=Array(6).fill(false);
+  const x=i=>(i%3-1)*1.27,z=i=>i<3?.74:2.10;
+  function punch(){
+    if(cut.some((v,i)=>v!==slots[i])){c.mistake("Punch the same holes as the sample");return;}
+    c.flyTo(0,-2.32,()=>c.receive([0,0,-2.48]));
+  }
+  function update(){
+    c.objective("Copy the coupon holes");
+    c.meter(slots.slice(0,3).map(n=>n?"●":"○").join(" ")+" / "+slots.slice(3).map(n=>n?"●":"○").join(" "));
+    cut.forEach((v,i)=>c.marker("slot"+i,"Punch "+(i+1),[x(i),.35,z(i)],()=>{
+      cut[i]=!v;c.tone([v?303:487]);update();
+    },{tile:true,caption:v?"●":"○"}));
+    c.marker("feed","Feed coupon",[0,.72,-2.45],punch,{kind:"hot"});
+  }
+  function draw(m){
+    m.box(0,.19,c.localZ(1.40),4.39,.30,2.83,0xe0b681,0,5);
+    m.box(0,.34,c.localZ(-.77),4.39,.25,1.46,0x83ab99,0,4);
+    for(let i=0;i<6;i++){
+      m.oval(x(i),.37,c.localZ(z(i)),.28,.040,.29,cut[i]?ink():0xf4db9d,0,0,9);
+      m.oval(x(i),.48,c.localZ(i<3?-1.12:-.44),.22,.042,.22,slots[i]?ink():0xd8e5c1,0,0,9);
+    }
+  }
+  return {start:update,draw};
+}
+
+function make_connect(c,q){
   const spots=[[-1.88,1.66],[1.60,.03],[-.61,-2.28]];
   const palette=[0xefbb7e,0x7eb986,0x89c8df,0xc6a2df];
   let stops=[],shown=[],cleared=false;
   const fixed=()=>stops.every((v,i)=>v===q.target[i]);
   function turn(i){
+    if(q.ordered&&stops.slice(0,i).some((v,j)=>v!==q.target[j])){c.feedback(false,"Open the upstream section first");return;}
     stops[i]=(stops[i]+1)%4;
+    const linked=q.links?.[i];
+    if(linked>=0)stops[linked]=(stops[linked]+1)%4;
     c.tone([275+stops[i]*87],.056,.10);
     if(stops[i]===q.target[i])c.pulse([spots[i][0],.21,spots[i][1]],palette[i],11);
     refresh();
   }
   function refresh(){
     c.objective(fixed()?q.finalText:q.goalText);
-    c.meter(stops.filter((n,i)=>n===q.target[i]).length+"/3 sections connected");
+    c.meter(q.links?"A also turns B · B turns C":q.ordered?"Upstream A → B → outlet C":
+      stops.filter((n,i)=>n===q.target[i]).length+"/3 sections connected");
     spots.forEach(([x,z],i)=>c.marker("piece"+i,"Turn "+String.fromCharCode(65+i),[x,.58,z],()=>turn(i),{kind:stops[i]===q.target[i]?"good":"clue"}));
     if(fixed())c.marker("switch",q.finish,[0,.71,-3.46],()=>{
       cleared=true;c.flyTo(0,-3.20,()=>c.receive([0,0,-3.49]));
@@ -386,13 +438,15 @@ function makeSecondTask(c,q){
       const u=Math.sin(angle),v=Math.cos(angle);
       m.box(x,.47,z(s),.74,.17,.21,lit?palette[i]:GAME.palette.accent,angle,1);
       m.tube([x,.46,z(s)],[x+u*.64,.46,z(s)+v*.64],.078,.044,lit?palette[i]:0xb58a67,8,1);
+      const to=q.links?.[i];
+      if(to>=0)m.tube([x,.26,z(s)],[spots[to][0],.26,z(spots[to][1])],.022,.022,palette[i],6,1);
     });
     c.item(m,q.object,0,.04,z(-3.55),1.1,cleared?0x98dfb4:bright());
   }
   return {start,tick,draw};
 }
 
-function makeThirdTask(c,q){
+function make_jam(c,q){
   const positions=[[-1.42,.90],[1.42,.90],[-1.42,-1.42],[1.42,-1.42]];
   const should=[0,1,2,-1],colors=[0xe88963,0x82b6b3,0xb9a0d5];
   let tiles=[],move=null,turns=0;
@@ -431,14 +485,17 @@ function makeThirdTask(c,q){
   return {start,tick,draw};
 }
 
+const taskFactories = {connect:make_connect, jam:make_jam};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

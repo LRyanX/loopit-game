@@ -60,18 +60,255 @@ const GAME = {
       0.27
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "◉",
-      "Ping the hydrophones"
+      {
+        "kind": "signature",
+        "guide": [
+          "◉",
+          "Ping the hydrophones"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "◉",
+          "Ping the hydrophones"
+        ]
+      }
     ],
     [
-      "↕",
-      "Sample the reef ledges"
+      {
+        "kind": "depth",
+        "guide": [
+          "↕",
+          "Sample the reef ledges"
+        ],
+        "runs": [
+          {
+            "kind": "depth",
+            "title": "Coral Depth Ledges",
+            "goalText": "Adjust buoyancy to sample the three reef ledges",
+            "depths": [
+              1,
+              3,
+              2
+            ],
+            "object": "shell",
+            "award": "Amber Reef Sample"
+          },
+          {
+            "kind": "depth",
+            "title": "Coral Depth Ledges",
+            "goalText": "Adjust buoyancy to sample the three reef ledges",
+            "depths": [
+              3,
+              2,
+              1
+            ],
+            "object": "shell",
+            "award": "Amber Reef Sample"
+          },
+          {
+            "kind": "depth",
+            "title": "Coral Depth Ledges",
+            "goalText": "Adjust buoyancy to sample the three reef ledges",
+            "depths": [
+              2,
+              1,
+              3
+            ],
+            "object": "shell",
+            "award": "Amber Reef Sample"
+          }
+        ]
+      }
     ],
     [
-      "→",
-      "Reach the gold exit"
+      {
+        "kind": "maze",
+        "guide": [
+          "→",
+          "Reach the gold exit"
+        ],
+        "runs": [
+          {
+            "kind": "maze",
+            "title": "Sponge Current Tunnels",
+            "goalText": "Steer through the clear reef channel",
+            "start": [
+              3,
+              3
+            ],
+            "exit": [
+              0,
+              0
+            ],
+            "blocks": [
+              [
+                2,
+                3
+              ],
+              [
+                1,
+                2
+              ],
+              [
+                3,
+                1
+              ],
+              [
+                0,
+                2
+              ]
+            ],
+            "currents": [
+              [
+                [
+                  2,
+                  2
+                ],
+                [
+                  0,
+                  -1
+                ]
+              ],
+              [
+                [
+                  2,
+                  1
+                ],
+                [
+                  -1,
+                  0
+                ]
+              ]
+            ],
+            "object": "rock",
+            "blockHint": "Coral blocks that channel",
+            "award": "Sunken Crown"
+          },
+          {
+            "kind": "maze",
+            "title": "Sponge Current Tunnels",
+            "goalText": "Steer through the clear reef channel",
+            "start": [
+              0,
+              3
+            ],
+            "exit": [
+              3,
+              0
+            ],
+            "blocks": [
+              [
+                1,
+                3
+              ],
+              [
+                2,
+                2
+              ],
+              [
+                0,
+                1
+              ],
+              [
+                3,
+                2
+              ]
+            ],
+            "currents": [
+              [
+                [
+                  1,
+                  2
+                ],
+                [
+                  0,
+                  -1
+                ]
+              ],
+              [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ]
+            ],
+            "object": "rock",
+            "blockHint": "Coral blocks that channel",
+            "award": "Sunken Crown"
+          },
+          {
+            "kind": "maze",
+            "title": "Sponge Current Tunnels",
+            "goalText": "Steer through the clear reef channel",
+            "start": [
+              0,
+              0
+            ],
+            "exit": [
+              3,
+              3
+            ],
+            "blocks": [
+              [
+                0,
+                1
+              ],
+              [
+                1,
+                2
+              ],
+              [
+                2,
+                0
+              ],
+              [
+                1,
+                3
+              ]
+            ],
+            "currents": [
+              [
+                [
+                  1,
+                  1
+                ],
+                [
+                  1,
+                  0
+                ]
+              ],
+              [
+                [
+                  2,
+                  1
+                ],
+                [
+                  0,
+                  1
+                ]
+              ]
+            ],
+            "object": "rock",
+            "blockHint": "Coral blocks that channel",
+            "award": "Sunken Crown"
+          }
+        ]
+      },
+      {
+        "kind": "climax",
+        "guide": [
+          "≈",
+          "Keep air in reserve"
+        ]
+      }
     ]
   ],
   "ending": {
@@ -128,154 +365,32 @@ const GAME = {
           2
         ]
       ],
+      "currents": [
+        [
+          [
+            2,
+            2
+          ],
+          [
+            0,
+            -1
+          ]
+        ],
+        [
+          [
+            2,
+            1
+          ],
+          [
+            -1,
+            0
+          ]
+        ]
+      ],
       "object": "rock",
       "blockHint": "Coral blocks that channel",
       "award": "Sunken Crown"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "depth",
-        "title": "Coral Depth Ledges",
-        "goalText": "Adjust buoyancy to sample the three reef ledges",
-        "depths": [
-          1,
-          3,
-          2
-        ],
-        "object": "shell",
-        "award": "Amber Reef Sample"
-      },
-      {
-        "kind": "depth",
-        "title": "Coral Depth Ledges",
-        "goalText": "Adjust buoyancy to sample the three reef ledges",
-        "depths": [
-          3,
-          2,
-          1
-        ],
-        "object": "shell",
-        "award": "Amber Reef Sample"
-      },
-      {
-        "kind": "depth",
-        "title": "Coral Depth Ledges",
-        "goalText": "Adjust buoyancy to sample the three reef ledges",
-        "depths": [
-          2,
-          1,
-          3
-        ],
-        "object": "shell",
-        "award": "Amber Reef Sample"
-      }
-    ],
-    [
-      {
-        "kind": "maze",
-        "title": "Sponge Current Tunnels",
-        "goalText": "Steer through the clear reef channel",
-        "start": [
-          3,
-          3
-        ],
-        "exit": [
-          0,
-          0
-        ],
-        "blocks": [
-          [
-            2,
-            3
-          ],
-          [
-            1,
-            2
-          ],
-          [
-            3,
-            1
-          ],
-          [
-            0,
-            2
-          ]
-        ],
-        "object": "rock",
-        "blockHint": "Coral blocks that channel",
-        "award": "Sunken Crown"
-      },
-      {
-        "kind": "maze",
-        "title": "Sponge Current Tunnels",
-        "goalText": "Steer through the clear reef channel",
-        "start": [
-          0,
-          3
-        ],
-        "exit": [
-          3,
-          0
-        ],
-        "blocks": [
-          [
-            1,
-            3
-          ],
-          [
-            2,
-            2
-          ],
-          [
-            0,
-            1
-          ],
-          [
-            3,
-            2
-          ]
-        ],
-        "object": "rock",
-        "blockHint": "Coral blocks that channel",
-        "award": "Sunken Crown"
-      },
-      {
-        "kind": "maze",
-        "title": "Sponge Current Tunnels",
-        "goalText": "Steer through the clear reef channel",
-        "start": [
-          0,
-          0
-        ],
-        "exit": [
-          3,
-          3
-        ],
-        "blocks": [
-          [
-            0,
-            1
-          ],
-          [
-            1,
-            2
-          ],
-          [
-            2,
-            0
-          ],
-          [
-            1,
-            3
-          ]
-        ],
-        "object": "rock",
-        "blockHint": "Coral blocks that channel",
-        "award": "Sunken Crown"
-      }
-    ]
   ],
   "form": "dive",
   "controls": [
@@ -373,7 +488,35 @@ function makeFirstTask(c){
   return {start,draw,tap};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const positions=[[-2.16,1.76],[2.16,1.76]];
+  const wreck=[0,-1.31,1.31][scenario],goals=[[1,1],[0,2],[2,0]][scenario];
+  let bearings=[0,0];
+  function update(){
+    c.objective("Aim both sonar beams at the wreck");
+    positions.forEach(([x,z],i)=>c.marker("sonar"+i,i===0?"Turn west sonar":"Turn east sonar",[x,.82,z],()=>{
+      bearings[i]=(bearings[i]+1)%3;c.tone([301+i*95,495]);update();
+    },{kind:"clue",caption:"Turn"}));
+    c.marker("mark","Mark wreck",[wreck,.78,-2.48],()=>{
+      if(bearings.some((v,i)=>v!==goals[i])){c.mistake("Both beams must meet on the wreck marker");return;}
+      c.flyTo(wreck,-2.03,()=>c.receive([wreck,0,-2.46]));
+    },{kind:"hot"});
+  }
+  function draw(m){
+    const z=c.localZ;
+    positions.forEach(([x,p],i)=>{
+      c.pedestal(m,x,z(p),.85,trim());
+      m.oval(x,.72,z(p),.28,.25,.30,0x86e6d4,0,1,9);
+      const land=bearings[i]===goals[i]?wreck:(bearings[i]-1)*1.76+(i===0?-.39:.39);
+      m.tube([x,.79,z(p)],[land,.19,z(-2.50)],.029,.021,i===0?0x91e9d4:0xa2bde9,7,1);
+    });
+    c.item(m,"shell",wreck,.05,z(-2.48),1.12,0xefbe88);
+    ring(m,wreck,.07,z(-2.48),.60,0xffda99,.035);
+  }
+  return {start:update,draw};
+}
+
+function make_depth(c,q){
   let depth=0,y=0,picked=[],seen=false;
   const x=[-2.23,2.23,0],z=[-.39,-1.48,-2.75];
   const level=n=>.34+n*.67;
@@ -382,7 +525,7 @@ function makeSecondTask(c,q){
     depth=clamp(depth+n,0,3);c.tone([285+depth*85],.067,.078);update();
   }
   function take(i){
-    if(depth!==q.depths[i]){c.mistake("Match the diver to the ledge height");return;}
+    if(depth!==q.depths[i]){c.mistake("Match your height to the ledge");return;}
     c.flyTo(x[i],z[i],()=>{
       picked.push(i);
       c.pulse([x[i],level(depth),z[i]],0x83ead3,19);
@@ -419,30 +562,47 @@ function makeSecondTask(c,q){
   return {start,tick,draw};
 }
 
-function makeThirdTask(c,q){
+function make_maze(c,q){
   const dirs=[[-1,0],[1,0],[0,-1],[0,1]],names=["Left","Right","Forward","Back"];
   const X=x=>(x-1.5)*1.48,Z=y=>y*1.59-2.79;
   let at=[],shown=[],anim=null,moved=0,axis=null;
+  let picked=false,anchored=false,spent=new Set();
   const is=(a,b)=>a[0]===b[0]&&a[1]===b[1];
+  const thin=p=>q.thin?.some(v=>is(v,p));
+  const blocked=p=>p.some(v=>v<0||v>3)||q.blocks.some(v=>is(p,v))||spent.has(p.join(","));
+  const drift=p=>q.currents?.find(([cell])=>is(cell,p))?.[1];
   function go(i){
     if(anim)return;
     const d=dirs[i],next=[at[0]+d[0],at[1]+d[1]];
-    if(next.some(v=>v<0||v>3)||q.blocks.some(v=>is(next,v))){c.mistake(q.blockHint||"Blocked · follow the clear lane");return;}
-    anim={from:at.slice(),to:next,t:0};c.tone([285,402],.064,.073);controls();
+    if(blocked(next)){c.mistake(spent.has(next.join(","))?"That ice slab has already broken":q.blockHint||"Blocked · follow the clear lane");return;}
+    const flow=!anchored&&drift(next),landing=flow?[next[0]+flow[0],next[1]+flow[1]]:next;
+    const carried=Boolean(flow&&!blocked(landing));
+    anim={from:at.slice(),through:carried?next:null,to:carried?landing:next,t:0};
+    anchored=false;
+    if(thin(at))spent.add(at.join(","));
+    c.tone(carried?[281,393,495]:[285,402],.064,.073);controls();
   }
   function controls(){
-    c.objective(q.goalText);
-    c.meter(moved+" moves · reach the gold exit");
+    c.objective(q.pickup&&!picked?"Collect the pickup before the exit":q.thin?"Cracked ice breaks behind you":
+      q.currents?"Currents push you one tile":q.goalText);
+    c.meter(q.currents?(anchored?"Anchor set":"Tap the diver to set the anchor"):moved+" moves · gold exit");
+    if(q.currents)c.marker("anchor",anchored?"Release anchor":"Drop anchor",[X(at[0]),.70,Z(at[1])],()=>{
+      anchored=!anchored;c.tone([anchored?292:450]);controls();
+    },{kind:anchored?"good":"clue",caption:anchored?"Anchored":"Anchor",disabled:!!anim});
     names.forEach((n,i)=>c.tool("dir"+i,n,()=>go(i),Boolean(anim)));
   }
-  function start(){at=q.start.slice();shown=at.slice();anim=null;moved=0;axis=null;controls();}
+  function start(){at=q.start.slice();shown=at.slice();anim=null;moved=0;axis=null;picked=!q.pickup;anchored=false;spent.clear();controls();}
   function tick(dt){
     if(anim){
-      anim.t=clamp(anim.t+dt*5.4,0,1);
-      shown=anim.from.map((v,i)=>lerp(v,anim.to[i],curve(anim.t)));
+      anim.t=clamp(anim.t+dt*(anim.through?3.6:5.4),0,1);
+      const via=anim.through,left=via&&anim.t<.5;
+      const from=!via||left?anim.from:via,to=left?via:anim.to;
+      const time=via?(left?anim.t*2:(anim.t-.5)*2):anim.t;
+      shown=from.map((v,i)=>lerp(v,to[i],curve(time)));
       if(anim.t===1){
         at=anim.to;anim=null;moved++;
-        if(is(at,q.exit)){c.receive([X(at[0]),0,Z(at[1])]);return;}
+        if(q.pickup&&!picked&&is(at,q.pickup)){picked=true;c.pulse([X(at[0]),.47,Z(at[1])],0xa7dfb5,18);}
+        if(is(at,q.exit)&&picked){c.receive([X(at[0]),0,Z(at[1])]);return;}
         controls();
       }
     }
@@ -452,8 +612,18 @@ function makeThirdTask(c,q){
     const z=c.localZ;
     for(let i=0;i<4;i++)for(let j=0;j<4;j++){
       const x=X(i),p=[i,j],row=Z(j),wall=q.blocks.some(v=>is(p,v)),out=is(p,q.exit);
-      m.box(x,.034,z(row),1.30,.05,1.37,out?0xe9b868:wall?ink():(i+j)%2===0?flat():GAME.palette.tile2);
+      const broken=spent.has(p.join(","));
+      m.box(x,broken?-.20:.034,z(row),1.30,.05,1.37,broken?0x3f5666:out?0xe9b868:wall?ink():
+        thin(p)?0x9eb2c6:(i+j)%2===0?flat():GAME.palette.tile2);
       if(wall)c.item(m,q.object,x,.08,z(row),.90,trim(),i*.17-j*.19);
+      if(q.pickup&&!picked&&is(p,q.pickup))c.item(m,"receipt",x,.11,z(row),.75,0xa4e6be);
+      if(thin(p)&&!broken)m.box(x,.070,z(row),.73,.013,.034,0x556b87,.71);
+      const flow=drift(p);
+      if(flow){
+        const [dx,dz]=flow,f=(t*.83)%1;
+        const a=[x-dx*.42,.092,z(row-dz*.42)],b=[x+dx*(.15+f*.27),.092,z(row+dz*(.15+f*.27))];
+        m.tube(a,b,.035,.018,0x9af1e0,6,1);
+      }
       if(out)c.ring(m,x,.073,z(row),.40,0xffdc86,.029);
     }
   }
@@ -467,14 +637,64 @@ function makeThirdTask(c,q){
   return {start,tick,draw,swipe,dragEnd,key,lockMove:true};
 }
 
+const taskFactories = {depth:make_depth, maze:make_maze};
+function makeFinalTrial(c,scenario){
+  const routes=[
+    {air:7,cost:[5,5,3],fill:5},{air:8,cost:[7,6,3],fill:6},{air:6,cost:[4,5,2],fill:4}
+  ][scenario];
+  let air=routes.air,vent=false,stage=0;
+  function swim(exit){
+    const fee=exit?routes.cost[2]:routes.cost[vent?0:1];
+    if(air-fee<1){c.mistake("Keep one bar of air in reserve");return;}
+    const [x,z]=exit?[0,-2.79]:vent?[2.36,-.88]:[-2.33,.83];
+    c.flyTo(x,z,()=>{
+      air-=fee;c.pulse([x,.56,z],0x9ee5d8,16);
+      if(exit){c.receive([x,0,z]);return;}
+      stage=1;update();
+    });
+  }
+  function update(){
+    c.objective(stage===0?"Plan the dive with enough reserve":"Reach the hatch with air left");
+    c.meter("Air "+air+" · reserve 1");
+    if(stage===0){
+      c.marker("direct","Direct tunnel",[-2.33,.72,.83],()=>{vent=false;swim(false);},{kind:"hot",caption:"Direct −"+routes.cost[1]});
+      c.marker("vent","Vent detour",[2.36,.70,-.88],()=>{vent=true;swim(false);},{kind:"clue",caption:"Vent −"+routes.cost[0]});
+    }else {c.off("direct");c.off("vent");}
+    if(stage===1&&vent)c.marker("fill","Refill at vent",[2.36,.82,-.88],()=>{
+      air+=routes.fill;vent=false;c.pulse([2.36,.72,-.88],0x91f0d8,20);update();
+    },{kind:"clue",caption:"Refill +"+routes.fill});else c.off("fill");
+    if(stage===1)c.marker("exit","Swim to hatch",[0,.80,-2.79],()=>swim(true),{kind:"hot",caption:"Hatch −"+routes.cost[2]});
+    else c.off("exit");
+    if(stage===1&&!vent&&air-routes.cost[2]<1)c.marker("back","Return to fork",[-2.33,.74,1.80],()=>{
+      air=routes.air;stage=0;update();
+    },{kind:"clue"});
+    else c.off("back");
+  }
+  function draw(m,t){
+    const z=c.localZ;
+    for(const [x,y] of [[-2.32,.83],[2.36,-.88],[0,-2.79]]){
+      ring(m,x,.08,z(y),.57,x===2.36?0x89edda:0xe6c384,.038);
+      m.box(x,.16,z(y),1.04,.26,.98,trim(),0,9);
+    }
+    for(let i=0;i<6;i++){
+      const p=(t*.64+i*.17)%1;
+      m.oval(2.34+Math.sin(i)*.13,.30+p*1.20,z(-.88+i*.02),.045,.055,.045,0xa8e7d9,0,1,7);
+    }
+    c.item(m,"box",0,.28,z(-2.79),1.06,bright());
+  }
+  return {start:update,draw};
+}
+
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

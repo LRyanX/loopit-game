@@ -60,18 +60,218 @@ const GAME = {
       -0.57
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "▤",
-      "Scan the sale box"
+      {
+        "kind": "signature",
+        "guide": [
+          "▤",
+          "Scan the sale box"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "▤",
+          "Scan the sale box"
+        ]
+      }
     ],
     [
-      "▤",
-      "Inspect the return"
+      {
+        "kind": "returns",
+        "guide": [
+          "▤",
+          "Inspect the return"
+        ],
+        "runs": [
+          {
+            "kind": "returns",
+            "title": "Returns Inspection",
+            "goalText": "Match the barcode, then check the seal",
+            "cards": [
+              [
+                "Camera",
+                "camera",
+                "C24",
+                "C24",
+                false
+              ],
+              [
+                "Mug",
+                "mug",
+                "M11",
+                "M41",
+                true
+              ],
+              [
+                "Headset",
+                "headset",
+                "H17",
+                "H17",
+                true
+              ]
+            ],
+            "award": "Returns inspected"
+          },
+          {
+            "kind": "returns",
+            "title": "Returns Inspection",
+            "goalText": "Match the barcode, then check the seal",
+            "cards": [
+              [
+                "Lamp",
+                "lamp",
+                "L18",
+                "L18",
+                true
+              ],
+              [
+                "Kettle",
+                "kettle",
+                "K13",
+                "K03",
+                false
+              ],
+              [
+                "Sneakers",
+                "shoe",
+                "S06",
+                "S06",
+                false
+              ],
+              [
+                "Gift box",
+                "gift",
+                "G25",
+                "G25",
+                true
+              ]
+            ],
+            "award": "Returns inspected"
+          },
+          {
+            "kind": "returns",
+            "title": "Returns Inspection",
+            "goalText": "Match the barcode, then check the seal",
+            "cards": [
+              [
+                "Console",
+                "box",
+                "C37",
+                "C73",
+                true
+              ],
+              [
+                "Cable",
+                "parcel",
+                "C81",
+                "C81",
+                false
+              ],
+              [
+                "Camera",
+                "camera",
+                "C14",
+                "C14",
+                true
+              ],
+              [
+                "Mug",
+                "mug",
+                "M07",
+                "M70",
+                false
+              ]
+            ],
+            "award": "Returns inspected"
+          }
+        ]
+      }
     ],
     [
-      "◉",
-      "Hit the green zone"
+      {
+        "kind": "hold",
+        "guide": [
+          "◉",
+          "Hit the green zone"
+        ],
+        "runs": [
+          {
+            "kind": "hold",
+            "title": "Packing Line",
+            "goalText": "Seal the outbound parcels",
+            "begin": "Press seal",
+            "unit": "parcels sealed",
+            "bands": [
+              [
+                0.4,
+                0.68
+              ],
+              [
+                0.45,
+                0.68
+              ],
+              [
+                0.49,
+                0.71
+              ]
+            ],
+            "object": "parcel",
+            "award": "Sealed dispatch"
+          },
+          {
+            "kind": "hold",
+            "title": "Packing Line",
+            "goalText": "Seal the outbound parcels",
+            "begin": "Press seal",
+            "unit": "parcels sealed",
+            "bands": [
+              [
+                0.32,
+                0.62
+              ],
+              [
+                0.5,
+                0.72
+              ],
+              [
+                0.43,
+                0.65
+              ]
+            ],
+            "object": "parcel",
+            "award": "Sealed dispatch"
+          },
+          {
+            "kind": "hold",
+            "title": "Packing Line",
+            "goalText": "Seal the outbound parcels",
+            "begin": "Press seal",
+            "unit": "parcels sealed",
+            "bands": [
+              [
+                0.46,
+                0.69
+              ],
+              [
+                0.3,
+                0.56
+              ],
+              [
+                0.54,
+                0.75
+              ],
+              [
+                0.38,
+                0.63
+              ]
+            ],
+            "object": "parcel",
+            "award": "Sealed dispatch"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -138,186 +338,6 @@ const GAME = {
       "object": "parcel",
       "award": "Sealed dispatch"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "returns",
-        "title": "Returns Inspection",
-        "goalText": "Match the barcode, then check the seal",
-        "cards": [
-          [
-            "Camera",
-            "camera",
-            "C24",
-            "C24",
-            false
-          ],
-          [
-            "Mug",
-            "mug",
-            "M11",
-            "M41",
-            true
-          ],
-          [
-            "Headset",
-            "headset",
-            "H17",
-            "H17",
-            true
-          ]
-        ],
-        "award": "Returns inspected"
-      },
-      {
-        "kind": "returns",
-        "title": "Returns Inspection",
-        "goalText": "Match the barcode, then check the seal",
-        "cards": [
-          [
-            "Lamp",
-            "lamp",
-            "L18",
-            "L18",
-            true
-          ],
-          [
-            "Kettle",
-            "kettle",
-            "K13",
-            "K03",
-            false
-          ],
-          [
-            "Sneakers",
-            "shoe",
-            "S06",
-            "S06",
-            false
-          ],
-          [
-            "Gift box",
-            "gift",
-            "G25",
-            "G25",
-            true
-          ]
-        ],
-        "award": "Returns inspected"
-      },
-      {
-        "kind": "returns",
-        "title": "Returns Inspection",
-        "goalText": "Match the barcode, then check the seal",
-        "cards": [
-          [
-            "Console",
-            "box",
-            "C37",
-            "C73",
-            true
-          ],
-          [
-            "Cable",
-            "parcel",
-            "C81",
-            "C81",
-            false
-          ],
-          [
-            "Camera",
-            "camera",
-            "C14",
-            "C14",
-            true
-          ],
-          [
-            "Mug",
-            "mug",
-            "M07",
-            "M70",
-            false
-          ]
-        ],
-        "award": "Returns inspected"
-      }
-    ],
-    [
-      {
-        "kind": "hold",
-        "title": "Packing Line",
-        "goalText": "Seal the outbound parcels",
-        "begin": "Press seal",
-        "unit": "parcels sealed",
-        "bands": [
-          [
-            0.4,
-            0.68
-          ],
-          [
-            0.45,
-            0.68
-          ],
-          [
-            0.49,
-            0.71
-          ]
-        ],
-        "object": "parcel",
-        "award": "Sealed dispatch"
-      },
-      {
-        "kind": "hold",
-        "title": "Packing Line",
-        "goalText": "Seal the outbound parcels",
-        "begin": "Press seal",
-        "unit": "parcels sealed",
-        "bands": [
-          [
-            0.32,
-            0.62
-          ],
-          [
-            0.5,
-            0.72
-          ],
-          [
-            0.43,
-            0.65
-          ]
-        ],
-        "object": "parcel",
-        "award": "Sealed dispatch"
-      },
-      {
-        "kind": "hold",
-        "title": "Packing Line",
-        "goalText": "Seal the outbound parcels",
-        "begin": "Press seal",
-        "unit": "parcels sealed",
-        "bands": [
-          [
-            0.46,
-            0.69
-          ],
-          [
-            0.3,
-            0.56
-          ],
-          [
-            0.54,
-            0.75
-          ],
-          [
-            0.38,
-            0.63
-          ]
-        ],
-        "object": "parcel",
-        "award": "Sealed dispatch"
-      }
-    ]
   ],
   "form": "counter",
   "controls": [
@@ -410,7 +430,37 @@ function makeFirstTask(c) {
   return {start,tick,draw,swipe,dragEnd};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const wanted=[[2,3,1],[3,1,2],[1,3,3]][scenario];
+  const x=[-2.05,0,2.05];
+  let digits=[0,0,0];
+  function verify(){
+    if(digits.some((n,i)=>n!==wanted[i])){c.mistake("Match the number of stripes in each window");return;}
+    c.flyTo(0,-2.38,()=>c.receive([0,0,-2.64]));
+  }
+  function update(){
+    c.objective("Match the stripes above each reader");
+    c.meter(wanted.join(" · ")+" target");
+    x.forEach((a,i)=>c.marker("digit"+i,"Reader "+["A","B","C"][i],[a,.76,.58],()=>{
+      digits[i]=(digits[i]+1)%4;c.tone([310+digits[i]*91]);update();
+    },{kind:digits[i]===wanted[i]?"good":"clue",caption:String(digits[i])}));
+    c.marker("verify","Verify receipt",[0,.73,-2.65],verify,{kind:"hot"});
+  }
+  function draw(m){
+    x.forEach((a,i)=>{
+      const z=c.localZ;
+      m.box(a,.28,z(-.38),1.58,.52,2.56,ink(),0,4);
+      m.box(a,1.04,z(-1.12),1.44,.46,.28,0xe4dfbf);
+      for(let j=0;j<3;j++){
+        if(j<wanted[i])m.box(a+(j-1)*.30,1.05,z(-.96),.13,.28,.045,ink());
+        if(j<digits[i])m.box(a+(j-1)*.30,.58,z(.50),.13,.053,.35,0x9be2bd,0,1);
+      }
+    });
+  }
+  return {start:update,draw};
+}
+
+function make_returns(c,q){
   const bins=["Restock","Reseal","Reject"],colors=[0x84d9b2,0xefd184,0xd79283],lanes=[-2.45,0,2.45];
   let index=0,seen=false,placed=[];
   function inspect(){
@@ -464,12 +514,13 @@ function makeSecondTask(c,q){
   return {start,draw};
 }
 
-function makeThirdTask(c,q){
-  let p=0,engaged=false,pieces=0,age=0;
+function make_hold(c,q){
+  let p=0,engaged=false,pieces=0,age=0,hot=false;
   const bands=q.bands;
   const inBand=()=>p>=bands[pieces][0]&&p<=bands[pieces][1];
   function arm(){
     if(engaged){release();return;}
+    if(hot){c.feedback(false,"Cool the drill before starting the next core");return;}
     engaged=true;age=0;p=0;
     c.tone([266,370]);show();
   }
@@ -481,14 +532,20 @@ function makeThirdTask(c,q){
     c.pulse([x,.67,-.43],bright(),18);
     pieces++;engaged=false;p=0;
     if(pieces===bands.length){c.receive([0,0,-.46]);return;}
+    hot=Boolean(q.coolant);
     c.feedback(true,"Clean result");show();
   }
   function show(){
-    c.objective(engaged?"Release inside the green band":q.goalText);
+    c.objective(hot?"Cool the drill for the next layer":engaged?"Release inside the green band":q.goalText);
     c.meter(pieces+"/"+bands.length+" "+q.unit);
-    c.tool("press",engaged?(inBand()?"Release now":"Release"):q.begin,arm);
+    if(hot){
+      c.hideTools();
+      c.marker("cool","Open coolant valve",[2.15,.73,.63],()=>c.flyTo(2.15,.56,()=>{
+        hot=false;c.off("cool");c.pulse([2.15,.60,.63],0x8be4e0,14);c.tone([310,550]);show();
+      }),{kind:"clue"});
+    }else c.tool("press",engaged?(inBand()?"Release now":"Release"):q.begin,arm);
   }
-  function start(){p=0;engaged=false;pieces=0;age=0;show();}
+  function start(){p=0;engaged=false;pieces=0;age=0;hot=false;show();}
   function tick(dt){
     if(!engaged)return;
     const prior=inBand();
@@ -509,19 +566,23 @@ function makeThirdTask(c,q){
     m.box(gx,.91,gz,.35,1.61,.21,ink());
     m.box(gx,.17+((min+max)/2)*1.46,gz+.12,.25,(max-min)*1.43,.035,0x74d9a8,0,1);
     m.box(gx,.17+p*1.46,gz+.154,.36,.057,.043,white,0,1);
+    if(q.coolant)c.item(m,"gear",2.15,.10,z(.63),1.04,hot?0xe0a17e:0x9bd8cb);
     for(let i=0;i<bands.length;i++)c.item(m,q.object,(i-(bands.length-1)/2)*.83,.04,z(2.18),.69,i<pieces?0x79bfa0:trim());
   }
   return {start,tick,draw};
 }
 
+const taskFactories = {returns:make_returns, hold:make_hold};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

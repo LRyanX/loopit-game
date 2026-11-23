@@ -60,18 +60,248 @@ const GAME = {
       0.38
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "↓",
-      "Catch the price drop"
+      {
+        "kind": "signature",
+        "guide": [
+          "↓",
+          "Catch the price drop"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "↓",
+          "Catch the price drop"
+        ]
+      }
     ],
     [
-      "$",
-      "Make a trade-in"
+      {
+        "kind": "offers",
+        "guide": [
+          "$",
+          "Make a trade-in"
+        ],
+        "runs": [
+          {
+            "kind": "offers",
+            "title": "Member Trade-In",
+            "goalText": "Trade eligible gear for a camera you can afford",
+            "trade": [
+              [
+                "Broken gear",
+                30,
+                false
+              ],
+              [
+                "Working gear",
+                25,
+                true
+              ],
+              [
+                "Old case",
+                8,
+                true
+              ]
+            ],
+            "stock": [
+              [
+                "Camera",
+                64,
+                "Camera",
+                "camera"
+              ],
+              [
+                "Lens",
+                31,
+                "Lens",
+                "lamp"
+              ],
+              [
+                "Headset",
+                38,
+                "Audio",
+                "headset"
+              ]
+            ],
+            "must": "Camera",
+            "limit": 45,
+            "award": "Trade-in accepted"
+          },
+          {
+            "kind": "offers",
+            "title": "Member Trade-In",
+            "goalText": "Trade in for a headset under budget",
+            "trade": [
+              [
+                "Cracked lens",
+                29,
+                false
+              ],
+              [
+                "Working tuner",
+                19,
+                true
+              ],
+              [
+                "Plain case",
+                6,
+                true
+              ]
+            ],
+            "stock": [
+              [
+                "Camera",
+                49,
+                "Camera",
+                "camera"
+              ],
+              [
+                "Headset",
+                41,
+                "Headset",
+                "headset"
+              ],
+              [
+                "Speaker",
+                29,
+                "Audio",
+                "lamp"
+              ]
+            ],
+            "must": "Headset",
+            "limit": 24,
+            "award": "Trade-in accepted"
+          },
+          {
+            "kind": "offers",
+            "title": "Member Trade-In",
+            "goalText": "Trade in for a lens under budget",
+            "trade": [
+              [
+                "Scuffed case",
+                11,
+                true
+              ],
+              [
+                "Working tripod",
+                27,
+                true
+              ],
+              [
+                "Broken camera",
+                35,
+                false
+              ]
+            ],
+            "stock": [
+              [
+                "Headset",
+                31,
+                "Headset",
+                "headset"
+              ],
+              [
+                "Lens",
+                50,
+                "Lens",
+                "lamp"
+              ],
+              [
+                "Camera",
+                67,
+                "Camera",
+                "camera"
+              ]
+            ],
+            "must": "Lens",
+            "limit": 25,
+            "award": "Trade-in accepted"
+          }
+        ]
+      }
     ],
     [
-      "◉",
-      "Hit the green zone"
+      {
+        "kind": "hold",
+        "guide": [
+          "◉",
+          "Hit the green zone"
+        ],
+        "runs": [
+          {
+            "kind": "hold",
+            "title": "Price Lock Terminal",
+            "goalText": "Lock the printed offer at the pressure mark",
+            "begin": "Engage lock",
+            "unit": "offers locked",
+            "bands": [
+              [
+                0.38,
+                0.67
+              ],
+              [
+                0.51,
+                0.74
+              ]
+            ],
+            "object": "coupon",
+            "award": "Offers permanently locked"
+          },
+          {
+            "kind": "hold",
+            "title": "Price Lock Terminal",
+            "goalText": "Lock the printed offer at the pressure mark",
+            "begin": "Engage lock",
+            "unit": "offers locked",
+            "bands": [
+              [
+                0.32,
+                0.62
+              ],
+              [
+                0.5,
+                0.72
+              ],
+              [
+                0.43,
+                0.65
+              ]
+            ],
+            "object": "coupon",
+            "award": "Offers permanently locked"
+          },
+          {
+            "kind": "hold",
+            "title": "Price Lock Terminal",
+            "goalText": "Lock the printed offer at the pressure mark",
+            "begin": "Engage lock",
+            "unit": "offers locked",
+            "bands": [
+              [
+                0.46,
+                0.69
+              ],
+              [
+                0.3,
+                0.56
+              ],
+              [
+                0.54,
+                0.75
+              ],
+              [
+                0.38,
+                0.63
+              ]
+            ],
+            "object": "coupon",
+            "award": "Offers permanently locked"
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -150,216 +380,6 @@ const GAME = {
       "object": "coupon",
       "award": "Offers permanently locked"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "offers",
-        "title": "Member Trade-In",
-        "goalText": "Trade eligible gear for a camera you can afford",
-        "trade": [
-          [
-            "Broken gear",
-            30,
-            false
-          ],
-          [
-            "Working gear",
-            25,
-            true
-          ],
-          [
-            "Old case",
-            8,
-            true
-          ]
-        ],
-        "stock": [
-          [
-            "Camera",
-            64,
-            "Camera",
-            "camera"
-          ],
-          [
-            "Lens",
-            31,
-            "Lens",
-            "lamp"
-          ],
-          [
-            "Headset",
-            38,
-            "Audio",
-            "headset"
-          ]
-        ],
-        "must": "Camera",
-        "limit": 45,
-        "award": "Trade-in accepted"
-      },
-      {
-        "kind": "offers",
-        "title": "Member Trade-In",
-        "goalText": "Trade in for a headset under budget",
-        "trade": [
-          [
-            "Cracked lens",
-            29,
-            false
-          ],
-          [
-            "Working tuner",
-            19,
-            true
-          ],
-          [
-            "Plain case",
-            6,
-            true
-          ]
-        ],
-        "stock": [
-          [
-            "Camera",
-            49,
-            "Camera",
-            "camera"
-          ],
-          [
-            "Headset",
-            41,
-            "Headset",
-            "headset"
-          ],
-          [
-            "Speaker",
-            29,
-            "Audio",
-            "lamp"
-          ]
-        ],
-        "must": "Headset",
-        "limit": 24,
-        "award": "Trade-in accepted"
-      },
-      {
-        "kind": "offers",
-        "title": "Member Trade-In",
-        "goalText": "Trade in for a lens under budget",
-        "trade": [
-          [
-            "Scuffed case",
-            11,
-            true
-          ],
-          [
-            "Working tripod",
-            27,
-            true
-          ],
-          [
-            "Broken camera",
-            35,
-            false
-          ]
-        ],
-        "stock": [
-          [
-            "Headset",
-            31,
-            "Headset",
-            "headset"
-          ],
-          [
-            "Lens",
-            50,
-            "Lens",
-            "lamp"
-          ],
-          [
-            "Camera",
-            67,
-            "Camera",
-            "camera"
-          ]
-        ],
-        "must": "Lens",
-        "limit": 25,
-        "award": "Trade-in accepted"
-      }
-    ],
-    [
-      {
-        "kind": "hold",
-        "title": "Price Lock Terminal",
-        "goalText": "Lock the printed offer at the pressure mark",
-        "begin": "Engage lock",
-        "unit": "offers locked",
-        "bands": [
-          [
-            0.38,
-            0.67
-          ],
-          [
-            0.51,
-            0.74
-          ]
-        ],
-        "object": "coupon",
-        "award": "Offers permanently locked"
-      },
-      {
-        "kind": "hold",
-        "title": "Price Lock Terminal",
-        "goalText": "Lock the printed offer at the pressure mark",
-        "begin": "Engage lock",
-        "unit": "offers locked",
-        "bands": [
-          [
-            0.32,
-            0.62
-          ],
-          [
-            0.5,
-            0.72
-          ],
-          [
-            0.43,
-            0.65
-          ]
-        ],
-        "object": "coupon",
-        "award": "Offers permanently locked"
-      },
-      {
-        "kind": "hold",
-        "title": "Price Lock Terminal",
-        "goalText": "Lock the printed offer at the pressure mark",
-        "begin": "Engage lock",
-        "unit": "offers locked",
-        "bands": [
-          [
-            0.46,
-            0.69
-          ],
-          [
-            0.3,
-            0.56
-          ],
-          [
-            0.54,
-            0.75
-          ],
-          [
-            0.38,
-            0.63
-          ]
-        ],
-        "object": "coupon",
-        "award": "Offers permanently locked"
-      }
-    ]
   ],
   "form": "hub",
   "controls": [
@@ -440,7 +460,29 @@ function makeFirstTask(c){
   return {start,tick,draw};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const cap=[42,55,36][scenario],fee=[4,5,3][scenario];
+  const alerts=[[31,38,41],[46,50,53],[28,33,35]][scenario];
+  let quote=null;
+  const accept=()=>{if(quote!==cap-fee){c.mistake("Reserve the fee before setting the alert");return;}
+    c.flyTo(0,-2.29,()=>c.receive([0,0,-2.51]));};
+  function update(){
+    c.objective("Set the highest alert the budget allows");
+    c.meter("$"+cap+" budget · $"+fee+" fee");
+    alerts.forEach((p,i)=>c.marker("alert"+i,"Alert $"+p,[(i-1)*1.91,.69,.93],()=>{quote=p;c.tone();update();},
+      {kind:quote===p?"good":"clue",caption:"$"+p}));
+    if(quote!==null)c.marker("arm","Activate alert",[0,.69,-2.40],accept,{kind:"hot"});
+  }
+  function draw(m){
+    m.box(0,.16,c.localZ(.33),6.14,.28,2.51,ink());
+    alerts.forEach((p,i)=>m.box((i-1)*1.91,.31+(p/cap)*.50,c.localZ(.54),.92,(p/cap)*1.01,.48,
+      p===quote?0xa0dcb9:0xb0bad0,0,1));
+    c.item(m,"bell",0,.30,c.localZ(-2.41),1.40,quote===cap-fee?0x95dcb3:bright());
+  }
+  return {start:update,draw};
+}
+
+function make_offers(c,q){
   let credit=-1,chosen=-1;
   const x=i=>(i-1)*2.29;
   function chooseCredit(i){credit=i;chosen=-1;c.feedback(true);show();}
@@ -482,12 +524,13 @@ function makeSecondTask(c,q){
   return {start,draw};
 }
 
-function makeThirdTask(c,q){
-  let p=0,engaged=false,pieces=0,age=0;
+function make_hold(c,q){
+  let p=0,engaged=false,pieces=0,age=0,hot=false;
   const bands=q.bands;
   const inBand=()=>p>=bands[pieces][0]&&p<=bands[pieces][1];
   function arm(){
     if(engaged){release();return;}
+    if(hot){c.feedback(false,"Cool the drill before starting the next core");return;}
     engaged=true;age=0;p=0;
     c.tone([266,370]);show();
   }
@@ -499,14 +542,20 @@ function makeThirdTask(c,q){
     c.pulse([x,.67,-.43],bright(),18);
     pieces++;engaged=false;p=0;
     if(pieces===bands.length){c.receive([0,0,-.46]);return;}
+    hot=Boolean(q.coolant);
     c.feedback(true,"Clean result");show();
   }
   function show(){
-    c.objective(engaged?"Release inside the green band":q.goalText);
+    c.objective(hot?"Cool the drill for the next layer":engaged?"Release inside the green band":q.goalText);
     c.meter(pieces+"/"+bands.length+" "+q.unit);
-    c.tool("press",engaged?(inBand()?"Release now":"Release"):q.begin,arm);
+    if(hot){
+      c.hideTools();
+      c.marker("cool","Open coolant valve",[2.15,.73,.63],()=>c.flyTo(2.15,.56,()=>{
+        hot=false;c.off("cool");c.pulse([2.15,.60,.63],0x8be4e0,14);c.tone([310,550]);show();
+      }),{kind:"clue"});
+    }else c.tool("press",engaged?(inBand()?"Release now":"Release"):q.begin,arm);
   }
-  function start(){p=0;engaged=false;pieces=0;age=0;show();}
+  function start(){p=0;engaged=false;pieces=0;age=0;hot=false;show();}
   function tick(dt){
     if(!engaged)return;
     const prior=inBand();
@@ -527,19 +576,23 @@ function makeThirdTask(c,q){
     m.box(gx,.91,gz,.35,1.61,.21,ink());
     m.box(gx,.17+((min+max)/2)*1.46,gz+.12,.25,(max-min)*1.43,.035,0x74d9a8,0,1);
     m.box(gx,.17+p*1.46,gz+.154,.36,.057,.043,white,0,1);
+    if(q.coolant)c.item(m,"gear",2.15,.10,z(.63),1.04,hot?0xe0a17e:0x9bd8cb);
     for(let i=0;i<bands.length;i++)c.item(m,q.object,(i-(bands.length-1)/2)*.83,.04,z(2.18),.69,i<pieces?0x79bfa0:trim());
   }
   return {start,tick,draw};
 }
 
+const taskFactories = {offers:make_offers, hold:make_hold};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},

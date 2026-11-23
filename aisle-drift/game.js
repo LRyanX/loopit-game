@@ -60,18 +60,119 @@ const GAME = {
       0
     ]
   ],
-  "guides": [
+  "chapters": [
     [
-      "↔",
-      "Dodge and collect"
+      {
+        "kind": "signature",
+        "guide": [
+          "↔",
+          "Dodge and collect"
+        ]
+      },
+      {
+        "kind": "special",
+        "guide": [
+          "↔",
+          "Dodge and collect"
+        ]
+      }
     ],
     [
-      "↓",
-      "Catch the sale boxes"
+      {
+        "kind": "catch",
+        "guide": [
+          "↓",
+          "Catch the sale boxes"
+        ],
+        "runs": [
+          {
+            "kind": "catch",
+            "title": "High Shelf Drops",
+            "goalText": "Catch the marked sale boxes as they drop",
+            "begin": "Start shelf feed",
+            "drops": [
+              -1.04,
+              1.04,
+              2.08
+            ],
+            "object": "gift",
+            "award": "Shelf drops collected"
+          },
+          {
+            "kind": "catch",
+            "title": "High Shelf Drops",
+            "goalText": "Catch the marked sale boxes as they drop",
+            "begin": "Start shelf feed",
+            "drops": [
+              0,
+              -2.08,
+              0,
+              2.08
+            ],
+            "object": "gift",
+            "award": "Shelf drops collected"
+          },
+          {
+            "kind": "catch",
+            "title": "High Shelf Drops",
+            "goalText": "Catch the marked sale boxes as they drop",
+            "begin": "Start shelf feed",
+            "drops": [
+              1.04,
+              -1.04,
+              -2.08,
+              0
+            ],
+            "object": "gift",
+            "award": "Shelf drops collected"
+          }
+        ]
+      }
     ],
     [
-      "→",
-      "Cross in the gaps"
+      {
+        "kind": "traffic",
+        "guide": [
+          "→",
+          "Cross in the gaps"
+        ],
+        "runs": [
+          {
+            "kind": "traffic",
+            "title": "Busy Checkout Crossing",
+            "goalText": "Wait for gaps in the crossing traffic",
+            "wait": "Wait for a gap",
+            "gates": 3,
+            "object": "person",
+            "tint": 15976834,
+            "award": "Cart reached checkout"
+          },
+          {
+            "kind": "traffic",
+            "title": "Busy Checkout Crossing",
+            "goalText": "Wait for gaps in the crossing traffic",
+            "wait": "Wait for a gap",
+            "gates": 4,
+            "object": "person",
+            "tint": 15976834,
+            "award": "Cart reached checkout",
+            "period": 2.1,
+            "offset": 0.26
+          },
+          {
+            "kind": "traffic",
+            "title": "Busy Checkout Crossing",
+            "goalText": "Wait for gaps in the crossing traffic",
+            "wait": "Wait for a gap",
+            "gates": 4,
+            "object": "person",
+            "tint": 15976834,
+            "award": "Cart reached checkout",
+            "period": 2.48,
+            "offset": 0.48
+          }
+        ]
+      }
     ]
   ],
   "ending": {
@@ -109,87 +210,6 @@ const GAME = {
       "tint": 15976834,
       "award": "Cart reached checkout"
     }
-  ],
-  "scenarios": [
-    [
-      {
-        "kind": "catch",
-        "title": "High Shelf Drops",
-        "goalText": "Catch the marked sale boxes as they drop",
-        "begin": "Start shelf feed",
-        "drops": [
-          -1.04,
-          1.04,
-          2.08
-        ],
-        "object": "gift",
-        "award": "Shelf drops collected"
-      },
-      {
-        "kind": "catch",
-        "title": "High Shelf Drops",
-        "goalText": "Catch the marked sale boxes as they drop",
-        "begin": "Start shelf feed",
-        "drops": [
-          0,
-          -2.08,
-          0,
-          2.08
-        ],
-        "object": "gift",
-        "award": "Shelf drops collected"
-      },
-      {
-        "kind": "catch",
-        "title": "High Shelf Drops",
-        "goalText": "Catch the marked sale boxes as they drop",
-        "begin": "Start shelf feed",
-        "drops": [
-          1.04,
-          -1.04,
-          -2.08,
-          0
-        ],
-        "object": "gift",
-        "award": "Shelf drops collected"
-      }
-    ],
-    [
-      {
-        "kind": "traffic",
-        "title": "Busy Checkout Crossing",
-        "goalText": "Wait for gaps in the crossing traffic",
-        "wait": "Wait for a gap",
-        "gates": 3,
-        "object": "person",
-        "tint": 15976834,
-        "award": "Cart reached checkout"
-      },
-      {
-        "kind": "traffic",
-        "title": "Busy Checkout Crossing",
-        "goalText": "Wait for gaps in the crossing traffic",
-        "wait": "Wait for a gap",
-        "gates": 4,
-        "object": "person",
-        "tint": 15976834,
-        "award": "Cart reached checkout",
-        "period": 2.1,
-        "offset": 0.26
-      },
-      {
-        "kind": "traffic",
-        "title": "Busy Checkout Crossing",
-        "goalText": "Wait for gaps in the crossing traffic",
-        "wait": "Wait for a gap",
-        "gates": 4,
-        "object": "person",
-        "tint": 15976834,
-        "award": "Cart reached checkout",
-        "period": 2.48,
-        "offset": 0.48
-      }
-    ]
   ],
   "form": "aisle",
   "controls": [
@@ -292,7 +312,41 @@ function makeFirstTask(c){
   return {start,tick,draw,key,tap,swipe,dragEnd,lockMove:true};
 }
 
-function makeSecondTask(c,q){
+function makeSpecialTask(c,scenario){
+  const line=[-.94,-1.48,-1.94][scenario],pace=[2.1,2.4,2.68][scenario];
+  let pos=3.40,moving=false,braking=false,speed=0;
+  function release(){
+    if(!moving){moving=true;speed=pace;update();return;}
+    braking=true;update();
+  }
+  const ready=()=>pos>line+.35&&pos<line+.74;
+  function update(){
+    c.objective(!moving?"Roll the cart to the pickup line":"Brake at the green pickup line");
+    c.tool("roll",!moving?"Roll cart":ready()?"Brake now":"Brake cart",release,braking);
+  }
+  function tick(dt){
+    if(!moving)return;
+    const was=ready();
+    if(braking)speed=Math.max(0,speed-dt*5.05);
+    pos-=speed*dt;c.player.z=c.localZ(pos);
+    if(braking&&speed===0||pos<-3.68){
+      moving=false;braking=false;
+      if(Math.abs(pos-line)<.42){c.receive([0,0,line]);return;}
+      c.mistake("Stop the cart inside the pickup stripe");
+      pos=3.40;c.player.z=c.localZ(pos);update();
+    }else if(was!==ready())update();
+  }
+  function draw(m){
+    const z=c.localZ;
+    m.box(0,.043,z(.13),2.42,.062,7.59,trim());
+    m.box(0,.09,z(line),2.30,.058,.83,0x8cdbab,0,1);
+    m.box(0,.093,z(line+.67),2.14,.034,.11,0xe6c584,0,1);
+    for(const x of [-1.40,1.40])c.item(m,"parcel",x,.04,z(line),.91,0xe3ae73);
+  }
+  return {start:update,tick,draw,lockMove:true};
+}
+
+function make_catch(c,q){
   let x=0,target=0,phase=0,seen=0,aging=false;
   const shapes=[0xf1c46f,0xcb8992,0x78c8b0,0xa6a5d8];
   function start(){
@@ -336,7 +390,7 @@ function makeSecondTask(c,q){
   return {start,tick,draw,swipe,lockMove:true};
 }
 
-function makeThirdTask(c,q){
+function make_traffic(c,q){
   let next=0,clock=0,current=3.18,path=null,last=false;
   const period=q.period??2.32,offset=q.offset??.51,scale=period/2.32;
   const markerZ=i=>2.74-i*1.62;
@@ -390,14 +444,17 @@ function makeThirdTask(c,q){
   return {start,tick,draw,tap,lockMove:true};
 }
 
+const taskFactories = {catch:make_catch, traffic:make_traffic};
 function makeChallenge(c){
-  const makeRoom=[null,makeSecondTask,makeThirdTask];
   let active;
   return {
     start(stage,run,challenge){
-      const scenario=(run+challenge)%3;
-      active=stage===0?makeFirstTask(c):makeRoom[stage](c,GAME.scenarios[stage-1][scenario]);
-      active.start(stage===0?scenario:stage,0);
+      const chapter=GAME.chapters[stage][challenge];
+      const scenario=(run+(stage===0?0:stage))%3;
+      active=chapter.kind==="signature"?makeFirstTask(c):chapter.kind==="special"?makeSpecialTask(c,scenario):
+        chapter.kind==="climax"?makeFinalTrial(c,scenario):
+        taskFactories[chapter.kind](c,chapter.runs[scenario]);
+      active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
     draw(m,t){active.draw(m,t);},
