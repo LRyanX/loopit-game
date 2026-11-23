@@ -60,6 +60,31 @@ const GAME = {
       0.68
     ]
   ],
+  "guides": [
+    [
+      "▦",
+      "Pack the cart"
+    ],
+    [
+      "⚖",
+      "Balance the scale"
+    ],
+    [
+      "→",
+      "Reach the gold exit"
+    ]
+  ],
+  "ending": {
+    "kind": "cart",
+    "title": "Cart loaded",
+    "summary": "Your packed cart rolls out of the loading bay.",
+    "pieces": [
+      "shoe",
+      "lamp",
+      "bag"
+    ],
+    "prize": "bag"
+  },
   "tasks": [
     {
       "kind": "weigh",
@@ -179,9 +204,9 @@ function makeFirstTask(c){
     });
     entries.forEach((v,i)=>c.marker("pick"+i,v.name,[(i-(entries.length-1)/2)*2.02,.68,3.24],()=>{
       chosen=i;rotation=0;refresh();
-    },{kind:i===chosen?"good":"clue",disabled:packed.some(e=>e.index===i)}));
+    },{kind:"clue",hidden:i===chosen||packed.some(e=>e.index===i)}));
     for(let y=0;y<3;y++)for(let x=0;x<3;x++){
-      c.marker("slot"+x+y,["A","B","C"][x]+(y+1),[padX(x),.14,padZ(y)],()=>place(x,y),{kind:"hot"});
+      c.marker("slot"+x+y,["A","B","C"][x]+(y+1),[padX(x),.17,padZ(y)],()=>place(x,y),{tile:true});
     }
   }
   function place(x,y){
@@ -200,13 +225,15 @@ function makeFirstTask(c){
   function draw(m){
     const local=c.localZ;
     m.box(0,.04,local(-.21),4.65,.106,5.03,ink());
+    const carrying=entries[chosen],ghost=dropCell?shape(chosen,rotation).map(([a,b])=>[dropCell[0]+a,dropCell[1]+b]):[];
     for(let y=0;y<3;y++)for(let x=0;x<3;x++){
       const found=packed.find(p=>p.cells.some(([a,b])=>a===x&&b===y));
       const blocked=floorIndex===1&&x===2&&y===2;
-      const hover=dropCell?.[0]===x&&dropCell?.[1]===y;
+      const hover=ghost.some(([a,b])=>a===x&&b===y);
       m.box(padX(x),.137,local(padZ(y)),1.32,.13,1.42,blocked?0x706761:hover?0xf7d894:found?entries[found.index].tint:0xbfdad2);
       if(blocked)m.box(padX(x),.289,local(padZ(y)),1.10,.18,1.26,0x76726e);
       if(found)m.box(padX(x),.31,local(padZ(y)),1.16,.22,1.24,entries[found.index].tint);
+      if(hover&&!found&&!blocked)m.box(padX(x),.238,local(padZ(y)),1.08,.035,1.13,carrying.tint);
     }
     entries.forEach((p,i)=>{
       const x=(i-(entries.length-1)/2)*2.02;
@@ -215,6 +242,10 @@ function makeFirstTask(c){
       for(const [a,b] of shape(i,i===chosen?rotation:0))
         m.box(x+(a-.6)*.37,.35,local(3.28+(b-.33)*.34),.351,.29,.32,p.tint);
     });
+    if(!packed.length&&!dropCell){
+      const x=(chosen-(entries.length-1)/2)*2.02,z=local(2.58),y=.073;
+      m.tri([x-.25,y,z+.15],[x+.25,y,z+.15],[x,y,z-.19],0xffd589,1);
+    }
   }
   function swipe(p){
     if(!p.floor||!p.origin||p.origin.z<1.7)return false;

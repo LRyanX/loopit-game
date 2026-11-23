@@ -60,6 +60,31 @@ const GAME = {
       0.38
     ]
   ],
+  "guides": [
+    [
+      "↓",
+      "Catch the price drop"
+    ],
+    [
+      "$",
+      "Make a trade-in"
+    ],
+    [
+      "◉",
+      "Hit the green zone"
+    ]
+  ],
+  "ending": {
+    "kind": "price",
+    "title": "Price locked",
+    "summary": "The confirmed price stays locked at checkout.",
+    "pieces": [
+      "headset",
+      "camera",
+      "receipt"
+    ],
+    "prize": "receipt"
+  },
   "tasks": [
     {
       "kind": "offers",
@@ -208,7 +233,7 @@ function makeFirstTask(c){
 function makeSecondTask(c,q){
   let credit=-1,chosen=-1;
   const x=i=>(i-1)*2.29;
-  function chooseCredit(i){credit=i;c.feedback(true);show();}
+  function chooseCredit(i){credit=i;chosen=-1;c.feedback(true);show();}
   function pick(i){chosen=i;c.tone([392,523]);show();}
   function claim(){
     if(credit<0||chosen<0)return;
@@ -221,12 +246,21 @@ function makeSecondTask(c,q){
     c.flyTo(0,-3.06,()=>c.receive([0,0,-3.16],"$"+total+" after trade-in"));
   }
   function show(){
-    c.objective(q.goalText);
+    c.objective(credit<0?q.goalText:chosen<0?"Choose eligible gear":"Confirm your trade-in");
     const net=credit>=0&&chosen>=0?q.stock[chosen][1]-q.trade[credit][1]:null;
     c.meter(q.must+" · $"+q.limit+" max"+(net!==null?" · net $"+net:""));
-    q.trade.forEach(([name,value,valid],i)=>c.marker("trade"+i,name+" +$"+value,[x(i),.74,2.31],()=>chooseCredit(i),{kind:credit===i?"good":"clue"}));
-    q.stock.forEach(([name,price],i)=>c.marker("pick"+i,name+" $"+price,[x(i),.77,-.58],()=>pick(i),{kind:chosen===i?"good":"hot"}));
-    c.tool("claim","Apply trade-in",claim,credit<0||chosen<0);
+    q.trade.forEach(([name,value],i)=>{
+      if(credit<0)c.marker("trade"+i,name+" +$"+value,[x(i),.74,2.31],()=>chooseCredit(i),{kind:"clue"});
+      else c.off("trade"+i);
+    });
+    q.stock.forEach(([name,price],i)=>{
+      if(credit>=0)c.marker("pick"+i,name+" $"+price,[x(i),.77,-.58],()=>pick(i),{kind:chosen===i?"good":"hot"});
+      else c.off("pick"+i);
+    });
+    if(credit>=0)c.marker("change","Change trade-in",[x(credit),.74,2.31],()=>chooseCredit(-1),{kind:"clue",caption:"Change"});
+    else c.off("change");
+    if(chosen>=0)c.tool("claim","Apply trade-in",claim);
+    else c.hideTools();
   }
   function start(){credit=-1;chosen=-1;show();}
   function draw(m,t){

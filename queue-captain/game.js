@@ -60,6 +60,31 @@ const GAME = {
       0
     ]
   ],
+  "guides": [
+    [
+      "◫",
+      "Assign a cashier"
+    ],
+    [
+      "●",
+      "Serve when lit"
+    ],
+    [
+      "⇄",
+      "Match items to bins"
+    ]
+  ],
+  "ending": {
+    "kind": "lanes",
+    "title": "Queues cleared",
+    "summary": "The last shoppers collect their bags and head out.",
+    "pieces": [
+      "person",
+      "person",
+      "person"
+    ],
+    "prize": "receipt"
+  },
   "tasks": [
     {
       "kind": "service",

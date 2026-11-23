@@ -936,8 +936,224 @@ function treasureLure(m,z,x=0,small=1){
 
 "use strict";
 
-const ui=Object.fromEntries(["game","playfield","theme","place","count","goal","metric","attempt","reset","sound","targets","pins","tools","toast","reveal","award",
-  "award-count","finish","finish-count","result-items","replay","retry","failure"].map(key=>[key,document.getElementById(key)]));
+const finaleDuration=()=>reduced?1.15:3.45;
+const finaleEase=(t,a,b)=>curve((t-a)/(b-a));
+const finaleColors=()=>[GAME.palette.accent,GAME.palette.trim,GAME.palette.loot];
+
+function finaleChest(m,z,t,prize){
+  const lift=finaleEase(t,.58,.83),gold=GAME.palette.loot;
+  m.box(0,.26,z,1.52,.48,1.16,0x795044);
+  m.box(0,.51+lift*.43,z-.31*lift,1.60,.155,1.22,gold,0,4,lift*1.26);
+  for(const s of [-1,1])m.box(s*.50,.26,z+.576,.097,.44,.048,gold,0,4);
+  m.gem(0,.42,z+.607,.085,.164,.031,gold,4,0,1);
+  if(lift>.04){
+    m.box(0,.52,z,1.12,.043,.80,0xffd897,0,1);
+    item(m,prize,0,.52+lift*.71,z,1.08,gold,lift*.60);
+  }
+}
+
+function chartPiece(m,x,y,z,color,stone,part,tilt=0,size=1){
+  m.box(x,y,z,.875*size,.11*size,1.23*size,color,0,0,tilt);
+  const points=[[-.52,-.39,.02,.29],[.29,.44,.11,-.16],[-.16,-.03,.24,.42]][part];
+  for(let p=0;p<3;p++){
+    const a=[x+(-.43+p*.29)*size,y+.064*size,z+points[p]*.68*size];
+    const b=[x+(-.43+(p+1)*.29)*size,y+.064*size,z+points[p+1]*.68*size];
+    m.tube(a,b,.022*size,.022*size,stone?0xf4cd92:0xa7f7da,6,1);
+  }
+}
+
+function chartEnding(m,t,z,stone,prize){
+  const colors=finaleColors();
+  const chartZ=z+.50;
+  m.box(0,.30,chartZ,3.14,.19,1.63,ink());
+  for(let i=0;i<3;i++){
+    const n=i-1,join=finaleEase(t,.06+i*.075,.50+i*.045);
+    const x=n*(2.07-join*1.19),y=.43+(1-join)*(.43+.16*(1-Math.abs(n)));
+    const partZ=chartZ+(1-join)*n*.52;
+    chartPiece(m,x,y,partZ,stone?colors[(i+1)%3]:0x568c92,stone,i,(1-join)*n*.24);
+    m.gem(x,y+.065,partZ-.31,.075,.18,.092,colors[i],4,0,1);
+  }
+  if(t>.57){
+    const goal=finaleEase(t,.57,.82);
+    ring(m,0,.475,chartZ+.24,.23+goal*.14,0xffde95,.038);
+    m.tube([0,.50,chartZ+.24],[0,.58+goal*.34,z-1.00],.034,.021,0xffdc8a,8,1);
+  }
+  if(stone){
+    const door=finaleEase(t,.57,.86);
+    for(const s of [-1,1])m.box(s*(.45+door*.72),.53,z-1.13,.87,.82,.24,trim(),0,9);
+    m.box(0,.12,z-1.39,2.35,.23,1.07,ink());
+    if(door>.08)item(m,prize,0,.19+door*.70,z-1.52,1.53,colors[2],door*.50);
+  }else finaleChest(m,z-1.16,t,prize);
+}
+
+function signalEnding(m,t,z,kind,pieces,prize){
+  const lights=kind==="aurora"?[0x90e4c2,0xc299f4,0x84baff]:[0x85e3d5,0xa69ee9,0xffd997];
+  for(let i=0;i<3;i++){
+    const x=(i-1)*1.25,pz=z+.72+Math.abs(i-1)*.23;
+    const rise=finaleEase(t,i*.10,.34+i*.10),beam=finaleEase(t,.30+i*.10,.51+i*.10);
+    pedestal(m,x,pz,.80,trim());
+    item(m,pieces[i],x,.28+rise*.39,pz,kind==="chord"?.96:1.04,lights[i],rise*.7);
+    if(beam<.05)continue;
+    if(kind==="chord"){
+      for(let k=0;k<3;k++)ring(m,x,.24+k*.09,pz,.34+beam*.52+k*.15,lights[i],.021);
+    }else{
+      const to=[0,.82,z-.77],from=[x,.83,pz];
+      m.tube(from,lerpPoint(from,to,beam),.035,.022,lights[i],8,1);
+      if(kind==="aurora")m.tube([x,.94,pz],lerpPoint([x,.94,pz],[0,1.50,z-.77],beam),.018,.012,lights[i],8,1);
+    }
+  }
+  if(kind==="chord")finaleChest(m,z-1.03,t,prize);
+  else{
+    const arrive=finaleEase(t,.58,.84);
+    pedestal(m,0,z-.96,1.58,trim());
+    if(arrive>.02){
+      item(m,prize,0,.37+arrive*.68,z-.96,1.55,lights[2],arrive*.90);
+      for(let j=0;j<2;j++)ring(m,0,.33+j*.21,z-.96,.42+arrive*.47,lights[j],.027);
+    }
+  }
+}
+
+function machineEnding(m,t,z,kind,pieces,prize){
+  const colors=finaleColors(),raise=finaleEase(t,.56,.86);
+  for(let i=0;i<3;i++){
+    const pull=finaleEase(t,.05+i*.08,.38+i*.08),x=(i-1)*(1.46-.45*pull);
+    const dz=z+.88+(1-pull)*.60;
+    pedestal(m,x,dz,.72,trim());
+    item(m,pieces[i],x,.27,dz,.86,colors[i],(i%2===0?1:-1)*t*(kind==="gears"?8:2));
+    if(pull>.51)m.tube([x,.25,dz-.15],[0,.28,z-.89],.025,.023,colors[2],7,1);
+  }
+  if(kind==="raft"){
+    m.box(0,.09,z-.24,3.23,.12,3.76,0x448fa0,0,7);
+    const shore=z-1.66+raise*1.95;
+    m.box(0,.23,shore,1.63,.20,1.21,trim(),0,5);
+    finaleChest(m,shore,t,prize);
+    for(const s of [-1,1])m.tube([s*.78,.23,shore-.16],[s*1.38,.46,z+1.14],.021,.021,0xe9dba7,7);
+  }else if(kind==="roll"){
+    for(let i=0;i<6;i++)m.box(0,.23+i*.12,z+1.35-i*.43,1.80,.12,.46,trim(),0,9);
+    const travel=finaleEase(t,.36,.65);
+    item(m,"orb",0,.34+travel*.52,z+1.33-travel*2.53,.91,colors[2],t*6);
+    for(const s of [-1,1])m.box(s*.86,.59+raise*.85,z-1.16,.29,1.07,.37,ink(),0,9);
+    finaleChest(m,z-1.20,t,prize);
+  }else{
+    const height=.16+raise*1.02;
+    for(const s of [-1,1])m.tube([s*.89,.1,z-.87],[s*.89,2.07,z-.87],.053,.053,colors[1],8,kind==="gears"?5:4);
+    m.box(0,2.08,z-.86,1.87,.13,.21,trim(),0,5);
+    m.box(0,height,z-.85,1.65,.16,1.00,ink(),0,4);
+    m.tube([0,height+.13,z-.86],[0,2.04,z-.86],.027,.027,colors[2],7);
+    if(raise>.04)item(m,prize,0,.21+height,z-.86,1.34,colors[2],raise*.65);
+  }
+}
+
+function endingCart(m,x,y,z,color,van=false){
+  const w=van?1.77:1.47,h=van?.65:.29,d=van?1.52:1.06;
+  m.box(x,y+.27,z,w,.15,d,ink(),0,4);
+  for(const side of [-1,1]){
+    m.box(x+side*(w*.5-.058),y+.36+h*.50,z,.11,h,d,color,0,van?4:0);
+    for(const dZ of [-.38,.38])m.tube([x+side*(w*.5-.08),y+.14,z+dZ],[x+side*(w*.5+.06),y+.14,z+dZ],.135,.135,ink(),10);
+  }
+  m.box(x,y+.36+h*.50,z-d*.49,w,h,.10,color);
+  if(van){
+    m.box(x,y+.98,z,w,.15,d,color,0,4);
+    m.box(x,y+.55,z-d*.67,w*.89,.55,.42,color,0,4);
+  }else m.tube([x-w*.55,y+.61,z+d*.62],[x+w*.55,y+.61,z+d*.62],.039,.039,trim(),8,4);
+}
+
+function saleEnding(m,t,z,kind,pieces,prize){
+  const colors=finaleColors(),join=finaleEase(t,.56,.88);
+  if(["cart","race","truck"].includes(kind)){
+    const phase=finaleEase(t,.60,.97),cartZ=z+.59-2.19*phase;
+    m.box(0,.047,z,3.75,.087,4.42,trim());
+    for(const s of [-1,1])m.box(s*1.40,.103,z,.068,.016,4.22,colors[2],0,1);
+    if(kind==="race"||kind==="truck"){
+      m.box(0,1.82,z-1.76,3.47,.19,.35,ink());
+      for(const s of [-1,1])m.box(s*1.66,.89,z-1.76,.25,1.83,.28,ink());
+      for(let i=0;i<3;i++)m.oval((i-1)*.60,1.85,z-1.543,.104,.096,.075,
+        t>=.30+i*.16?0x86f3b5:0xf4c47b,0,1,8);
+    }
+    endingCart(m,0,0,cartZ,colors[0],kind==="truck");
+    pieces.forEach((piece,i)=>{
+      const travel=finaleEase(t,.08+i*.09,.50+i*.048);
+      item(m,piece,(i-1)*(1.41-travel*.99),.21+travel*.16,
+        lerp(z+.99+(i%2)*.51,cartZ,travel),.76,colors[i]);
+    });
+    return;
+  }
+  if(kind==="lanes"){
+    for(let i=0;i<3;i++){
+      const x=(i-1)*1.24,pass=finaleEase(t,.10+i*.14,.55+i*.14);
+      item(m,"register",x,.04,z-.32,.80,colors[i]);
+      const ready=pass>.52;
+      m.oval(x,.95,z-.29,.11,.07,.11,ready?0x8bf0b7:0xf3c180,0,1,8);
+      item(m,"person",x,.03,z+1.54-pass*2.89,.96,colors[i]);
+      if(ready)item(m,"bag",x+.26,.09,z+1.52-pass*2.92,.52,colors[2]);
+    }
+    return;
+  }
+  const show=kind==="display",wrap=kind==="wrap",belt=kind==="belt"||kind==="strip";
+  m.box(0,.20,z,3.68,.34,2.73,show?0x586e78:ink());
+  m.box(0,.395,z,3.75,.062,2.77,trim(),0,belt?4:5);
+  if(belt)for(let i=0;i<9;i++)m.box((i-4)*.352,.43,z, .260,.032,1.69,colors[i%3],0,4);
+  pieces.forEach((piece,i)=>{
+    const slide=finaleEase(t,.06+i*.085,.52+i*.08),x0=(i-1)*1.61;
+    const x=lerp(x0,(i-1)*(show?1.02:wrap?.31:.70),slide);
+    const pZ=lerp(z+.80,z+(show?.07:-.14),slide);
+    if(wrap&&t>.66)return;
+    if(show)pedestal(m,x,pZ,.82,colors[i]);
+    item(m,piece,x,.46+(show?.20:0),pZ,show?1.21:.86,colors[i],slide*.19);
+  });
+  if(kind==="stamp"||kind==="price"){
+    m.box(0,1.71-join*.83,z-.23,.27,.68,.28,ink());
+    m.box(0,1.37-join*.70,z-.23,.74,.15,.78,join>.72?0x8feab0:colors[0],0,1);
+    if(join>.72)ring(m,0,.52,z-.26,.60,0x9ff4bb,.042);
+  }
+  if(wrap&&t>.43){
+    const sheet=finaleEase(t,.43,.72),rise=finaleEase(t,.64,.92);
+    if(sheet<1){
+      for(const s of [-1,1]){
+        m.box(s*(.91-sheet*.27),.50+sheet*.35,z,.82,.045,.78,colors[2],Math.PI*.50,0,s*sheet*1.45);
+        m.box(0,.50+sheet*.37,z+s*(.84-sheet*.27),1.54,.038,.67,colors[2],0,0,s*sheet*1.45);
+      }
+    }
+    if(rise>.03)item(m,prize,0,.44+rise*.21,z,1.43*(.51+.49*rise),colors[2],rise*.42);
+  }
+  if(kind==="belt"||kind==="strip"){
+    m.box(0,.89,z-.76,1.39,.79,.28,ink(),0,4);
+    m.box(0,1.34,z-.72,1.51,.07,.33,join>.72?0x98f2ba:colors[2],0,1);
+    if(join>.33)item(m,prize,0,.47,z-.83+join*.36,1.18,colors[2]);
+  }
+  if(show&&join>.06){
+    for(let i=0;i<3;i++)m.tube([(i-1)*1.08,1.91,z-.57],[(i-1)*1.00,.98,z+.14],.041,.014,
+      [0xf0be82,0xf6d499,0xffdc9e][i],7,1);
+  }
+}
+
+function finaleScene(m,t){
+  const {kind,pieces,prize}=GAME.ending,z=localZ(-.34);
+  const join=finaleEase(t,.46,.88);
+  if(kind==="chart"||kind==="stone")chartEnding(m,t,z,kind==="stone",prize);
+  else if(kind==="fossil"){
+    m.box(0,.20,z,3.55,.33,2.30,ink(),0,9);
+    for(let i=0;i<3;i++){
+      const fit=finaleEase(t,.08+i*.08,.50+i*.07);
+      item(m,pieces[i],(i-1)*(1.43-fit*.85),.45,z+.51-fit*.44,.97,GAME.palette.loot,fit*.85);
+    }
+    if(join>.01){
+      m.gem(0,.83+join*.24,z-.42,.57,.96,.38,0xffb544,7,join*.47,2);
+      item(m,prize,0,.64,z+.04,1.23,0xffda8c,join*.68);
+    }
+  }
+  else if(["prisms","aurora","chord"].includes(kind))signalEnding(m,t,z,kind,pieces,prize);
+  else if(["raft","roll","lift","gears"].includes(kind))machineEnding(m,t,z,kind,pieces,prize);
+  else saleEnding(m,t,z,kind,pieces,prize);
+  if(t>.72){
+    for(let i=0;i<3;i++)ring(m,0,.081+i*.015,z,.50+i*.34+join*.40,GAME.palette.loot,.016,24);
+  }
+}
+
+"use strict";
+
+const ui=Object.fromEntries(["game","playfield","theme","place","count","guide","guide-icon","mission","goal","metric","attempt","reset","sound","targets","tools","toast","reveal","award",
+  "award-count","finish","finish-count","finish-title","finish-summary","result-items","replay","retry","failure"].map(key=>[key,document.getElementById(key)]));
 const stageZ=index=>-11*index;
 const player={x:0,y:.03,z:3.55,heading:0,lift:0};
 let [homeYaw,homePitch,homeZoom,homeZ,homeFov]=GAME.views[0];
@@ -950,13 +1166,14 @@ let stage=0, rounds=-1, awards=[], elapsed=0, prior=0, route=null, crossing=fals
 let gfx=null, raf=0, toastUntil=0, pointer=null, zoomTarget=homeZoom, zoom=homeZoom, audio=null, muted=false;
 let sunburst=[], pressKeys=new Set();
 let showReady=false;
+let finale=null;
 const mistakeLimit=3;
 const timedTasks=new Set(["catch","hold","rhythm","service","swing","traffic"]);
 const longTasks=new Set(["assembly","glide","jam","lattice","maze","shadow","weigh"]);
 let mistakes=0, secondsLeft=0, attemptStarted=false, failed=false;
 const curve=x=>{const t=clamp(x,0,1);return t*t*(3-2*t);};
 const localZ=z=>stageZ(stage)+z;
-const busy=()=>Boolean(route?.action||crossing||reward||end||failed||justArrived!==null);
+const busy=()=>Boolean(route?.action||crossing||reward||finale||end||failed||justArrived!==null);
 const toWorld=(point,index=stage)=>[point[0],point[1]??0,stageZ(index)+(point[2]??0)];
 const clock=()=>elapsed;
 
@@ -1002,8 +1219,11 @@ function feedback(ok,text,seconds) {
 }
 function attemptStatus() {
   const seconds=Math.ceil(secondsLeft), minutes=Math.floor(seconds/60);
+  const time=minutes+":"+String(seconds%60).padStart(2,"0"),tries=mistakeLimit-mistakes;
   setText(ui.attempt,failed?"Room failed":
-    (mistakeLimit-mistakes)+" tries · "+minutes+":"+String(seconds%60).padStart(2,"0"));
+    tries+(tries===1?" try · ":" tries · ")+time);
+  ui.attempt.dataset.visual=failed?"×":"♥".repeat(tries)+"♡".repeat(mistakes)+"  "+time;
+  ui.attempt.ariaLabel=ui.attempt.textContent;
   ui.attempt.dataset.low=String(failed||mistakes>=mistakeLimit-1||seconds<=12);
   ui.attempt.hidden=Boolean(awards[stage]||reward||crossing||end);
 }
@@ -1021,6 +1241,7 @@ function failRoom(reason) {
   ui.metric.hidden=true;
   clearMessage();
   setText(ui.goal,reason);
+  setText(ui.mission,reason.startsWith("Time")?"Time up":"Try again");
   hideTools();
   for(const {b} of targets.values())b.hidden=true;
   attemptStatus();
@@ -1040,12 +1261,24 @@ function mistake(text) {
   attemptStatus();
 }
 function objective(text) {
-  if(!failed)setText(ui.goal,text);
+  if(failed)return;
+  setText(ui.goal,text);
+  const short=GAME.guides[stage][1];
+  setText(ui.mission,text.length<=27&&text.split(/\s+/).length<=5?text:short);
 }
 function meter(text) {
   if(failed)return;
   ui.metric.hidden=!text;
-  if(text)setText(ui.metric,text);
+  if(!text)return;
+  setText(ui.metric,text);
+  const match=text.match(/^(\d+)\/(\d+) (?:scanned|caught|packed|barcodes|deals|sections connected|notches aligned|shadows aligned)(?:\b|$)/);
+  const flash=text.match(/^(\d+) deals · remember the order$/);
+  const total=match?Number(match[2]):flash?Number(flash[1]):0;
+  const n=match?Number(match[1]):0;
+  const direction=text.match(/next (left|middle|right)$/);
+  const canDisplay=total>0&&total<=8&&n<=total;
+  ui.metric.dataset.dots=canDisplay?("●".repeat(n)+"○".repeat(total-n)+(direction?"  "+{left:"←",middle:"↑",right:"→"}[direction[1]]:"")):"";
+  ui.metric.ariaLabel=text;
 }
 
 function pulse(point,tint,quantity=13) {
@@ -1071,18 +1304,6 @@ function marker(key,label,point,act,options={}) {
     });
     ui.targets.append(b);
     entry={b};
-    if(GAME.controls[stage]==="world"){
-      const pin=document.createElement("button");
-      pin.type="button";
-      pin.className="pin";
-      pin.tabIndex=-1;
-      pin.dataset.pin=String(targets.size+1);
-      b.dataset.pin=pin.dataset.pin;
-      pin.addEventListener("pointerdown",event=>event.preventDefault());
-      pin.addEventListener("click",()=>b.click());
-      ui.pins.append(pin);
-      entry.pin=pin;
-    }
     targets.set(key,entry);
   }
   entry.point=point;
@@ -1091,9 +1312,10 @@ function marker(key,label,point,act,options={}) {
   entry.b.disabled=entry.disabled||busy();
   setText(entry.b,label);
   entry.b.className="target"+(options.kind?" "+options.kind:"");
+  entry.b.dataset.caption=options.caption??(options.kind==="path"?"Enter ↗":label.replace(/^Pick /,""));
+  entry.b.dataset.tile=String(Boolean(options.tile));
   entry.b.ariaLabel=options.aria||label;
   entry.b.hidden=failed||Boolean(options.hidden);
-  if(entry.pin)entry.pin.dataset.kind=options.kind||"";
   return entry.b;
 }
 function off(key) {
@@ -1118,6 +1340,14 @@ function tool(key,label,act,disabled=false) {
     toolButtons.set(key,item);
   }
   setText(item.b,label);
+  item.b.dataset.ready=String(/\bnow$/i.test(label));
+  const arrows={dir0:"←",dir1:"→",dir2:"↑",dir3:"↓",left:"‹",right:"›",rise:"↑",dive:"↓"};
+  const glyph=arrows[key];
+  if(glyph){
+    item.b.dataset.glyph=glyph;
+    item.b.ariaLabel=label;
+    item.b.title=label;
+  }
   item.act=act;
   item.disabled=disabled;
   item.b.disabled=disabled||busy();
@@ -1146,7 +1376,9 @@ function flyTo(x,z,arrived,options={}) {
 
 function receive(pos,name) {
   if(end||failed||reward||awards[stage])return;
-  const type=GAME.brief==="hunt"?GAME.awardShape:"receipt";
+  const kind=GAME.ending.kind;
+  const type=GAME.brief==="sale"?"receipt":
+    kind==="chart"||kind==="stone"?kind:GAME.ending.pieces[stage];
   reward={stage,pos,at:elapsed,item:name||GAME.awards[stage],type,fired:false};
   attemptStatus();
   objective(GAME.brief==="hunt"?"Treasure found":"Checkout complete");
@@ -1177,7 +1409,7 @@ function tickReward() {
     figures[stage]={...reward};
     reward=null;
     ui.reveal.hidden=true;
-    if(stage===2){finish();return;}
+    if(stage===2){beginFinale();return;}
     objective(GAME.brief==="hunt"?"Follow the open passage":"Follow the open aisle");
     marker("bridge",GAME.passages?.[stage]||paths[stage],[0,.58,-4.18],walkBridge,{kind:"path"});
   }
@@ -1199,10 +1431,32 @@ function walkBridge() {
 }
 function finish() {
   end=true;
-  objective(GAME.brief==="hunt"?"All treasures recovered":"Shopping run complete");
+  objective(GAME.ending.title);
   setText(ui["finish-count"],GAME.brief==="hunt"?"3/3 treasures recovered":"3/3 shopping stops complete");
+  setText(ui["finish-title"],GAME.ending.title);
+  setText(ui["finish-summary"],GAME.ending.summary);
   ui["result-items"].replaceChildren(...awards.map(label=>{const li=document.createElement("li"); li.textContent=label;return li;}));
   ui.finish.showModal();
+}
+function beginFinale(){
+  finale={at:elapsed,charged:false};
+  setGuideOpen(false);
+  setText(ui["guide-icon"],GAME.brief==="hunt"?"◆":"✓");
+  objective(GAME.brief==="hunt"?"Discover the final treasure":"Complete the sale");
+  tone(GAME.brief==="hunt"?[220,330,440,554]:[330,440,554,662],.13,.127);
+}
+function tickFinale(){
+  if(!finale||end)return;
+  const progress=(elapsed-finale.at)/finaleDuration();
+  if(progress>.68&&!finale.charged){
+    finale.charged=true;
+    objective(GAME.ending.title);
+    const gold=GAME.palette.loot;
+    pulse([0,.48,-1.08],gold,40);
+    pulse([0,.58,-.32],0xffefbc,32);
+    tone(GAME.brief==="hunt"?[392,523,659,784,1047]:[523,659,784,1047],.10,.13);
+  }
+  if(progress>=1)finish();
 }
 function openZone() {
   [homeYaw,homePitch,homeZoom,homeZ,homeFov]=GAME.views[stage];
@@ -1212,6 +1466,8 @@ function openZone() {
   attemptStarted=false;
   failed=false;
   ui.game.dataset.failed="false";
+  setText(ui["guide-icon"],GAME.guides[stage][0]);
+  setGuideOpen(false);
   ui.retry.hidden=true;
   attemptStatus();
   player.lift=0;
@@ -1220,11 +1476,15 @@ function openZone() {
   zoomTarget=homeZoom;
   setText(ui.place,GAME.zones[stage]);
   ui.targets.replaceChildren();
-  ui.pins.replaceChildren();
   ui.tools.replaceChildren();
   targets.clear();
   toolButtons.clear();
   hideTools();
+  ui.tools.dataset.pad=kind==="maze"||(!stage&&GAME.scene==="shrine")?"four":
+    ["catch","depth","vision"].includes(kind)?"pair":"";
+  ui.tools.ariaLabel=kind==="depth"?"Adjust depth":
+    kind==="catch"?"Steer basket":kind==="vision"?"Rotate shelf":
+    ui.tools.dataset.pad==="four"?"Directions":"Controls";
   clearMessage();
   meter("");
   mode.start(stage,rounds);
@@ -1253,7 +1513,7 @@ function restart() {
   rounds++;
   if(ui.finish.open)ui.finish.close();
   [homeYaw,homePitch,homeZoom,homeZ,homeFov]=GAME.views[0];
-  stage=0;awards=[];figures.length=0;end=false;crossing=false;reward=null;route=null;justArrived=null;
+  stage=0;awards=[];figures.length=0;end=false;crossing=false;reward=null;finale=null;route=null;justArrived=null;
   sunburst=[];pressKeys.clear();pointer=null;showReady=false;
   view.yaw=view.targetYaw=homeYaw;
   view.pitch=view.targetPitch=homePitch;
@@ -1304,8 +1564,9 @@ function camera(dt) {
   const width=ui.playfield.clientWidth||canvas.clientWidth;
   const height=Math.max(1,ui.playfield.clientHeight||canvas.clientHeight),aspect=width/height;
   const age=reward?elapsed-reward.at:0;
-  const focus=reward?curve(age/.44)*(1-curve((age-1.47)/.51)):end?.37:0;
-  const center=reward?placed(toWorld(reward.pos),stage):placed([0,.65,localZ(-.38)],stage);
+  const focus=finale?.88*curve((elapsed-finale.at)/.76):reward?curve(age/.44)*(1-curve((age-1.47)/.51)):0;
+  const center=finale?placed([0,.30,localZ(-.39)],stage):
+    reward?placed(toWorld(reward.pos),stage):placed([0,.65,localZ(-.38)],stage);
   const tray=GAME.controls[stage]==="tray";
   const screenAspect=width/(ui.game.clientHeight||height);
   const portrait=clamp((.84-screenAspect)/.42,0,1);
@@ -1329,7 +1590,7 @@ function camera(dt) {
   const pitch=lerp(view.pitch+pitchBoost,.60,focus), yaw=lerp(view.yaw,.25,focus)+turn;
   const framing=crossing?.96:cartView?.66:tray?.83:.87;
   const distance=lerp(Math.max(14.8,11.83/aspect)*zoom*lerp(1,framing,portrait),
-    Math.max(6.5,3.78/aspect),focus);
+    finale?Math.max(8.8,4.50/aspect):Math.max(6.5,3.78/aspect),focus);
   view.aim=lerpPoint(view.center,[center[0],center[1]+.64,center[2]],focus);
   view.eye=add(view.aim,[Math.sin(yaw)*Math.cos(pitch)*distance,Math.sin(pitch)*distance,Math.cos(yaw)*Math.cos(pitch)*distance]);
   view.vp=multiply(perspective(view.fov,aspect,.10,130),look(view.eye,view.aim));
@@ -1375,7 +1636,10 @@ function visualReward(m,event,age) {
   if(age>.20){
     const animation=curve(pulseTime/.51);
     const rise=.16+animation*.96-(age>1.25?curve((age-1.25)/.60)*.40:0);
-    item(m,event.type,x,base+rise,z,1.18,GAME.palette.loot,elapsed*(reduced?.05:1.4));
+    if(event.type==="chart"||event.type==="stone"){
+      const stone=event.type==="stone",colors=finaleColors();
+      chartPiece(m,x,base+rise+.15,z,stone?colors[(event.stage+1)%3]:0x568c92,stone,event.stage,.12,1.17);
+    }else item(m,event.type,x,base+rise,z,1.18,GAME.palette.loot,elapsed*(reduced?.05:1.4));
     if(age<1.63&&!reduced){
       for(let i=0;i<3;i++){
         const ripple=clamp((pulseTime-i*.10)/1.29,0,1);
@@ -1402,6 +1666,18 @@ function environmentMotion(m) {
   }
 }
 
+function guideMotion(m){
+  if(busy())return;
+  const all=[...targets.values()].filter(({b,disabled})=>!b.hidden&&!disabled);
+  const focus=all.length===1?all:attemptStarted||all.length>3?[]:all.filter(({b})=>b.dataset.tile!=="true");
+  const wave=reduced?.3:.5+.5*Math.sin(elapsed*3.7);
+  for(const {point,b} of focus){
+    const [x,_,z]=point;
+    const color=b.classList?.contains("path")?0xa0f6c9:0xffd78c;
+    ring(m,x,.082,localZ(z),.48+wave*.15,color,.025,24);
+  }
+}
+
 function motion(){
   const m=new Mesh(),active=new Mesh();
   drawLocks(m);
@@ -1412,11 +1688,15 @@ function motion(){
       liftCabin(m,pos,i,Boolean(awards[i]));
     }
   }
-  environmentMotion(active);
-  mode.draw(active,elapsed);
+  if(finale)finaleScene(active,clamp((elapsed-finale.at)/finaleDuration(),0,1));
+  else{
+    environmentMotion(active);
+    mode.draw(active,elapsed);
+    guideMotion(active);
+  }
   insertZone(m,active,stage);
   for(const event of figures){
-    if(!event)continue;
+    if(!event||finale)continue;
     const part=new Mesh();
     visualReward(part,event,2.6);
     insertZone(m,part,event.stage);
@@ -1435,29 +1715,54 @@ function motion(){
       m.box(...p,.09*f,.038*f,.11*f,s.tint,age*8,1,age*9);
     }
   }
-  agentModel(m,visualAgent(),elapsed);
+  if(!finale)agentModel(m,visualAgent(),elapsed);
   return m;
 }
 
 function mapTargets(){
   syncEnabled();
-  if(GAME.controls[stage]!=="world")return;
-  const w=ui.playfield.clientWidth||canvas.clientWidth,h=ui.playfield.clientHeight||canvas.clientHeight,arranged=[];
-  const offset=[[0,-25],[-28,-23],[28,-23],[0,-53],[-40,4],[40,4],[0,29],[-32,-60],[32,-60]];
-  for(const entry of targets.values()){
-    const {b,pin}=entry;
-    if(!pin)continue;
+  const w=ui.playfield.clientWidth||canvas.clientWidth,h=ui.playfield.clientHeight||canvas.clientHeight;
+  const active=[...targets.values()].filter(({b})=>!b.hidden);
+  const projected=active.map(entry=>{
     const [x,y,,depth]=transform(view.vp,placed(toWorld(entry.point),stage));
-    pin.hidden=b.hidden||depth<=0;
-    if(pin.hidden)continue;
-    pin.disabled=b.disabled;
-    const px=(x/depth*.5+.5)*w,py=(.5-y/depth*.5)*h;
-    const capX=v=>clamp(v,21,w-21),capY=v=>clamp(v,21,h-21);
-    const candidate=offset.map(([dx,dy])=>[capX(px+dx),capY(py+dy)]);
-    const point=candidate.find(([a,v])=>arranged.every(([c,d])=>Math.hypot(a-c,v-d)>32))||candidate[0];
-    arranged.push(point);
-    pin.style.transform="translate3d("+Math.round(point[0]-21)+"px,"+Math.round(point[1]-21)+"px,0)";
+    const tile=entry.b.dataset.tile==="true";
+    return {entry,depth,tile,x:(x/depth*.5+.5)*w,y:(.5-y/depth*.5)*h,
+      width:entry.b.offsetWidth||44,height:entry.b.offsetHeight||44};
+  });
+  const boxes=[];
+  for(const item of projected){
+    const {entry,depth,tile,x,y,width,height}=item,{b}=entry;
+    b.style.visibility=depth<=0?"hidden":"visible";
+    if(depth<=0){entry.hit=null;continue;}
+    entry.hit=[x,y];
+    const dx=width*.5+4,dy=height*.5+4;
+    const ideal=tile?0:-28;
+    const options=tile?[[0,0],[-12,8],[12,8],[0,-15],[0,15]]:
+      [[0,ideal],[0,-62],[-40,-32],[40,-32],[-47,-4],[47,-4],
+        [0,34],[-56,31],[56,31],[0,-95],[-79,-57],[79,-57],[0,65]];
+    let selected=null,best=Infinity;
+    for(const [sx,sy] of options){
+      const cx=clamp(x+sx,dx,w-dx),cy=clamp(y+sy,dy,h-dy);
+      const overlap=boxes.reduce((sum,other)=>sum+
+        Math.max(0,other.dx+dx-Math.abs(other.x-cx))*Math.max(0,other.dy+dy-Math.abs(other.y-cy)),0);
+      const distance=Math.hypot(cx-x,cy-y-ideal);
+      const score=overlap*15+distance;
+      if(score<best){selected={x:cx,y:cy,dx,dy};best=score;}
+    }
+    boxes.push(selected);
+    b.style.transform="translate3d("+Math.round(selected.x)+"px,"+Math.round(selected.y)+"px,0) translate(-50%,-50%)";
   }
+}
+
+function tapObject(e){
+  const rect=ui.playfield.getBoundingClientRect();
+  const x=e.clientX-rect.left,y=e.clientY-rect.top;
+  const nearest=[...targets.values()].filter(entry=>entry.hit&&!entry.b.hidden&&!entry.b.disabled)
+    .map(entry=>[entry,Math.hypot(entry.hit[0]-x,entry.hit[1]-y)])
+    .sort((a,b)=>a[1]-b[1])[0];
+  if(!nearest||nearest[1]>27)return false;
+  nearest[0].b.click();
+  return true;
 }
 
 function frame(ms) {
@@ -1468,6 +1773,7 @@ function frame(ms) {
   if(justArrived!==null&&elapsed>=justArrived)justArrived=null;
   if(!busy()&&!awards[stage])mode.tick?.(dt,elapsed);
   tickReward();
+  tickFinale();
   if(attemptStarted&&!failed&&!awards[stage]&&!reward&&!crossing&&!end){
     secondsLeft=Math.max(0,secondsLeft-dt);
     if(secondsLeft===0)failRoom("Time ran out · try again");
@@ -1496,7 +1802,7 @@ function floorHit(screenX,screenY) {
 }
 
 ui.playfield.addEventListener("pointerdown",e=>{
-  if(pointer||e.button!==0||e.defaultPrevented)return;
+  if(pointer||e.button!==0||e.defaultPrevented||e.target.closest?.("button"))return;
   wakeAudio();
   pointer={id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,yaw:view.targetYaw,pitch:view.targetPitch,drag:false,consumed:false,origin:floorHit(e.clientX,e.clientY)};
   ui.playfield.setPointerCapture(e.pointerId);
@@ -1521,7 +1827,7 @@ ui.playfield.addEventListener("pointerup",e=>{
   if(!busy()){
     const p=floorHit(e.clientX,e.clientY);
     if(pointer.drag&&pointer.consumed&&!awards[stage])mode.dragEnd?.({floor:p,origin:pointer.origin});
-    if(!pointer.drag&&p){
+    if(!pointer.drag&&!tapObject(e)&&p){
       if(awards[stage]&&stage<2&&Math.abs(p.x)<1.72&&p.z<-3.18)walkBridge();
       else if(!awards[stage]){
         if(mode.tap?.(p))startAttempt();
@@ -1545,6 +1851,12 @@ document.addEventListener("visibilitychange",()=>{
   if(document.hidden){cancelAnimationFrame(raf);prior=0;pressKeys.clear();}
   else if(gfx)raf=requestAnimationFrame(frame);
 });
+function setGuideOpen(open){
+  ui.game.dataset.guideOpen=String(open);
+  ui.guide.setAttribute("aria-expanded",String(open));
+  ui.guide.title=open?"Hide instructions":"Show instructions";
+}
+ui.guide.addEventListener("click",()=>setGuideOpen(ui.game.dataset.guideOpen!=="true"));
 ui.reset.addEventListener("click",()=>{view.targetYaw=homeYaw;view.targetPitch=homePitch;});
 ui.sound.addEventListener("click",()=>{
   muted=!muted;

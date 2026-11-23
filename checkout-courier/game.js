@@ -60,6 +60,31 @@ const GAME = {
       -0.57
     ]
   ],
+  "guides": [
+    [
+      "▤",
+      "Scan the sale box"
+    ],
+    [
+      "⚖",
+      "Balance the scale"
+    ],
+    [
+      "◉",
+      "Hit the green zone"
+    ]
+  ],
+  "ending": {
+    "kind": "belt",
+    "title": "Parcels sealed",
+    "summary": "The scanned parcels clear the packing line.",
+    "pieces": [
+      "parcel",
+      "parcel",
+      "parcel"
+    ],
+    "prize": "bag"
+  },
   "tasks": [
     {
       "kind": "weigh",

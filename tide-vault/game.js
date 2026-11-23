@@ -60,6 +60,31 @@ const GAME = {
       -0.48
     ]
   ],
+  "guides": [
+    [
+      "≈",
+      "Raise the water"
+    ],
+    [
+      "⤾",
+      "Connect the sections"
+    ],
+    [
+      "≈",
+      "Crank both sides"
+    ]
+  ],
+  "ending": {
+    "kind": "raft",
+    "title": "Tide chest landed",
+    "summary": "The open channels carry the chest to shore.",
+    "pieces": [
+      "coin",
+      "gear",
+      "coin"
+    ],
+    "prize": "coin"
+  },
   "tasks": [
     {
       "kind": "connect",

@@ -60,6 +60,31 @@ const GAME = {
       0.34
     ]
   ],
+  "guides": [
+    [
+      "✦",
+      "Uncover a fossil"
+    ],
+    [
+      "◇",
+      "Fit the pieces"
+    ],
+    [
+      "◉",
+      "Hit the green zone"
+    ]
+  ],
+  "ending": {
+    "kind": "fossil",
+    "title": "Amber fossil restored",
+    "summary": "The excavated pieces rejoin as a complete specimen.",
+    "pieces": [
+      "fossil",
+      "shell",
+      "key"
+    ],
+    "prize": "fossil"
+  },
   "tasks": [
     {
       "kind": "assembly",
@@ -177,7 +202,7 @@ function makeFirstTask(c){
       if(visited&&working<0)c.marker("dig"+i,stamps[i].name+" pit",[holes[i],.63,-1.81],()=>beginDig(i),{kind:"hot"});
       else c.off("dig"+i);
     }
-    if(working>=0)c.tool("brush",actionName(),()=>brush(1));
+    if(working>=0)c.marker("brush",actionName(),[holes[working],.46,-1.81],()=>brush(1),{kind:"hot"});
   }
   function start(i,run){bay=i;correct=([1,2,0][i]+run)%3;visited=false;working=-1;depth=0;dist=0;min=i+3;renderUI();}
   function swipe(p){

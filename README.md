@@ -4,7 +4,7 @@ Twenty standalone 3D H5 games across two briefs. Each folder contains a complete
 
 Each room starts with three tries. Committed errors spend a try, and a room timer begins after the first gameplay action. Retry returns to the current room with earlier rewards intact.
 
-The portrait layout keeps instructions and controls outside the active 3D view. Moving objects cast soft shadows, and water, stone, ice, wood, and metal respond to the scene lighting.
+Tap objects and floor tiles in the 3D scene. Lights, silhouettes, progress marks, and short goals guide play, and touching the goal expands the instructions. Each game has a scene-specific 3D ending driven by its three completed tasks.
 
 Open any game’s `index.html` in a modern browser. To serve the whole repository locally, run `python3 -m http.server 8000` from this directory.
 

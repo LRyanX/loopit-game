@@ -60,6 +60,31 @@ const GAME = {
       -0.28
     ]
   ],
+  "guides": [
+    [
+      "♪",
+      "Match the chord"
+    ],
+    [
+      "♪",
+      "Tap on the pulse"
+    ],
+    [
+      "♪",
+      "Find the strongest echo"
+    ]
+  ],
+  "ending": {
+    "kind": "chord",
+    "title": "Reliquary awakened",
+    "summary": "Three chimes ring in sequence and unseal the reliquary.",
+    "pieces": [
+      "bell",
+      "bell",
+      "bell"
+    ],
+    "prize": "bell"
+  },
   "tasks": [
     {
       "kind": "rhythm",

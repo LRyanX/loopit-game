@@ -60,6 +60,31 @@ const GAME = {
       -0.44
     ]
   ],
+  "guides": [
+    [
+      "◇",
+      "Build the bundle"
+    ],
+    [
+      "↪",
+      "Fold the gift wrap"
+    ],
+    [
+      "∞",
+      "Match the ribbons"
+    ]
+  ],
+  "ending": {
+    "kind": "wrap",
+    "title": "Bundle wrapped",
+    "summary": "The kit, paper and ribbon come together as a gift.",
+    "pieces": [
+      "kettle",
+      "mug",
+      "parcel"
+    ],
+    "prize": "gift"
+  },
   "tasks": [
     {
       "kind": "fold",
@@ -141,7 +166,8 @@ function makeFirstTask(c){
       const active=selected.includes(i),[x,z]=sample[i];
       c.marker("sku"+i,(active?"✓ ":"")+names[id]+" $"+price,[x,.65,z],()=>pick(i),{kind:active?"good":"hot"});
     });
-    c.tool("checkout","Check out",checkout,selected.length===0);
+    if(selected.length===cfg.need.length)c.tool("checkout","Check out",checkout);
+    else c.hideTools();
   }
   function pick(i){
     if(selected.includes(i)){selected=selected.filter(n=>n!==i);c.tone([331]);refresh();return;}

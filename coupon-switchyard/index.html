@@ -23,8 +23,11 @@
       </button>
     </div>
     <div class="instructions">
-      <p id="goal" aria-live="polite"></p>
+      <button id="guide" type="button" aria-controls="goal" aria-expanded="false" title="Show instructions">
+        <span id="guide-icon" aria-hidden="true"></span><span id="mission"></span><span class="help-icon" aria-hidden="true">ⓘ</span>
+      </button>
       <p id="attempt" aria-label="Attempts and time remaining"></p>
+      <p id="goal" aria-live="polite"></p>
       <div id="status">
         <p id="metric" hidden></p>
         <p id="toast" role="status" hidden></p>
@@ -33,16 +36,16 @@
     </div>
   </header>
   <section id="playfield" aria-label="3D playfield">
-    <div id="pins" aria-hidden="true"></div>
+    <div id="targets" aria-label="Objects on this floor"></div>
   </section>
   <div id="bottom">
-    <div id="targets" aria-label="Objects on this floor"></div>
-    <div id="tools" aria-label="Controls" hidden></div>
+    <div id="tools" role="group" aria-label="Controls" hidden></div>
     <button id="retry" hidden>Retry this room</button>
   </div>
   <dialog id="finish" aria-labelledby="finish-title">
     <p id="finish-count"></p>
     <h1 id="finish-title">Coupon Switchyard</h1>
+    <p id="finish-summary"></p>
     <ul id="result-items"></ul>
     <button id="replay">Play again</button>
   </dialog>

@@ -60,6 +60,31 @@ const GAME = {
       -0.58
     ]
   ],
+  "guides": [
+    [
+      "→",
+      "Pick and deliver"
+    ],
+    [
+      "↓",
+      "Drop onto the truck"
+    ],
+    [
+      "!",
+      "Find the mismatch"
+    ]
+  ],
+  "ending": {
+    "kind": "truck",
+    "title": "Truck dispatched",
+    "summary": "The manifest clears and the delivery truck leaves.",
+    "pieces": [
+      "parcel",
+      "parcel",
+      "parcel"
+    ],
+    "prize": "parcel"
+  },
   "tasks": [
     {
       "kind": "swing",

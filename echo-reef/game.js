@@ -11,9 +11,9 @@ const GAME = {
     "Sponge Current Tunnels"
   ],
   "awards": [
-    "Pearl Compass",
-    "Amber Reef Sample",
-    "Sunken Crown"
+    "Wreck chart · West",
+    "Wreck chart · Centre",
+    "Wreck chart · East"
   ],
   "awardShape": "shell",
   "palette": {
@@ -60,6 +60,31 @@ const GAME = {
       0.27
     ]
   ],
+  "guides": [
+    [
+      "◉",
+      "Ping the hydrophones"
+    ],
+    [
+      "↕",
+      "Sample the reef ledges"
+    ],
+    [
+      "→",
+      "Reach the gold exit"
+    ]
+  ],
+  "ending": {
+    "kind": "chart",
+    "title": "Wreck cache uncovered",
+    "summary": "Three chart fragments mark the wreck’s pearl cache.",
+    "pieces": [
+      "shell",
+      "coin",
+      "shell"
+    ],
+    "prize": "shell"
+  },
   "tasks": [
     {
       "kind": "depth",
@@ -183,6 +208,14 @@ function makeFirstTask(c){
       c.pedestal(m,p.x,z,.82,read[i]===null?trim():0x7fe0c7);
       m.tube([p.x,.21,z],[p.x,1.06,z],.105,.097,ink(),9);
       m.oval(p.x,.93,z,.28,.24,.28,0x55c9c9,0,1,9);
+      if(read[i]!==null){
+        const strength=clamp(Math.round((read[i]-14)/11),1,6);
+        for(let j=0;j<6;j++){
+          const h=.09+j*.065;
+          m.box(p.x+(j-2.5)*.121,1.19+h*.5,z+.175,.084,h,.048,
+            j<strength?0x95f4d2:0x315b69,0,j<strength?1:0);
+        }
+      }
       if(ping?.i===i&&time-ping.at<1.08)for(let j=0;j<3;j++){
         const f=((time-ping.at)+j*.23)/1.10;
         if(f<1)c.ring(m,p.x,.12+j*.02,z,.28+f*2.15,0x76f8db,.033*(1-f)+.010);

@@ -60,6 +60,31 @@ const GAME = {
       0.46
     ]
   ],
+  "guides": [
+    [
+      "$",
+      "Find the best deal"
+    ],
+    [
+      "!",
+      "Find the mismatch"
+    ],
+    [
+      "⇄",
+      "Match items to bins"
+    ]
+  ],
+  "ending": {
+    "kind": "stamp",
+    "title": "Deal verified",
+    "summary": "The audit stamp confirms your bargain.",
+    "pieces": [
+      "coupon",
+      "receipt",
+      "receipt"
+    ],
+    "prize": "receipt"
+  },
   "tasks": [
     {
       "kind": "audit",

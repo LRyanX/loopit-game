@@ -60,6 +60,31 @@ const GAME = {
       -0.12
     ]
   ],
+  "guides": [
+    [
+      "◇",
+      "Align the shards"
+    ],
+    [
+      "→",
+      "Reach the gold exit"
+    ],
+    [
+      "◎",
+      "Line up the rings"
+    ]
+  ],
+  "ending": {
+    "kind": "aurora",
+    "title": "Aurora lens revealed",
+    "summary": "Three ice shards focus the aurora into one lens.",
+    "pieces": [
+      "ice",
+      "ice",
+      "ice"
+    ],
+    "prize": "ice"
+  },
   "tasks": [
     {
       "kind": "maze",
@@ -258,7 +283,11 @@ function makeThirdTask(c,q){
     c.objective(!active?"Inspect the ice rosette":fit()?"All notches meet the cut marks":"Turn the concentric ice rings");
     c.meter(active?rings.filter((v,i)=>v===q.target[i]).length+"/3 notches aligned":"");
     if(!active)c.marker("read","Inspect rosette",[0,.63,2.59],see,{kind:"clue"});else c.off("read");
-    if(active)for(let i=0;i<3;i++)c.tool("turn"+i,["Inner ring","Middle ring","Outer ring"][i],()=>turn(i));
+    if(active)for(let i=0;i<3;i++){
+      const angle=(i-1)*1.57;
+      c.marker("turn"+i,["Inner ring","Middle ring","Outer ring"][i],
+        [Math.sin(angle)*rad[i],.40,Math.cos(angle)*rad[i]-.61],()=>turn(i),{kind:"clue",caption:["Inner","Middle","Outer"][i]});
+    }
     if(fit())c.marker("cache","Lift ice prism",[0,.77,-2.51],()=>c.flyTo(0,-2.09,()=>c.receive([0,0,-2.54])),{kind:"hot"});else c.off("cache");
   }
   function start(){rings=[0,0,0];angles=[0,0,0];active=false;update();}

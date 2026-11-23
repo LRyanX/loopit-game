@@ -60,6 +60,31 @@ const GAME = {
       -0.48
     ]
   ],
+  "guides": [
+    [
+      "●",
+      "Watch the order"
+    ],
+    [
+      "⤾",
+      "Spin to find it"
+    ],
+    [
+      "!",
+      "Find the mismatch"
+    ]
+  ],
+  "ending": {
+    "kind": "display",
+    "title": "Sale display restored",
+    "summary": "The products return to the window in order.",
+    "pieces": [
+      "shoe",
+      "mug",
+      "kettle"
+    ],
+    "prize": "lamp"
+  },
   "tasks": [
     {
       "kind": "vision",

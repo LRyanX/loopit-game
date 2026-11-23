@@ -60,6 +60,31 @@ const GAME = {
       0.51
     ]
   ],
+  "guides": [
+    [
+      "⑂",
+      "Route the coupon"
+    ],
+    [
+      "⤾",
+      "Connect the sections"
+    ],
+    [
+      "↔",
+      "Slide into the gap"
+    ]
+  ],
+  "ending": {
+    "kind": "strip",
+    "title": "Coupons redeemed",
+    "summary": "Three ticket sections print as one discount strip.",
+    "pieces": [
+      "coupon",
+      "coupon",
+      "coupon"
+    ],
+    "prize": "coupon"
+  },
   "tasks": [
     {
       "kind": "connect",

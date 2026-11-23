@@ -60,6 +60,31 @@ const GAME = {
       0
     ]
   ],
+  "guides": [
+    [
+      "◉",
+      "Roll to the socket"
+    ],
+    [
+      "⚖",
+      "Balance the scale"
+    ],
+    [
+      "↔",
+      "Slide into the gap"
+    ]
+  ],
+  "ending": {
+    "kind": "roll",
+    "title": "Guardian shrine opened",
+    "summary": "The final marble rolls into its socket and lifts the seal.",
+    "pieces": [
+      "orb",
+      "orb",
+      "orb"
+    ],
+    "prize": "idol"
+  },
   "tasks": [
     {
       "kind": "weigh",

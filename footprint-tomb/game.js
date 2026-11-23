@@ -11,9 +11,9 @@ const GAME = {
     "Spike Court"
   ],
   "awards": [
-    "Keeper Figurine",
-    "Gold Scarab",
-    "Sun Guardian"
+    "Carved seal · I",
+    "Carved seal · II",
+    "Carved seal · III"
   ],
   "awardShape": "idol",
   "palette": {
@@ -60,6 +60,31 @@ const GAME = {
       -0.12
     ]
   ],
+  "guides": [
+    [
+      "▦",
+      "Follow the tiles"
+    ],
+    [
+      "◇",
+      "Fit the pieces"
+    ],
+    [
+      "→",
+      "Cross in the gaps"
+    ]
+  ],
+  "ending": {
+    "kind": "stone",
+    "title": "Sun guardian revealed",
+    "summary": "Three carved stones fit the seal and open the burial chamber.",
+    "pieces": [
+      "idol",
+      "coin",
+      "idol"
+    ],
+    "prize": "idol"
+  },
   "tasks": [
     {
       "kind": "assembly",
@@ -160,9 +185,11 @@ function makeFirstTask(c){
     c.objective(!read?"Read the footprint mosaic":step===path.length?"Safe trail crossed · open the tomb":"Step along the carved trail");
     c.meter(read?path.map(([x,y],i)=>(i<step?"✓":"")+cellName(x,y)).join(" · "):"");
     if(!read)c.marker("read","Read mosaic",[0,.57,3.14],interpret,{kind:"clue"});else c.off("read");
+    const last=path[step-1];
     for(let y=0;y<3;y++)for(let x=0;x<3;x++){
       const key="tile"+x+y;
-      if(read&&step<path.length)c.marker(key,cellName(x,y),[X(x),.12,Z(y)],()=>stepOn(x,y),{kind:path.slice(0,step).some(p=>equal(p,[x,y]))?"good":""});
+      const reachable=last?Math.abs(last[0]-x)+Math.abs(last[1]-y)===1:y===2;
+      if(read&&step<path.length&&reachable)c.marker(key,cellName(x,y),[X(x),.14,Z(y)],()=>stepOn(x,y),{tile:true});
       else c.off(key);
     }
     if(step===path.length)c.marker("open","Open tomb",[0,.66,-3.43],()=>c.flyTo(0,-2.92,()=>c.receive([0,0,-3.51])),{kind:"hot"});
@@ -233,10 +260,11 @@ function makeSecondTask(c,q){
 function makeThirdTask(c,q){
   let next=0,clock=0,current=3.18,path=null,last=false;
   const markerZ=i=>2.74-i*1.62;
-  const open=()=>((clock+next*.51)%2.32)>.67&&((clock+next*.51)%2.32)<1.73;
+  const phase=()=>((clock+next*.51)%2.32);
+  const open=()=>phase()>.67&&phase()<1.73;
   function tryStep(){
     if(path)return;
-    if(!open()){c.mistake(q.wait);return;}
+    if(phase()<=.67||phase()>=1.85){c.mistake(q.wait);return;}
     const target=markerZ(next)-1.04;
     path={from:current,to:target,at:c.clock()};
     c.tone([315,461]);show();

@@ -60,6 +60,31 @@ const GAME = {
       -0.28
     ]
   ],
+  "guides": [
+    [
+      "⚙",
+      "Fit the gears"
+    ],
+    [
+      "⚖",
+      "Balance the scale"
+    ],
+    [
+      "↗",
+      "Glide onto the perch"
+    ]
+  ],
+  "ending": {
+    "kind": "gears",
+    "title": "Canopy dial recovered",
+    "summary": "The fitted gears turn the hoist and raise the lost dial.",
+    "pieces": [
+      "gear",
+      "gear",
+      "gear"
+    ],
+    "prize": "gear"
+  },
   "tasks": [
     {
       "kind": "weigh",
@@ -270,8 +295,10 @@ function makeThirdTask(c,q){
   function show(){
     c.objective(q.goalText);
     c.meter(q.wind>0?"Wind right · sink before the ledge":"Wind left · use long glide");
-    c.tool("trim","Nose "+["left","straight","right"][trimIndex],()=>{trimIndex=(trimIndex+1)%3;show();},Boolean(flight));
-    c.tool("flap",flaps===1?"Long glide":"Short glide",()=>{flaps=1-flaps;show();},Boolean(flight));
+    c.marker("trim","Nose "+["left","straight","right"][trimIndex],[-.84,.55,2.43],()=>{trimIndex=(trimIndex+1)%3;show();},
+      {kind:"clue",disabled:Boolean(flight)});
+    c.marker("flap",flaps===1?"Long glide":"Short glide",[.84,.55,2.63],()=>{flaps=1-flaps;show();},
+      {kind:"clue",disabled:Boolean(flight)});
     c.tool("launch","Launch glider",launch,Boolean(flight));
   }
   function start(){trimIndex=1;flaps=0;flight=null;show();}

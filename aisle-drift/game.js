@@ -60,6 +60,31 @@ const GAME = {
       0
     ]
   ],
+  "guides": [
+    [
+      "↔",
+      "Dodge and collect"
+    ],
+    [
+      "↓",
+      "Catch the sale boxes"
+    ],
+    [
+      "→",
+      "Cross in the gaps"
+    ]
+  ],
+  "ending": {
+    "kind": "race",
+    "title": "Checkout crossed",
+    "summary": "All three sale stops light the finish arch.",
+    "pieces": [
+      "gift",
+      "bag",
+      "parcel"
+    ],
+    "prize": "bag"
+  },
   "tasks": [
     {
       "kind": "catch",
@@ -126,16 +151,16 @@ function makeFirstTask(c){
   let layout,lane=1,position=0,next=0,on=false,taken=0,zone=0,hand=0;
   function show(){
     const nextSale=layout[next]?.[0];
-    c.objective(on?"Steer onto the sale items":"Steer to start the dash");
+    c.objective(on?"Steer onto the sale items":"Tap a lane or swipe to steer");
     c.meter(taken+"/"+layout.length+" deals · avoid shoppers"+(nextSale!=null?" · next "+["left","middle","right"][nextSale]:""));
   }
-  function steer(d){lane=clamp(lane+d,0,2);on=true;show();c.tone([339+lane*48],.05,.057);}
+  function chooseLane(i){lane=clamp(i,0,2);on=true;show();c.tone([339+lane*48],.05,.057);}
+  function steer(d){chooseLane(lane+d);}
   function resetLine(){position=0;next=0;taken=0;lane=1;on=false;show();}
   function start(stage){
     layout=runs[stage];zone=stage;hand=0;resetLine();
-    c.tool("left","Left lane",()=>steer(-1));
-    c.tool("middle","Center lane",()=>{lane=1;on=true;show();});
-    c.tool("right","Right lane",()=>steer(1));
+    lanes.forEach((x,i)=>c.marker("lane"+i,["Left lane","Center lane","Right lane"][i],[x,.10,4.39],()=>chooseLane(i),
+      {tile:true,caption:["‹","◆","›"][i]}));
   }
   function tick(dt){
     c.player.x=lerp(c.player.x,lanes[lane],1-Math.exp(-dt*13));
@@ -178,7 +203,12 @@ function makeFirstTask(c){
     return true;
   }
   function dragEnd(){hand=0;}
-  return {start,tick,draw,key,swipe,dragEnd,lockMove:true};
+  function tap(p){
+    if(p.z<.65||p.z>6.8||Math.abs(p.x)>3.40)return false;
+    chooseLane(Math.round(p.x/2.25)+1);
+    return true;
+  }
+  return {start,tick,draw,key,tap,swipe,dragEnd,lockMove:true};
 }
 
 function makeSecondTask(c,q){
@@ -228,10 +258,11 @@ function makeSecondTask(c,q){
 function makeThirdTask(c,q){
   let next=0,clock=0,current=3.18,path=null,last=false;
   const markerZ=i=>2.74-i*1.62;
-  const open=()=>((clock+next*.51)%2.32)>.67&&((clock+next*.51)%2.32)<1.73;
+  const phase=()=>((clock+next*.51)%2.32);
+  const open=()=>phase()>.67&&phase()<1.73;
   function tryStep(){
     if(path)return;
-    if(!open()){c.mistake(q.wait);return;}
+    if(phase()<=.67||phase()>=1.85){c.mistake(q.wait);return;}
     const target=markerZ(next)-1.04;
     path={from:current,to:target,at:c.clock()};
     c.tone([315,461]);show();

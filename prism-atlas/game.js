@@ -60,6 +60,31 @@ const GAME = {
       0.64
     ]
   ],
+  "guides": [
+    [
+      "↗",
+      "Reflect the beam"
+    ],
+    [
+      "◐",
+      "Join the shadows"
+    ],
+    [
+      "✦",
+      "Mix the light"
+    ]
+  ],
+  "ending": {
+    "kind": "prisms",
+    "title": "Crystal vault opened",
+    "summary": "Three reflected beams converge on the vault lock.",
+    "pieces": [
+      "prism",
+      "prism",
+      "prism"
+    ],
+    "prize": "prism"
+  },
   "tasks": [
     {
       "kind": "shadow",

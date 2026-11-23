@@ -60,6 +60,31 @@ const GAME = {
       0
     ]
   ],
+  "guides": [
+    [
+      "↔",
+      "Move the metal key"
+    ],
+    [
+      "⇄",
+      "Match items to bins"
+    ],
+    [
+      "⤾",
+      "Connect the sections"
+    ]
+  ],
+  "ending": {
+    "kind": "lift",
+    "title": "Mine hoard raised",
+    "summary": "The repaired circuit powers the treasure lift.",
+    "pieces": [
+      "key",
+      "gear",
+      "magnet"
+    ],
+    "prize": "gem"
+  },
   "tasks": [
     {
       "kind": "sort",
