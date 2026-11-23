@@ -343,24 +343,24 @@ const GAME = {
   ],
   "views": [
     [
-      0.21,
-      0.43,
-      1.02,
+      0.16,
+      0.68,
+      0.99,
       0.05,
-      0.89
+      0.87
     ],
     [
-      -0.36,
-      0.62,
-      0.96,
-      -0.13,
-      0.86
+      0.06,
+      1.03,
+      0.94,
+      0.04,
+      0.84
     ],
     [
-      0.43,
-      0.81,
-      0.92,
       -0.12,
+      0.96,
+      0.93,
+      -0.09,
       0.83
     ]
   ]
@@ -559,6 +559,7 @@ function makeChallenge(c){
       active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
+    get hideAgent(){return active.hideAgent;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},
     tap(p){return active.tap?.(p);},

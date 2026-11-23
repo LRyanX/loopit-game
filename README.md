@@ -16,7 +16,7 @@ Open any game’s `index.html` in a modern browser. To serve the whole repositor
 | --- | --- | --- | --- |
 | [Checkout Courier](checkout-courier/) | Wait for the right doorbuster barcode under the moving scan beam | Match the barcode, then check the seal | Seal the outbound parcels |
 | [Markdown Detective](markdown-detective/) | Compare shelf prices after coupons and buy the lowest deal within budget | Flag the price card that breaks the posted rules | Route rebate claims to their processing bins |
-| [Cart Stack](cart-stack/) | Rotate shopping items and pack their shapes into a three-by-three cart | Join matching anchor clips to secure the load | Steer the packed cart around the stock cages |
+| [Cart Stack](cart-stack/) | Pack a Black Friday curbside order into one cart and scan its pickup tag | Secure the pickup order so it rides safely | Check in and deliver the cart to pickup |
 | [Coupon Switchyard](coupon-switchyard/) | Flip conveyor junctions to route live coupons into the right registers | Rotate the three cutouts to make a readable strip | Slide the packages to unblock the feed |
 | [Aisle Drift](aisle-drift/) | Steer a rolling cart around shoppers and collect the golden sale items | Catch the marked sale boxes as they drop | Wait for gaps in the crossing traffic |
 | [Price Pulse](price-pulse/) | Watch live sale price drops and build a basket your budget can afford | Trade eligible gear for a camera you can afford | Lock the printed offer at the pressure mark |

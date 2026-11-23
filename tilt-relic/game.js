@@ -487,9 +487,12 @@ function make_jam(c,q){
   function update(){
     c.objective(q.goalText);
     c.meter("Target order "+q.parts.join(" · ")+" · gap last");
+    const blank=tiles.indexOf(-1);
     tiles.forEach((n,i)=>{
-      if(n===-1){c.off("block"+i);return;}
-      c.marker("block"+i,"Slide "+q.parts[n],[positions[i][0],.67,positions[i][1]],()=>slide(i),{kind:n===should[i]?"good":"clue",disabled:!!move});
+      if(n===-1)return;
+      if(!touch(i,blank)){c.off("block"+n);return;}
+      c.marker("block"+n,"Slide "+q.parts[n],[positions[i][0],.67,positions[i][1]],()=>slide(i),
+        {kind:n===should[i]?"good":"clue",disabled:!!move});
     });
   }
   function start(){tiles=q.start.slice();move=null;turns=0;update();}
@@ -526,6 +529,7 @@ function makeChallenge(c){
       active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
+    get hideAgent(){return active.hideAgent;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},
     tap(p){return active.tap?.(p);},

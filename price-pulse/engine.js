@@ -277,7 +277,21 @@ function createRenderer(scene){
   );
 
   const quad=buffer([-1,-1,1,-1,-1,1,1,1],gl.STATIC_DRAW);
-  const ground=buffer(scene.data,gl.STATIC_DRAW),move=gl.createBuffer();
+  const staticMesh=data=>({buffer:buffer(data,gl.STATIC_DRAW),count:data.length/10});
+  const ground=staticMesh(scene.data),move=gl.createBuffer();
+  // In a descending mine, the upper landing is in front of the active room.
+  const mineRooms=GAME.scene==="mine"?[ground,...GAME.spaces.slice(1).map(([,z,y])=>{
+    const clear=[];
+    for(let i=0;i<scene.data.length;i+=30){
+      const v=scene.data;
+      const foreground=Math.min(v[i+2],v[i+12],v[i+22])>z+4.43;
+      const aboveRoom=Math.min(v[i+1],v[i+11],v[i+21])>y+.27;
+      if(!foreground||!aboveRoom){
+        for(let j=0;j<30;j++)clear.push(v[i+j]);
+      }
+    }
+    return staticMesh(clear);
+  })]:[ground];
   const target=gl.createFramebuffer(),depthStorage=gl.createRenderbuffer(),shadowMap=gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D,shadowMap);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,mapSize,mapSize,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
@@ -314,10 +328,11 @@ function createRenderer(scene){
     enable(depthP,3,stride,0);
     enable(depthM,1,stride,36);
   };
-  let last=-Infinity, lightM=orthographic(-9,9,-9,9,.8,54);
-  function writeShadow(time,motion,focus){
-    if(!shadows||time-last<.036)return;
+  let last=-Infinity, lastStatic=null, lightM=orthographic(-9,9,-9,9,.8,54);
+  function writeShadow(time,motion,focus,scenery){
+    if(!shadows||(scenery===lastStatic&&time-last<.036))return;
     last=time;
+    lastStatic=scenery;
     const span=13.4,step=span*2/mapSize;
     const center=focus.map(v=>Math.round(v/step)*step);
     const sunEye=add(center,scale(direction,25));
@@ -331,20 +346,21 @@ function createRenderer(scene){
     gl.useProgram(depth);
     gl.uniformMatrix4fv(matrixD,false,lightM);
     deactivate();
-    bindDepth(ground);
-    gl.drawArrays(gl.TRIANGLES,0,scene.data.length/10);
+    bindDepth(scenery.buffer);
+    gl.drawArrays(gl.TRIANGLES,0,scenery.count);
     bindDepth(move);
     gl.drawArrays(gl.TRIANGLES,0,motion.data.length/10);
     gl.bindFramebuffer(gl.FRAMEBUFFER,null);
   }
 
-  return (eye,vp,drone,time,moving,focus)=>{
+  return (eye,vp,drone,time,moving,focus,activeStage=0)=>{
     const ratio=Math.min(devicePixelRatio||1,1.6,Math.sqrt(2200000/Math.max(1,canvas.clientWidth*canvas.clientHeight)));
     const w=Math.max(1,Math.round(canvas.clientWidth*ratio)),h=Math.max(1,Math.round(canvas.clientHeight*ratio));
     if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
     gl.bindBuffer(gl.ARRAY_BUFFER,move);
     gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(moving.data),gl.DYNAMIC_DRAW);
-    writeShadow(time,moving,focus||[drone.x,drone.y,drone.z]);
+    const scenery=mineRooms[activeStage]||ground;
+    writeShadow(time,moving,focus||[drone.x,drone.y,drone.z],scenery);
     gl.viewport(0,0,w,h);
     gl.clear(gl.DEPTH_BUFFER_BIT);
     gl.disable(gl.DEPTH_TEST);
@@ -376,8 +392,8 @@ function createRenderer(scene){
     gl.uniform1f(uniforms.time,time);
     gl.uniformMatrix4fv(uniforms.viewProjection,false,vp);
     gl.uniformMatrix4fv(uniforms.lightMatrix,false,lightM);
-    bindWorld(ground);
-    gl.drawArrays(gl.TRIANGLES,0,scene.data.length/10);
+    bindWorld(scenery.buffer);
+    gl.drawArrays(gl.TRIANGLES,0,scenery.count);
     bindWorld(move);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);

@@ -595,6 +595,7 @@ function makeChallenge(c){
       active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
+    get hideAgent(){return active.hideAgent;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},
     tap(p){return active.tap?.(p);},

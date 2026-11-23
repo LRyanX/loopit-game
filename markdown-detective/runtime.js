@@ -411,7 +411,9 @@ function makeFloor(m,zone,random){
     assembly:"round",shadow:"long",mix:"oct",winch:"long",rhythm:"round",field:"organic",glide:"kite",lattice:"round"};
   const geometry=zone===0?GAME.footprint:plans[GAME.tasks[zone-1].kind];
   const landscape=GAME.brief==="hunt"&&GAME.form!=="perch";
-  const poly=footprint(landscape&&GAME.form!=="vault"?"organic":geometry),z=-11*zone,p=GAME.palette,look=GAME.scene;
+  const outline=footprint(landscape&&GAME.form!=="vault"?"organic":geometry);
+  const poly=GAME.form==="lift"?outline.map(([x,z])=>[x,z*.86]):outline;
+  const z=-11*zone,p=GAME.palette,look=GAME.scene;
   const low=Math.min(...GAME.spaces.map(v=>v[2]));
   const base=landscape?-.12:look==="canopy"?-.52:low-GAME.spaces[zone][2]-.95;
   const material=look==="reef"?8:landscape?9:0;
@@ -751,7 +753,9 @@ function landscapeSlope(m,outline,z,base,material){
       const rough=.83+.27*Math.sin(i*1.81+band*.8)+.14*Math.cos(i*3.9);
       const len=Math.hypot(x,d);
       const reach=(spread+Math.max(0,-base-1.6)*drop*.54)*rough;
-      return [x+x/len*reach,Math.min(-.13,base*drop+(band<3?.17*Math.sin(i*1.23+band):0)),z+d+d/len*reach];
+      const slopeZ=d+d/len*reach;
+      return [x+x/len*reach,Math.min(-.13,base*drop+(band<3?.17*Math.sin(i*1.23+band):0)),
+        z+(GAME.form==="lift"?clamp(slopeZ,-4.45,4.45):slopeZ)];
     });
     for(let i=0;i<inner.length;i++){
       const j=(i+1)%inner.length;
@@ -1300,6 +1304,9 @@ function marker(key,label,point,act,options={}) {
     const b=document.createElement("button");
     b.type="button";
     b.dataset.action=key;
+    b.addEventListener("pointerdown",event=>{
+      if(event.button===0&&!b.disabled)b.setPointerCapture?.(event.pointerId);
+    });
     b.addEventListener("click",()=>{
       if(busy()||entry.disabled)return;
       wakeAudio();
@@ -1594,7 +1601,7 @@ function camera(dt) {
   const width=ui.playfield.clientWidth||canvas.clientWidth;
   const height=Math.max(1,ui.playfield.clientHeight||canvas.clientHeight),aspect=width/height;
   const age=reward?elapsed-reward.at:0;
-  const focus=finale?.88*curve((elapsed-finale.at)/.76):reward?curve(age/.44)*(1-curve((age-1.47)/.51)):0;
+  const focus=finale?.78*curve((elapsed-finale.at)/.76):reward?.32*curve(age/.44)*(1-curve((age-1.47)/.51)):0;
   const center=finale?placed([0,.30,localZ(-.39)],stage):
     reward?placed(toWorld(reward.pos),stage):placed([0,.65,localZ(-.38)],stage);
   const tray=GAME.controls[stage]==="tray";
@@ -1617,10 +1624,12 @@ function camera(dt) {
   view.fov=lerp(view.fov,homeFov,ease);
   zoom=lerp(zoom,zoomTarget,ease);
   const pitchBoost=portrait*(cartView?.07:.17)*clamp((.76-view.pitch)/.40,0,1);
-  const pitch=lerp(view.pitch+pitchBoost,.60,focus), yaw=lerp(view.yaw,.25,focus)+turn;
+  const roomPitch=view.pitch+pitchBoost;
+  const pitch=lerp(roomPitch,finale?.71:clamp(roomPitch,.70,1.07),focus);
+  const yaw=lerp(view.yaw,finale?.25:view.yaw,focus)+turn;
   const framing=crossing?.96:cartView?.66:tray?.83:.87;
   const distance=lerp(Math.max(14.8,11.83/aspect)*zoom*lerp(1,framing,portrait),
-    finale?Math.max(8.8,4.50/aspect):Math.max(6.5,3.78/aspect),focus);
+    finale?Math.max(8.8,4.50/aspect):Math.max(10.5,6.82/aspect),focus);
   view.aim=lerpPoint(view.center,[center[0],center[1]+.64,center[2]],focus);
   view.eye=add(view.aim,[Math.sin(yaw)*Math.cos(pitch)*distance,Math.sin(pitch)*distance,Math.cos(yaw)*Math.cos(pitch)*distance]);
   view.vp=multiply(perspective(view.fov,aspect,.10,130),look(view.eye,view.aim));
@@ -1641,6 +1650,7 @@ function visualAgent(){
 
 function drawLocks(m){
   for(let i=0;i<2;i++){
+    if(GAME.scene==="mine"&&!crossing&&i<stage)continue;
     const local=new Mesh(),z=stageZ(i)-4.43,opened=Boolean(awards[i]||figures[i]);
     for(const side of [-1,1]){
       local.box(side*1.13,.49,z,.18,.92,.13,ink());
@@ -1745,7 +1755,7 @@ function motion(){
       m.box(...p,.09*f,.038*f,.11*f,s.tint,age*8,1,age*9);
     }
   }
-  if(!finale)agentModel(m,visualAgent(),elapsed);
+  if(!finale&&!mode.hideAgent)agentModel(m,visualAgent(),elapsed);
   return m;
 }
 
@@ -1769,7 +1779,7 @@ function mapTargets(){
     const [x,y,,depth]=transform(view.vp,point);
     return {x:(x/depth*.5+.5)*w,y:(.5-y/depth*.5)*h,depth};
   };
-  const transit=Boolean(route?.action||crossing||changeAt!==null||reward||finale);
+  const transit=Boolean(crossing||changeAt!==null||reward||finale);
   if(leaders){
     const width=Math.round(w),height=Math.round(h);
     if(guideCanvas.width!==width||guideCanvas.height!==height){
@@ -1806,7 +1816,7 @@ function mapTargets(){
     protectFootprint(points,6);
   }
   const agent=visualAgent(),body=project([agent.x,agent.y+.52,agent.z]);
-  if(body.depth>0)protectedAreas.push({...body,dx:22,dy:29});
+  if(body.depth>0&&!mode.hideAgent)protectedAreas.push({...body,dx:22,dy:29});
   const boxes=[];
   for(const item of projected){
     const {entry,depth,tile,x,y,width,height}=item,{b}=entry;
@@ -1826,9 +1836,11 @@ function mapTargets(){
       const caption={...hit,dy:tile?8:Math.min(20,7+Math.ceil((b.dataset.caption?.length||1)/13)*4)};
       const occlusion=tile?0:protectedAreas.reduce((sum,r)=>sum+overlapArea(caption,r),0);
       const overlap=boxes.reduce((sum,r)=>sum+overlapArea(hit,r),0);
-      const score=occlusion*48+overlap*32+Math.hypot(hit.x-x,hit.y-y-ideal);
+      const shift=entry.layoutOffset?Math.hypot(hit.x-x-entry.layoutOffset[0],hit.y-y-entry.layoutOffset[1]):0;
+      const score=occlusion*48+overlap*32+Math.hypot(hit.x-x,hit.y-y-ideal)+shift*.31;
       if(score<best){selected=hit;best=score;}
     };
+    if(entry.layoutOffset)consider(x+entry.layoutOffset[0],y+entry.layoutOffset[1]);
     for(const [sx,sy] of offsets)consider(x+sx,y+sy);
     if(best>470&&!tile){
       for(let row=dy;row<=h-dy;row+=37){
@@ -1836,6 +1848,7 @@ function mapTargets(){
       }
     }
     boxes.push(selected);
+    entry.layoutOffset=[selected.x-x,selected.y-y];
     b.style.transform="translate3d("+Math.round(selected.x)+"px,"+Math.round(selected.y)+"px,0) translate(-50%,-50%)";
     if(leaders&&!tile&&Math.hypot(selected.x-x,selected.y-y)>32){
       const x0=clamp(x,4,w-4),y0=clamp(y,4,h-4);
@@ -1886,7 +1899,7 @@ function frame(ms) {
   if(toastUntil&&elapsed>=toastUntil)clearMessage();
   sunburst=sunburst.filter(s=>elapsed-s.at<s.life);
   camera(dt);
-  gfx(view.eye,view.fullProjection,visualAgent(),elapsed,motion(),view.aim);
+  gfx(view.eye,view.fullProjection,visualAgent(),elapsed,motion(),view.aim,crossing?-1:stage);
   mapTargets();
   if(!showReady){showReady=true;document.documentElement.dataset.ready="true";}
   raf=requestAnimationFrame(frame);

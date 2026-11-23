@@ -530,7 +530,7 @@ function make_maze(c,q){
     c.tone(carried?[281,393,495]:[285,402],.064,.073);controls();
   }
   function controls(){
-    c.objective(q.pickup&&!picked?"Collect the pickup before the exit":q.thin?"Cracked ice breaks behind you":
+    c.objective(q.pickup&&!picked?"Scan at the desk before pickup":q.thin?"Cracked ice breaks behind you":
       q.currents?"Currents push you one tile":q.goalText);
     c.meter(q.currents?(anchored?"Anchor set":"Tap the diver to set the anchor"):moved+" moves · gold exit");
     if(q.currents)c.marker("anchor",anchored?"Release anchor":"Drop anchor",[X(at[0]),.70,Z(at[1])],()=>{
@@ -650,6 +650,7 @@ function makeChallenge(c){
       active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
+    get hideAgent(){return active.hideAgent;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},
     tap(p){return active.tap?.(p);},

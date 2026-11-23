@@ -7,8 +7,8 @@ const GAME = {
   "avatar": "cart",
   "zones": [
     "Cart Yard",
-    "Cargo Tie-Down",
-    "Blocked Loading Aisle"
+    "Secure Pickup Cargo",
+    "Curbside Pickup Lane"
   ],
   "awards": [
     "Two items packed",
@@ -28,8 +28,8 @@ const GAME = {
     "css": "#4d6744"
   },
   "passages": [
-    "Enter Cargo Tie-Down",
-    "Enter Blocked Loading Aisle"
+    "Enter Secure Pickup Cargo",
+    "Enter Curbside Pickup Lane"
   ],
   "scene": "freight",
   "footprint": "square",
@@ -87,8 +87,8 @@ const GAME = {
         "runs": [
           {
             "kind": "straps",
-            "title": "Cargo Tie-Down",
-            "goalText": "Join matching anchor clips to secure the load",
+            "title": "Secure Pickup Cargo",
+            "goalText": "Secure the pickup order so it rides safely",
             "pairs": [
               [
                 0,
@@ -104,8 +104,8 @@ const GAME = {
           },
           {
             "kind": "straps",
-            "title": "Cargo Tie-Down",
-            "goalText": "Join matching anchor clips to secure the load",
+            "title": "Secure Pickup Cargo",
+            "goalText": "Secure the pickup order so it rides safely",
             "pairs": [
               [
                 0,
@@ -125,8 +125,8 @@ const GAME = {
           },
           {
             "kind": "straps",
-            "title": "Cargo Tie-Down",
-            "goalText": "Join matching anchor clips to secure the load",
+            "title": "Secure Pickup Cargo",
+            "goalText": "Secure the pickup order so it rides safely",
             "pairs": [
               [
                 0,
@@ -157,8 +157,8 @@ const GAME = {
         "runs": [
           {
             "kind": "maze",
-            "title": "Blocked Loading Aisle",
-            "goalText": "Steer the packed cart around the stock cages",
+            "title": "Curbside Pickup Lane",
+            "goalText": "Check in and deliver the cart to pickup",
             "start": [
               0,
               3
@@ -194,8 +194,8 @@ const GAME = {
           },
           {
             "kind": "maze",
-            "title": "Blocked Loading Aisle",
-            "goalText": "Steer the packed cart around the stock cages",
+            "title": "Curbside Pickup Lane",
+            "goalText": "Check in and deliver the cart to pickup",
             "start": [
               3,
               3
@@ -231,8 +231,8 @@ const GAME = {
           },
           {
             "kind": "maze",
-            "title": "Blocked Loading Aisle",
-            "goalText": "Steer the packed cart around the stock cages",
+            "title": "Curbside Pickup Lane",
+            "goalText": "Check in and deliver the cart to pickup",
             "start": [
               0,
               3
@@ -272,8 +272,8 @@ const GAME = {
   ],
   "ending": {
     "kind": "cart",
-    "title": "Cart loaded",
-    "summary": "Your packed cart rolls out of the loading bay.",
+    "title": "Pickup order delivered",
+    "summary": "The cart reaches the customer’s curbside pickup bay.",
     "pieces": [
       "shoe",
       "lamp",
@@ -284,8 +284,8 @@ const GAME = {
   "tasks": [
     {
       "kind": "straps",
-      "title": "Cargo Tie-Down",
-      "goalText": "Join matching anchor clips to secure the load",
+      "title": "Secure Pickup Cargo",
+      "goalText": "Secure the pickup order so it rides safely",
       "pairs": [
         [
           0,
@@ -301,8 +301,8 @@ const GAME = {
     },
     {
       "kind": "maze",
-      "title": "Blocked Loading Aisle",
-      "goalText": "Steer the packed cart around the stock cages",
+      "title": "Curbside Pickup Lane",
+      "goalText": "Check in and deliver the cart to pickup",
       "start": [
         0,
         3
@@ -368,6 +368,8 @@ const GAME = {
   ]
 };
 
+const cartOrders=["B07","C12","A24"];
+
 function makeFirstTask(c){
   const layout=[
     [{name:"Boots",shape:[[0,0],[1,0],[2,0]],tint:0xdf7c54},{name:"Mug",shape:[[0,0]],tint:0x65aaa4}],
@@ -375,6 +377,8 @@ function makeFirstTask(c){
     [{name:"Camera",shape:[[0,0],[1,0],[0,1],[1,1]],tint:0x73a6bb},{name:"Shoes",shape:[[0,0],[1,0],[2,0]],tint:0xc56854},{name:"Gift",shape:[[0,0],[0,1]],tint:0xdeaa67}]
   ];
   const padX=(i)=>(i-1)*1.45,padZ=(j)=>(j-1)*1.67-.21;
+  const products={Boots:"shoe",Mug:"mug",Coat:"bag",Kettle:"kettle",Camera:"camera",Shoes:"shoe",Gift:"gift",Headset:"headset"};
+  const extra={name:"Headset",shape:[[0,0]],tint:0xb4a3c3};
   let entries=[],chosen=0,rotation=0,packed=[],floorIndex=0,dropCell=null,preview=null;
   function shape(index,turn){
     let points=entries[index].shape.map(x=>x.slice());
@@ -383,20 +387,29 @@ function makeFirstTask(c){
     return points.map(([x,y])=>[x-xMin,y-yMin]);
   }
   function refresh(){
-    const p=entries[chosen],fit=packed.some(v=>v.index===chosen);
-    c.objective(fit?"Choose an unpacked product":preview?"Tap again to place":"Preview a slot for "+p.name.toLowerCase());
-    c.meter(packed.length+"/"+entries.length+" packed");
+    const p=entries[chosen],fit=packed.some(v=>v.index===chosen),valid=preview&&p!==extra&&fits(cellsAt(preview));
+    const order=layout[floorIndex];
+    c.objective(p===extra?"Headset is not on the order":fit?"Choose a product from the order":preview?
+      (valid?"Fits! Tap Place "+p.name:"Doesn't fit · try another square"):"Pack order "+cartOrders[floorIndex]+" for pickup");
+    c.meter(order.map(item=>item.name).join(" + ")+" · "+(!packed.length&&!preview?"tap a square":packed.length+"/"+order.length+" loaded"));
     c.hideTools();
+    if(valid)c.tool("place","Place "+p.name,()=>select(...preview));
     c.tool("rotate","Rotate "+p.name,()=>{rotation=(rotation+1)%4;preview=null;c.tone();refresh();},fit);
     if(packed.length)c.tool("undo","Undo placement",()=>{
       chosen=packed.pop().index;rotation=0;preview=null;c.feedback(true);refresh();
     });
     entries.forEach((v,i)=>c.marker("pick"+i,v.name,[(i-(entries.length-1)/2)*2.02,.68,3.24],()=>{
       chosen=i;rotation=0;preview=null;refresh();
-    },{kind:"clue",hidden:i===chosen||packed.some(e=>e.index===i)}));
+    },{kind:i===chosen?"good":"clue",hidden:packed.some(e=>e.index===i),
+      caption:i===chosen?v.name+" · "+v.shape.length:v.name}));
     for(let y=0;y<3;y++)for(let x=0;x<3;x++){
       c.marker("slot"+x+y,["A","B","C"][x]+(y+1),[padX(x),.17,padZ(y)],()=>select(x,y),{tile:true});
     }
+  }
+  function cellsAt([x,y]){return shape(chosen,rotation).map(([a,b])=>[x+a,y+b]);}
+  function fits(cells){
+    return cells.every(([x,y])=>x<3&&y<3&&!(floorIndex===1&&x===2&&y===2)&&
+      !packed.some(p=>p.cells.some(([a,b])=>a===x&&b===y)));
   }
   function select(x,y){
     if(preview?.[0]===x&&preview?.[1]===y){preview=null;place(x,y);return;}
@@ -404,24 +417,37 @@ function makeFirstTask(c){
   }
   function place(x,y){
     if(packed.some(v=>v.index===chosen)){c.feedback(false,"Choose an unpacked item");return;}
-    const occupied=new Set(packed.flatMap(v=>v.cells.map(p=>p.join(","))));
-    if(floorIndex===1)occupied.add("2,2");
-    const cells=shape(chosen,rotation).map(([a,b])=>[x+a,y+b]);
-    if(cells.some(([a,b])=>a>=3||b>=3||occupied.has(a+","+b))){c.mistake("Doesn't fit · rotate or move");refresh();return;}
+    if(entries[chosen]===extra){c.mistake("The headset belongs to a different order");refresh();return;}
+    const cells=cellsAt([x,y]);
+    if(!fits(cells)){c.mistake("Doesn't fit · rotate or move");refresh();return;}
     packed.push({index:chosen,cells});
     c.pulse([padX(x),.42,padZ(y)],entries[chosen].tint,17);
-    if(packed.length===entries.length){c.receive([0,0,-2.76]);return;}
-    chosen=entries.findIndex((_,i)=>!packed.some(v=>v.index===i));rotation=0;
+    if(packed.length===layout[floorIndex].length){c.receive([0,0,-2.76]);return;}
+    chosen=entries.findIndex((item,i)=>item!==extra&&!packed.some(v=>v.index===i));rotation=0;
     c.feedback(true);refresh();
   }
-  function start(stage){entries=layout[stage];floorIndex=stage;chosen=0;rotation=0;packed=[];dropCell=null;preview=null;refresh();}
+  function start(stage){entries=[...layout[stage],extra];floorIndex=stage;chosen=0;rotation=0;packed=[];dropCell=null;preview=null;refresh();}
   function draw(m){
     const local=c.localZ;
-    m.box(0,.04,local(-.21),4.65,.106,5.03,ink());
-    const carrying=entries[chosen],slot=dropCell||preview;
-    const ghost=slot?shape(chosen,rotation).map(([a,b])=>[slot[0]+a,slot[1]+b]):[];
-    const valid=ghost.every(([x,y])=>x<3&&y<3&&!(floorIndex===1&&x===2&&y===2)&&
-      !packed.some(p=>p.cells.some(([a,b])=>a===x&&b===y)));
+    m.box(0,.09,local(-.21),4.65,.16,5.03,ink(),0,4);
+    const frame=0x728791;
+    for(const side of [-1,1]){
+      const x=side*2.37;
+      m.tube([x,.32,local(-2.83)],[x,.32,local(2.43)],.061,.061,frame,8,4);
+      for(const z of [-2.58,-1.79,-.97,-.16,.65,1.46,2.27])
+        m.tube([x,.112,local(z)],[x,.32,local(z)],.033,.033,frame,7,4);
+      for(const z of [-1.78,1.57]){
+        m.tube([side*2.24,.052,local(z)],[side*2.44,.052,local(z)],.164,.164,ink(),10);
+        m.oval(side*2.45,.07,local(z),.067,.082,.081,frame,0,4,8);
+      }
+      m.tube([side*2.37,.29,local(2.02)],[side*2.22,.47,local(2.69)],.058,.058,frame,8,4);
+    }
+    m.tube([-2.22,.47,local(2.69)],[2.22,.47,local(2.69)],.083,.083,0xb98c58,9,4);
+    m.tube([-2.35,.31,local(-2.83)],[2.35,.31,local(-2.83)],.061,.061,frame,8,4);
+    const slot=dropCell||preview;
+    const hint=!slot&&floorIndex===0&&chosen===0&&!packed.length;
+    const ghost=slot?cellsAt(slot):hint?cellsAt([0,0]):[];
+    const valid=entries[chosen]!==extra&&fits(ghost);
     for(let y=0;y<3;y++)for(let x=0;x<3;x++){
       const found=packed.find(p=>p.cells.some(([a,b])=>a===x&&b===y));
       const blocked=floorIndex===1&&x===2&&y===2;
@@ -429,7 +455,7 @@ function makeFirstTask(c){
       m.box(padX(x),.137,local(padZ(y)),1.32,.13,1.42,blocked?0x706761:hover?0xf7d894:found?entries[found.index].tint:0xbfdad2);
       if(blocked)m.box(padX(x),.289,local(padZ(y)),1.10,.18,1.26,0x76726e);
       if(found)m.box(padX(x),.31,local(padZ(y)),1.16,.22,1.24,entries[found.index].tint);
-      if(hover)m.box(padX(x),.443,local(padZ(y)),1.08,.030,1.13,valid?0x95deb7:0xe68273,0,1);
+      if(hover)m.box(padX(x),hint?.221:.443,local(padZ(y)),1.08,.030,1.13,hint?0xeed79c:valid?0x95deb7:0xe68273,0,1);
     }
     entries.forEach((p,i)=>{
       const x=(i-(entries.length-1)/2)*2.02;
@@ -437,7 +463,13 @@ function makeFirstTask(c){
       if(packed.some(v=>v.index===i))return;
       for(const [a,b] of shape(i,i===chosen?rotation:0))
         m.box(x+(a-.6)*.37,.35,local(3.28+(b-.33)*.34),.351,.29,.32,p.tint);
+      c.item(m,products[p.name],x,.57,local(3.34),.74,p.tint);
     });
+    for(const {index,cells} of packed){
+      const x=cells.reduce((sum,p)=>sum+padX(p[0]),0)/cells.length;
+      const z=cells.reduce((sum,p)=>sum+padZ(p[1]),0)/cells.length;
+      c.item(m,products[entries[index].name],x,.47,local(z),.76,entries[index].tint);
+    }
     if(!packed.length&&!slot){
       const x=(chosen-(entries.length-1)/2)*2.02,z=local(2.58),y=.073;
       m.tri([x-.25,y,z+.15],[x+.25,y,z+.15],[x,y,z-.19],0xffd589,1);
@@ -448,43 +480,50 @@ function makeFirstTask(c){
     const [a,b]=[Math.round(p.floor.x/1.45+1),Math.round((p.floor.z+.21)/1.67+1)];
     dropCell=a<0||a>2||b<0||b>2?null:[a,b];return true;
   }
+  function tap(p){
+    const col=Math.round(p.x/1.45+1),row=Math.round((p.z+.21)/1.67+1);
+    if(col<0||col>2||row<0||row>2||Math.abs(p.x-padX(col))>.69||Math.abs(p.z-padZ(row))>.77)return false;
+    select(col,row);
+    return true;
+  }
   function dragEnd(){const v=dropCell;dropCell=null;preview=null;if(v)place(...v);}
-  return {start,draw,swipe,dragEnd};
+  return {start,draw,tap,swipe,dragEnd,hideAgent:true};
 }
 
 function makeSpecialTask(c,scenario){
-  const goods=[
-    ["Books","parcel",0xd39272],["Glass","mug",0x89b9c9],["Blanket","bag",0x96c39a],
-    ["Tools","box",0xa493c9],["Lamp","lamp",0xe1c481]
-  ];
-  const order=[[0,2,1],[3,2,4],[0,2,4]][scenario];
-  const display=scenario===1?[4,3,2]:scenario===0?[1,0,2]:[2,4,0];
-  let stack=[];
-  function add(id){
-    if(id!==order[stack.length]){c.mistake("Sturdy box, padding, then the fragile item");return;}
-    const i=display.indexOf(id);
-    c.flyTo((i-1)*1.84,1.21,()=>{
-      stack.push(id);c.tone([380+stack.length*81]);
-      if(stack.length===3){c.pulse([0,1.21,-1.37],0x90dfb9);c.receive([0,0,-1.38]);return;}
-      update();
+  const order=cartOrders[scenario],bay=[2,3,1][scenario];
+  const available=[cartOrders[(scenario+1)%3],order,cartOrders[(scenario+2)%3]];
+  const xs=[-1.88,0,1.88];
+  let scanned=false;
+  function scan(code){
+    if(code!==order){c.mistake("Match the pickup order number");return;}
+    c.flyTo(0,.14,()=>{scanned=true;c.tone([330,480,665]);show();});
+  }
+  function assign(i){
+    if(i!==bay){c.mistake("The customer is waiting in bay "+bay);return;}
+    c.flyTo(xs[i-1],-1.84,()=>c.receive([xs[i-1],0,-2.33],"Order "+order+" · Bay "+bay));
+  }
+  function show(){
+    c.objective(scanned?"Tag the cart for the customer's bay":"Scan the same order number");
+    c.meter("Order "+order+" · Bay "+bay);
+    available.forEach((code,i)=>{
+      if(!scanned)c.marker("scan"+i,"Scan "+code,[xs[i],.84,1.68],()=>scan(code),{kind:"clue",caption:code});
+      else c.off("scan"+i);
+      if(scanned)c.marker("bay"+i,"Bay "+(i+1),[xs[i],.72,-2.01],()=>assign(i+1),{kind:"hot"});
+      else c.off("bay"+i);
     });
   }
-  function update(){
-    c.objective(["Stack the sturdy box first","Add the padding","Place the fragile item on top"][stack.length]);
-    c.meter(stack.length+"/3 loaded vertically");
-    display.forEach((id,i)=>{
-      if(!stack.includes(id))c.marker("pick"+id,"Lift "+goods[id][0],[(i-1)*1.84,.68,1.32],()=>add(id),{kind:"clue",caption:goods[id][0]});
-      else c.off("pick"+id);
-    });
-  }
-  function draw(m){
+  function draw(m,t){
     const z=c.localZ;
-    m.box(0,.14,z(-1.37),1.70,.25,1.62,ink(),0,4);
-    m.tube([-1.02,.24,z(-1.37)],[-1.02,1.81,z(-1.37)],.047,.047,trim(),7,4);
-    display.forEach((id,i)=>{if(!stack.includes(id))c.item(m,goods[id][1],(i-1)*1.84,.12,z(1.28),1.10,goods[id][2]);});
-    stack.forEach((id,i)=>c.item(m,goods[id][1],0,.30+i*.48,z(-1.36),1.11-i*.12,goods[id][2]));
+    c.item(m,"register",0,.05,z(-.35),1.28,scanned?0x87d4b0:trim());
+    xs.forEach((x,i)=>{
+      c.pedestal(m,x,z(1.65),1.08,trim());
+      c.item(m,"receipt",x,.16,z(1.67),.92,available[i]===order&&scanned?0x86dfa9:0xede0be);
+      m.box(x,.10,z(-2.12),1.25,.12,.85,scanned?0xf1c57e:ink(),0,4);
+      for(let k=0;k<=i;k++)m.box(x+(k-i*.50)*.22,.21,z(-1.91),.13,.034,.26,0xffdf99,0,1);
+    });
   }
-  return {start:update,draw};
+  return {start:show,draw};
 }
 
 function make_straps(c,q){
@@ -587,7 +626,7 @@ function make_maze(c,q){
     c.tone(carried?[281,393,495]:[285,402],.064,.073);controls();
   }
   function controls(){
-    c.objective(q.pickup&&!picked?"Collect the pickup before the exit":q.thin?"Cracked ice breaks behind you":
+    c.objective(q.pickup&&!picked?"Scan at the desk before pickup":q.thin?"Cracked ice breaks behind you":
       q.currents?"Currents push you one tile":q.goalText);
     c.meter(q.currents?(anchored?"Anchor set":"Tap the diver to set the anchor"):moved+" moves · gold exit");
     if(q.currents)c.marker("anchor",anchored?"Release anchor":"Drop anchor",[X(at[0]),.70,Z(at[1])],()=>{
@@ -654,6 +693,7 @@ function makeChallenge(c){
       active.start(chapter.kind==="signature"?scenario:stage,0);
     },
     get lockMove(){return active.lockMove;},
+    get hideAgent(){return active.hideAgent;},
     draw(m,t){active.draw(m,t);},
     tick(dt,t){active.tick?.(dt,t);},
     tap(p){return active.tap?.(p);},
