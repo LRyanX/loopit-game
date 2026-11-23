@@ -1,0 +1,342 @@
+"use strict";
+
+const GAME = {
+  "title": "Cart Stack",
+  "brief": "sale",
+  "look": "warehouse",
+  "avatar": "cart",
+  "zones": [
+    "Cart Yard",
+    "Balance Bay",
+    "Blocked Loading Aisle"
+  ],
+  "awards": [
+    "Two items packed",
+    "Balanced checkout load",
+    "Cart delivered intact"
+  ],
+  "awardShape": "receipt",
+  "palette": {
+    "sky": 9284261,
+    "haze": 15264719,
+    "tile": 14212022,
+    "tile2": 15915429,
+    "ink": 3357754,
+    "trim": 9870720,
+    "accent": 5072708,
+    "loot": 15911551,
+    "css": "#4d6744"
+  },
+  "passages": [
+    "Enter Balance Bay",
+    "Enter Blocked Loading Aisle"
+  ],
+  "scene": "freight",
+  "footprint": "square",
+  "connector": "loading",
+  "camera": [
+    -0.09,
+    0.94,
+    0.89,
+    0.02
+  ],
+  "spaces": [
+    [
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      -12,
+      0.7,
+      0
+    ],
+    [
+      -7,
+      -21,
+      1.36,
+      0.68
+    ]
+  ],
+  "tasks": [
+    {
+      "kind": "weigh",
+      "title": "Balance Bay",
+      "goalText": "Split the goods to balance the checkout scale",
+      "unit": "lb",
+      "parts": [
+        [
+          "Lamp",
+          2,
+          "lamp"
+        ],
+        [
+          "Kettle",
+          3,
+          "kettle"
+        ],
+        [
+          "Shoes",
+          4,
+          "shoe"
+        ]
+      ],
+      "goal": [
+        4,
+        5
+      ],
+      "award": "Balanced checkout load"
+    },
+    {
+      "kind": "maze",
+      "title": "Blocked Loading Aisle",
+      "goalText": "Steer the packed cart around the stock cages",
+      "start": [
+        0,
+        3
+      ],
+      "exit": [
+        3,
+        0
+      ],
+      "blocks": [
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "object": "parcel",
+      "award": "Cart delivered intact"
+    }
+  ],
+  "form": "loading",
+  "controls": [
+    "world",
+    "tray",
+    "tray"
+  ],
+  "views": [
+    [
+      0.04,
+      1.08,
+      0.92,
+      0.25,
+      0.72
+    ],
+    [
+      -0.47,
+      0.69,
+      0.91,
+      -0.09,
+      0.81
+    ],
+    [
+      0,
+      0.72,
+      0.93,
+      -0.09,
+      0.79
+    ]
+  ]
+};
+
+function makeFirstTask(c){
+  const layout=[
+    [{name:"Boots",shape:[[0,0],[1,0],[2,0]],tint:0xdf7c54},{name:"Mug",shape:[[0,0]],tint:0x65aaa4}],
+    [{name:"Coat",shape:[[0,0],[0,1],[1,1]],tint:0x796caa},{name:"Kettle",shape:[[0,0],[1,0]],tint:0xe3b455}],
+    [{name:"Camera",shape:[[0,0],[1,0],[0,1],[1,1]],tint:0x73a6bb},{name:"Shoes",shape:[[0,0],[1,0],[2,0]],tint:0xc56854},{name:"Gift",shape:[[0,0],[0,1]],tint:0xdeaa67}]
+  ];
+  const padX=(i)=>(i-1)*1.45,padZ=(j)=>(j-1)*1.67-.21;
+  let entries=[],chosen=0,rotation=0,packed=[],floorIndex=0,dropCell=null;
+  function shape(index,turn){
+    let points=entries[index].shape.map(x=>x.slice());
+    for(let i=0;i<turn;i++)points=points.map(([x,y])=>[-y,x]);
+    const xMin=Math.min(...points.map(p=>p[0])),yMin=Math.min(...points.map(p=>p[1]));
+    return points.map(([x,y])=>[x-xMin,y-yMin]);
+  }
+  function refresh(){
+    const p=entries[chosen],fit=packed.some(v=>v.index===chosen);
+    c.objective(fit?"Choose an unpacked product":"Fit "+p.name.toLowerCase()+" into the cart");
+    c.meter(packed.length+"/"+entries.length+" packed · choose a top-left slot");
+    c.hideTools();
+    c.tool("rotate","Rotate "+p.name,()=>{rotation=(rotation+1)%4;c.tone();refresh();},fit);
+    if(packed.length)c.tool("undo","Undo placement",()=>{
+      chosen=packed.pop().index;rotation=0;c.feedback(true);refresh();
+    });
+    entries.forEach((v,i)=>c.marker("pick"+i,v.name,[(i-(entries.length-1)/2)*2.02,.68,3.24],()=>{
+      chosen=i;rotation=0;refresh();
+    },{kind:i===chosen?"good":"clue",disabled:packed.some(e=>e.index===i)}));
+    for(let y=0;y<3;y++)for(let x=0;x<3;x++){
+      c.marker("slot"+x+y,["A","B","C"][x]+(y+1),[padX(x),.14,padZ(y)],()=>place(x,y),{kind:"hot"});
+    }
+  }
+  function place(x,y){
+    if(packed.some(v=>v.index===chosen)){c.feedback(false,"Choose an unpacked item");return;}
+    const occupied=new Set(packed.flatMap(v=>v.cells.map(p=>p.join(","))));
+    if(floorIndex===1)occupied.add("2,2");
+    const cells=shape(chosen,rotation).map(([a,b])=>[x+a,y+b]);
+    if(cells.some(([a,b])=>a>=3||b>=3||occupied.has(a+","+b))){c.mistake("Doesn't fit · rotate or move");return;}
+    packed.push({index:chosen,cells});
+    c.pulse([padX(x),.42,padZ(y)],entries[chosen].tint,17);
+    if(packed.length===entries.length){c.receive([0,0,-2.76]);return;}
+    chosen=entries.findIndex((_,i)=>!packed.some(v=>v.index===i));rotation=0;
+    c.feedback(true);refresh();
+  }
+  function start(stage){entries=layout[stage];floorIndex=stage;chosen=0;rotation=0;packed=[];dropCell=null;refresh();}
+  function draw(m){
+    const local=c.localZ;
+    m.box(0,.04,local(-.21),4.65,.106,5.03,ink());
+    for(let y=0;y<3;y++)for(let x=0;x<3;x++){
+      const found=packed.find(p=>p.cells.some(([a,b])=>a===x&&b===y));
+      const blocked=floorIndex===1&&x===2&&y===2;
+      const hover=dropCell?.[0]===x&&dropCell?.[1]===y;
+      m.box(padX(x),.137,local(padZ(y)),1.32,.13,1.42,blocked?0x706761:hover?0xf7d894:found?entries[found.index].tint:0xbfdad2);
+      if(blocked)m.box(padX(x),.289,local(padZ(y)),1.10,.18,1.26,0x76726e);
+      if(found)m.box(padX(x),.31,local(padZ(y)),1.16,.22,1.24,entries[found.index].tint);
+    }
+    entries.forEach((p,i)=>{
+      const x=(i-(entries.length-1)/2)*2.02;
+      c.pedestal(m,x,local(3.32),1.34,i===chosen?bright():trim());
+      if(packed.some(v=>v.index===i))return;
+      for(const [a,b] of shape(i,i===chosen?rotation:0))
+        m.box(x+(a-.6)*.37,.35,local(3.28+(b-.33)*.34),.351,.29,.32,p.tint);
+    });
+  }
+  function swipe(p){
+    if(!p.floor||!p.origin||p.origin.z<1.7)return false;
+    const [a,b]=[Math.round(p.floor.x/1.45+1),Math.round((p.floor.z+.21)/1.67+1)];
+    dropCell=a<0||a>2||b<0||b>2?null:[a,b];return true;
+  }
+  function dragEnd(){const v=dropCell;dropCell=null;if(v)place(...v);}
+  return {start,draw,swipe,dragEnd};
+}
+
+function makeSecondTask(c,q){
+  const xs=[-2.43,0,2.43],colors=[0xe49063,0x83c6ad,0x8eaad6];
+  let selected=-1,locations=[],angle=0;
+  const total=side=>locations.reduce((n,p,i)=>p===side?n+q.parts[i][1]:n,0);
+  function choose(i){selected=i;c.tone([329,482]);show();}
+  function put(side){
+    if(selected<0)return;
+    const i=selected,d=side===0?-2.15:2.15;
+    c.flyTo(d,-.42,()=>{
+      locations[i]=side;selected=-1;
+      c.pulse([d,.42,-.77],colors[i],13);
+      if(locations.every(n=>n!==null)){
+        if(total(0)===q.goal[0]&&total(1)===q.goal[1]){c.receive([0,0,-2.73]);return;}
+        c.mistake("The scale is off · move a weight");
+      }else c.feedback(true);
+      show();
+    });
+  }
+  function show(){
+    c.objective(selected<0?q.goalText:"Place the "+q.parts[selected][0].toLowerCase());
+    c.meter("Left "+total(0)+"/"+q.goal[0]+" · Right "+total(1)+"/"+q.goal[1]+" "+q.unit);
+    q.parts.forEach(([name,weight],i)=>{
+      const where=locations[i],same=where===null;
+      c.marker("weight"+i,name+" "+weight,[same?xs[i]:(where===0?-2.2:2.2)+(i-1)*.49,.59,same?2.26:-.86],()=>choose(i),
+        {kind:i===selected?"good":"clue",hidden:selected>=0});
+    });
+    if(selected>=0){
+      c.marker("left","Place left",[-2.16,.70,-.63],()=>put(0),{kind:"hot"});
+      c.marker("right","Place right",[2.16,.70,-.63],()=>put(1),{kind:"hot"});
+    }else {c.off("left");c.off("right");}
+  }
+  function start(){selected=-1;locations=q.parts.map(()=>null);angle=0;show();}
+  function tick(dt){angle=lerp(angle,clamp((total(0)-total(1))*.057,-.23,.23),1-Math.exp(-dt*10));}
+  function draw(m,t){
+    const z=c.localZ, center=z(-.95);
+    m.box(0,.26,center,.61,.45,.52,ink());
+    const beam=(x)=>[x,.68-Math.sin(angle)*x,center];
+    m.tube(beam(-2.46),beam(2.46),.088,.088,trim(),10);
+    for(const side of [-1,1]){
+      const [x,y]=beam(side*2.16);
+      m.box(x,y-.27,center,1.79,.11,1.08,bright());
+      m.tube([x,y,center],[x,y-.22,center],.071,.047,ink(),8);
+    }
+    q.parts.forEach(([_,weight,type],i)=>{
+      const here=locations[i],pos=here===null?xs[i]:(here===0?-2.16:2.16)+(i-1)*.47;
+      const zz=here===null?z(2.23):center;
+      if(selected===i)c.item(m,type||"box",c.player.x,.67,c.player.z,.84,colors[i]);
+      else {if(here===null)c.pedestal(m,pos,zz,1.00,colors[i]);c.item(m,type||"box",pos,here===null?.21:.51-Math.sin(angle)*pos,zz,.68+weight*.043,colors[i]);}
+    });
+  }
+  return {start,tick,draw};
+}
+
+function makeThirdTask(c,q){
+  const dirs=[[-1,0],[1,0],[0,-1],[0,1]],names=["Left","Right","Forward","Back"];
+  const X=x=>(x-1.5)*1.48,Z=y=>y*1.59-2.79;
+  let at=[],shown=[],anim=null,moved=0,axis=null;
+  const is=(a,b)=>a[0]===b[0]&&a[1]===b[1];
+  function go(i){
+    if(anim)return;
+    const d=dirs[i],next=[at[0]+d[0],at[1]+d[1]];
+    if(next.some(v=>v<0||v>3)||q.blocks.some(v=>is(next,v))){c.mistake(q.blockHint||"Blocked · follow the clear lane");return;}
+    anim={from:at.slice(),to:next,t:0};c.tone([285,402],.064,.073);controls();
+  }
+  function controls(){
+    c.objective(q.goalText);
+    c.meter(moved+" moves · reach the gold exit");
+    names.forEach((n,i)=>c.tool("dir"+i,n,()=>go(i),Boolean(anim)));
+  }
+  function start(){at=q.start.slice();shown=at.slice();anim=null;moved=0;axis=null;controls();}
+  function tick(dt){
+    if(anim){
+      anim.t=clamp(anim.t+dt*5.4,0,1);
+      shown=anim.from.map((v,i)=>lerp(v,anim.to[i],curve(anim.t)));
+      if(anim.t===1){
+        at=anim.to;anim=null;moved++;
+        if(is(at,q.exit)){c.receive([X(at[0]),0,Z(at[1])]);return;}
+        controls();
+      }
+    }
+    c.player.x=X(shown[0]);c.player.z=c.localZ(Z(shown[1]));
+  }
+  function draw(m,t){
+    const z=c.localZ;
+    for(let i=0;i<4;i++)for(let j=0;j<4;j++){
+      const x=X(i),p=[i,j],row=Z(j),wall=q.blocks.some(v=>is(p,v)),out=is(p,q.exit);
+      m.box(x,.034,z(row),1.30,.05,1.37,out?0xe9b868:wall?ink():(i+j)%2===0?flat():GAME.palette.tile2);
+      if(wall)c.item(m,q.object,x,.08,z(row),.90,trim(),i*.17-j*.19);
+      if(out)c.ring(m,x,.073,z(row),.40,0xffdc86,.029);
+    }
+  }
+  function swipe(p){
+    if(!p.floor)return false;
+    if(Math.hypot(p.totalX,p.totalY)>25)axis=Math.abs(p.totalX)>Math.abs(p.totalY)?(p.totalX<0?0:1):(p.totalY<0?2:3);
+    return true;
+  }
+  function dragEnd(){const i=axis;axis=null;if(i!==null)go(i);}
+  function key(k){const i=["arrowleft","arrowright","arrowup","arrowdown"].indexOf(k);if(i<0)return false;go(i);return true;}
+  return {start,tick,draw,swipe,dragEnd,key,lockMove:true};
+}
+
+function makeChallenge(c){
+  const tasks=[makeFirstTask(c),makeSecondTask(c,GAME.tasks[0]),makeThirdTask(c,GAME.tasks[1])];
+  let active=tasks[0];
+  return {
+    start(stage,run){active=tasks[stage];active.start(stage,run);},
+    get lockMove(){return active.lockMove;},
+    draw(m,t){active.draw(m,t);},
+    tick(dt,t){active.tick?.(dt,t);},
+    tap(p){return active.tap?.(p);},
+    swipe(p){return active.swipe?.(p);},
+    dragEnd(p){active.dragEnd?.(p);},
+    key(k){return active.key?.(k);}
+  };
+}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Switch on a projector and turn two mirrors to unlock each crystal archive.">
+<title>Prism Atlas</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="game.js"></script>
+<script defer src="engine.js"></script>
+<script defer src="runtime.js"></script>
+</head>
+<body>
+<main id="game" aria-label="Prism Atlas">
+  <canvas id="world" aria-hidden="true"></canvas>
+  <header id="hud">
+    <div class="header">
+      <div class="place"><span id="theme"></span><strong id="place"></strong></div>
+      <strong id="count" aria-label="Progress">0/3</strong>
+      <button id="reset" aria-label="Reset camera" title="Reset camera">⌖</button>
+      <button id="sound" aria-label="Mute sound" aria-pressed="false" title="Mute sound">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="waves" d="M15 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/><path class="muted" d="m15 10 5 5m0-5-5 5"/></svg>
+      </button>
+    </div>
+    <div class="instructions">
+      <p id="goal" aria-live="polite"></p>
+      <p id="attempt" aria-label="Attempts and time remaining"></p>
+      <div id="status">
+        <p id="metric" hidden></p>
+        <p id="toast" role="status" hidden></p>
+        <div id="reveal" role="status" hidden><span aria-hidden="true">◆</span><strong id="award"></strong><small id="award-count"></small></div>
+      </div>
+    </div>
+  </header>
+  <section id="playfield" aria-label="3D playfield">
+    <div id="pins" aria-hidden="true"></div>
+  </section>
+  <div id="bottom">
+    <div id="targets" aria-label="Objects on this floor"></div>
+    <div id="tools" aria-label="Controls" hidden></div>
+    <button id="retry" hidden>Retry this room</button>
+  </div>
+  <dialog id="finish" aria-labelledby="finish-title">
+    <p id="finish-count"></p>
+    <h1 id="finish-title">Prism Atlas</h1>
+    <ul id="result-items"></ul>
+    <button id="replay">Play again</button>
+  </dialog>
+  <p id="failure" hidden>WebGL is required to play this game.</p>
+</main>
+</body>
+</html>
