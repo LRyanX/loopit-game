@@ -268,7 +268,8 @@ function makeFirstTask(c){
       else c.off("gear"+i);
     }
     for(let i=0;i<target.length;i++){
-      if(carry!==null)c.marker("slot"+i,"Fit "+String.fromCharCode(65+i),[sx(i),.62,-.98],()=>install(i),{kind:"hot",disabled:slots[i]!==null});
+      if(carry!==null)c.marker("slot"+i,"Fit "+String.fromCharCode(65+i),[sx(i),.62,-.98],()=>install(i),
+        {kind:"hot",caption:String.fromCharCode(65+i)+" · "+names[target[i]],disabled:slots[i]!==null});
       else c.off("slot"+i);
     }
     c.hideTools();
@@ -284,6 +285,7 @@ function makeFirstTask(c){
     for(let i=0;i<target.length;i++){
       const x=sx(i),g=slots[i];
       m.tube([x,.19,z(-.97)],[x,.25,z(-.97)],.30,.30,read?hues[target[i]]:trim(),10);
+      if(read)c.ring(m,x,.213,z(-.97),size[target[i]]*.50,hues[target[i]],.027,18);
       if(g!==null)c.item(m,"gear",x,.29,z(-.97),size[g],hues[g],time*(i===0?.88:-1.2)*(ready()?1.6:.3));
       else m.tube([x,.27,z(-.97)],[x,.64,z(-.97)],.06,.062,ink(),8);
     }

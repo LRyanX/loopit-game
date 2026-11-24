@@ -312,7 +312,7 @@ function makeFirstTask(c){
     c.tool("send","Coupon rolling",launch,true);
   }
   function refresh(){
-    c.objective("Route the coupon to the "+names[rule.goals[step]]+" register");
+    c.objective("Route to the "+names[rule.goals[step]]+" register");
     c.meter((step+1)+"/"+rule.inputs.length+" · starts "+names[rule.inputs[step]]);
     rule.nodes.forEach((node,i)=>c.marker("switch"+i,"Switch "+String.fromCharCode(65+i),[lane[node[0]]+.49,.55,leverZ(i)],()=>{
       arms[i]=!arms[i];c.tone();refresh();
@@ -334,7 +334,7 @@ function makeFirstTask(c){
   function start(i){rule=dispatch[i];step=0;arms=Array(rule.nodes.length).fill(false);parcel=null;refresh();}
   function draw(m){
     const z=c.localZ;
-    const jump=(a,b,col)=>m.tube([a[0],.21,z(a[1])],[b[0],.21,z(b[1])],.055,.055,col,8,1);
+    const jump=(a,b,col,r,glow)=>m.tube([a[0],.21,z(a[1])],[b[0],.21,z(b[1])],r,r,col,8,glow);
     for(const n of rule.active){
       c.item(m,"register",lane[n],0,z(-3.27),1.08,colors[n]);
       c.pedestal(m,lane[n],z(2.97),.72,colors[n]);
@@ -346,7 +346,9 @@ function makeFirstTask(c){
         bends.push([lane[line],leverZ(i)-.41]);
       });
       bends.push([lane[line],-2.89]);
-      for(let i=1;i<bends.length;i++)jump(bends[i-1],bends[i],colors[n]);
+      const current=n===rule.inputs[step];
+      for(let i=1;i<bends.length;i++)jump(bends[i-1],bends[i],current?colors[n]:0x647d80,current?.070:.041,current?1:0);
+      if(n===rule.goals[step])c.ring(m,lane[n],.09,z(-3.27),.76,0xffd784,.044);
     }
     if(parcel){
       const f=clamp(parcel.age/1.26,0,1),zpos=3.07-f*5.91;

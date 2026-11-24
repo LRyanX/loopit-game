@@ -311,7 +311,7 @@ function makeFirstTask(c){
     });
   }
   function show(){
-    c.objective(!read?"Read the footprint mosaic":step===path.length?"Safe trail crossed · open the tomb":"Step along the carved trail");
+    c.objective(!read?"Read the footprint mosaic":step===path.length?"Open the tomb":"Follow the carved trail");
     c.meter(read?path.map(([x,y],i)=>(i<step?"✓":"")+cellName(x,y)).join(" · "):"");
     if(!read)c.marker("read","Read mosaic",[0,.57,3.14],interpret,{kind:"clue"});else c.off("read");
     const last=path[step-1];
@@ -331,6 +331,12 @@ function makeFirstTask(c){
       const used=path.slice(0,step).some(v=>equal(p,v));
       m.box(X(x),gone?-.22:.075,z(Z(y)),1.33,.128,1.40,used?0x83bfa8:gone?0xc48460:0xc3aa82,0,0,gone?.12:0);
       if(used)c.ring(m,X(x),.146,z(Z(y)),.34,0xe7d08b,.019);
+      if(read&&step===0&&equal(p,path[0])&&!gone){
+        const tx=X(x),tz=z(Z(y));
+        for(const side of [-1,1]){
+          m.oval(tx+side*.30,.149,tz+side*.20,.085,.014,.15,0x89633a,side*.13,0,8);
+        }
+      }
     }
     c.pedestal(m,0,z(3.16),1.26,trim());
     c.item(m,"idol",0,.23,z(3.18),.93,bright());

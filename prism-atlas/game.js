@@ -289,18 +289,18 @@ function makeFirstTask(c){
   const open=()=>active&&aligned(0)&&aligned(1)&&(deck.filter===undefined||filter===deck.filter);
   function start(i){deck=layouts[i];turns=[0,0];angles=turns.map((_,j)=>angle(j));active=false;filter=0;show();}
   function inspect(){
-    c.flyTo(deck.emit[0],deck.emit[1],()=>{active=true;c.feedback(true,"Follow the beam to both mirrors");show();});
+    c.flyTo(deck.emit[0],deck.emit[1],()=>{active=true;c.feedback(true);show();});
   }
   function turn(i){
     const [x,z]=deck.mirrors[i];
     c.flyTo(x,z,()=>{turns[i]=(turns[i]+1)%deck.stops[i];c.tone([349+turns[i]*76,550]);if(aligned(i))c.pulse([x,.84,z],0x9cf2db,13);show();});
   }
   function show(){
-    c.objective(!active?"Light the ancient projector":open()?"Beam on target · open the prism":"Guide light through mirrors A and B");
+    c.objective(!active?"Light the projector":open()?"Open the prism":"Light A → B → Prism");
     if(!active)c.marker("read","Light projector",[deck.emit[0],.75,deck.emit[1]],inspect,{kind:"clue"});
     else c.off("read");
     deck.mirrors.forEach(([x,z],i)=>{
-      if(active)c.marker("mirror"+i,i===0?"Turn A":"Turn B",[x,1.0,z],()=>turn(i),{kind:aligned(i)?"good":"clue"});
+      if(active)c.marker("mirror"+i,i===0?"Turn A":"Turn B",[x,1.0,z],()=>turn(i),{kind:aligned(i)?"good":"clue",caption:i===0?"Mirror A ↻":"Mirror B ↻"});
     });
     if(active&&deck.filter!==undefined){
       c.meter("Final prism accepts violet light");
@@ -326,8 +326,10 @@ function makeFirstTask(c){
       m.box(x,1.02,z(s),.87,.76,.123,ink(),angles[i]);
       const xx=x+Math.sin(angles[i])*.093,zz=z(s)+Math.cos(angles[i])*.093;
       m.box(xx,1.02,zz,.73,.66,.064,aligned(i)?0x82e9dc:0xa6b7ca,angles[i],1);
+      if(active)c.ring(m,x,.071,z(s),.66,aligned(i)?0x92ead2:0xf7ca82,.037,18);
     });
     if(!active)return;
+    c.ring(m,deck.cache[0],.071,z(deck.cache[1]),.81,open()?0xa8edd0:0xf7ca82,.039,18);
     const beam=(a,b,t)=>{m.tube(shot(a),shot(b),.026,.026,t,8,1);};
     beam(deck.emit,deck.mirrors[0],0xf6cd72);
     for(let i=0;i<2;i++){

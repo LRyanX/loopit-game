@@ -423,7 +423,7 @@ function makeFirstTask(c){
   const retail=()=>rule.cycle[when()%rule.cycle.length];
   const price=()=>retail()+(rule.fee??0)-(units>0?(rule.credit??0):0);
   function refresh(){
-    c.objective("Buy "+rule.units+" "+rule.title.toLowerCase()+" within budget");
+    c.objective(units===0&&when()===0?"Watch for the price drop":"Buy "+rule.units+" "+rule.title.toLowerCase()+" on budget");
     c.meter("$"+(rule.cap-total)+" left · "+units+"/"+rule.units+(rule.fee?" · $3 fee":rule.credit?(units?" · $6 member credit active":" · join after first buy"):" bought"));
     c.marker("buy","Claim $"+price(),[0,.75,-.32],buy,{kind:retail()<=Math.min(...rule.cycle)+1?"good":"hot",disabled:lastSlot===when()});
     if(units)c.tool("refund","Refund basket",()=>{total=0;units=0;lastSlot=-1;refresh();});

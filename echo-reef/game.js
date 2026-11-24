@@ -448,7 +448,7 @@ function makeFirstTask(c){
   }
   function show(){
     const scan=read.every(n=>n!==null);
-    c.objective(scan?"Stronger echo wins · tie means middle" :sensors.length===3?"Calibrate all three hydrophones":"Ping both hydrophones");
+    c.objective(!scan?"Tap the sonar beacons":read[0]===read[1]?"Echoes tie · try the middle":"Follow the stronger echo");
     c.meter(scan?"West "+read[0]+" · East "+read[1]:"");
     sensors.forEach((p,i)=>c.marker("sonar"+i,read[i]===null?"Ping "+p.name:p.name+" "+read[i],[p.x,.74,p.z],()=>sensing(i),{kind:"clue"}));
     sites.forEach((x,i)=>{

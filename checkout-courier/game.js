@@ -372,6 +372,7 @@ const GAME = {
 
 function makeFirstTask(c) {
   const labels=["Doorbuster","Regular","Clearance"];
+  const marks=["✚","●","▬"];
   const tints=[0xe46f5b,0x62889f,0xf3cb75];
   const orders=[[0,2],[2,0,2],[0,2,2,0]];
   let shift=0,tickets=0,feed=0,previous=-10,active=false;
@@ -381,26 +382,28 @@ function makeFirstTask(c) {
     return positions;
   }
   function desired(){return orders[shift][tickets];}
+  function showOrder(){
+    c.objective("Scan the matching tag");
+    c.meter(marks[desired()]+" "+labels[desired()]+" · "+tickets+"/"+orders[shift].length);
+  }
   function scan(){
     active=true;
     const lock=roll().find(v=>Math.abs(v.z-.30)<.48);
     if(!lock){c.feedback(false,"Wait for a box under the beam");return;}
     if(lock.torn){c.mistake("Damaged label · skip this parcel");return;}
-    if(lock.rack!==desired()){c.mistake("Skip that barcode");return;}
+    if(lock.rack!==desired()){c.mistake("Wait for the "+labels[desired()].toLowerCase()+" tag");return;}
     if(previous===lock.i){c.feedback(false,"That box is already stamped");return;}
     previous=lock.i;
     c.pulse([0,.68,.30],tints[lock.rack],21);
     tickets++;
     if(tickets===orders[shift].length){c.receive([0,0,-1.9]);return;}
     c.feedback(true,"Barcode matched");
-    c.objective("Scan the "+labels[desired()].toLowerCase()+" box");
-    c.meter(tickets+"/"+orders[shift].length+(shift===2?" · skip torn barcodes":" barcodes"));
+    showOrder();
     refreshScanner();
   }
   function start(stage){
     shift=stage;tickets=0;feed=0;previous=-10;active=true;
-    c.objective("Scan the "+labels[desired()].toLowerCase()+" box");
-    c.meter("0/"+orders[shift].length+(shift===2?" · skip torn barcodes":" barcodes"));
+    showOrder();
     c.tool("scan","Scan barcode",scan);
   }
   function refreshScanner(){
@@ -411,11 +414,21 @@ function makeFirstTask(c) {
   function tick(dt){if(active)feed+=dt;refreshScanner();}
   function draw(m,time){
     const local=c.localZ;
+    function parcel(x,z,size,type){
+      c.item(m,"parcel",x,.21,local(z),size,tints[type]);
+      const badgeX=x+.19*size,top=.21+.563*size;
+      m.box(badgeX,top,local(z),.24*size,.012,.24*size,ink());
+      if(type===1)m.oval(badgeX,top+.012,local(z),.061*size,.009,.061*size,white,0,1,8);
+      else {
+        m.box(badgeX,top+.012,local(z),.161*size,.013,.044*size,white,0,1);
+        if(type===0)m.box(badgeX,top+.014,local(z),.044*size,.013,.161*size,white,0,1);
+      }
+    }
     m.box(0,.08,local(.08),1.35,.15,8.20,0x455a67);
     m.box(0,.17,local(.08),1.22,.042,8.13,0x728b93);
     for(let k=0;k<21;k++)m.box(0,.208,local(-3.94+(k+(feed%1))*.391),1.19,.018,.032,0x9faeb1);
     for(const p of roll()){
-      c.item(m,"parcel",0,.21,local(p.z),.78,tints[p.rack]);
+      parcel(0,p.z,.78,p.rack);
       if(p.torn)m.box(0,.67,local(p.z+.275),.43,.075,.017,0xb84645,.28,1);
     }
     const ready=roll().some(v=>Math.abs(v.z-.30)<.46&&!v.torn&&v.rack===desired()&&v.i!==previous);
@@ -423,7 +436,7 @@ function makeFirstTask(c) {
     m.box(0,1.31,local(.30),1.98,.14,.18,0xdb6859);
     m.tube([-.78,1.21,local(.30)],[.78,.27,local(.30)],.019,.010,ready?0x79ffe3:0xfdbd7a,6,1);
     c.item(m,"register",2.19,.04,local(-1.96),1.22,0xe46f5b);
-    if(!c.hasAward()&&desired()!=null)c.item(m,"parcel",-2.35,.23,local(.29),1.1,tints[desired()]);
+    if(!c.hasAward()&&desired()!=null)parcel(-2.35,.29,1.1,desired());
   }
   function swipe(p){return !!p.origin&&Math.abs(p.origin.x)<1.18;}
   function dragEnd(p){if(p.floor&&Math.abs(p.floor.z-.30)<1.32)scan();}

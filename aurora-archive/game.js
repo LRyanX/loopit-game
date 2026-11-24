@@ -491,10 +491,10 @@ function makeSpecialTask(c,scenario){
     });
   }
   function update(){
-    c.objective(probe===-1?"Probe for solid ice":probe===safe[row]?"Solid ice · step here":"Thin ice · probe another slab");
+    c.objective(probe===-1?"Tap ice to test it":probe===safe[row]?"Solid ice · step here":"Thin ice · test another");
     c.meter((row+1)+"/"+safe.length+" ice shelves");
     for(let i=0;i<3;i++)c.marker("probe"+i,"Probe "+names[i],[x(i),.21,z(row)],()=>{probe=i;c.tone([i===safe[row]?578:230]);update();},
-      {tile:true,caption:probe===i?(i===safe[row]?"✓":"×"):"·"});
+      {tile:true,caption:probe===i?(i===safe[row]?"✓":"×"):"?"});
     if(probe===safe[row])c.marker("step","Step onto solid ice",[x(probe),.48,z(row)-.27],step,{kind:"good"});
     else c.off("step");
   }
@@ -502,6 +502,7 @@ function makeSpecialTask(c,scenario){
     for(let r=0;r<3;r++)for(let i=0;i<3;i++){
       const selected=r===row&&probe===i;
       m.box(x(i),.095,c.localZ(z(r)),1.46,.18,1.42,selected?(i===safe[r]?0x99dacd:0xb08fb1):0x94b3cc,0,6);
+      if(r===row)c.ring(m,x(i),.202,c.localZ(z(r)),.28,selected?0xceedf3:0xc0dded,.023,16);
       if(selected&&i!==safe[r])for(let j=0;j<3;j++)
         m.box(x(i)+(j-1)*.19,.201,c.localZ(z(r)+.16*j),.26,.011,.03,0x586782,j*.73);
     }

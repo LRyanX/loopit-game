@@ -252,7 +252,7 @@ function makeFirstTask(c){
   let layout,lane=1,position=0,next=0,on=false,taken=0,zone=0,hand=0;
   function show(){
     const nextSale=layout[next]?.[0];
-    c.objective(on?"Steer onto the sale items":"Tap a lane or swipe to steer");
+    c.objective(on?"Collect gold boxes":"Tap a lane to start");
     c.meter(taken+"/"+layout.length+" deals · avoid shoppers"+(nextSale!=null?" · next "+["left","middle","right"][nextSale]:""));
   }
   function chooseLane(i){lane=clamp(i,0,2);on=true;show();c.tone([339+lane*48],.05,.057);}
@@ -261,7 +261,7 @@ function makeFirstTask(c){
   function start(stage){
     layout=runs[stage];zone=stage;hand=0;resetLine();
     lanes.forEach((x,i)=>c.marker("lane"+i,["Left lane","Center lane","Right lane"][i],[x,.10,4.39],()=>chooseLane(i),
-      {tile:true,caption:["‹","◆","›"][i]}));
+      {tile:true,caption:["←","↑","→"][i]}));
   }
   function tick(dt){
     c.player.x=lerp(c.player.x,lanes[lane],1-Math.exp(-dt*13));
@@ -282,6 +282,10 @@ function makeFirstTask(c){
       for(let j=0;j<13;j++)m.box((i-1)*2.25+.82,.041,c.localZ(-4.19+(j+position%1)*1.02),.045,.012,.44,trim());
       const x=lanes[i],z=c.localZ(5.92+position%1);
       m.tri([x-.33,.046,z+.18],[x+.33,.046,z+.18],[x,.046,z-.24],0xd9aa75);
+      if(!on){
+        m.box(x,.074,c.localZ(4.39),.89,.054,.61,0xf3dba1);
+        c.ring(m,x,.061,c.localZ(4.39),.62,0xffe0a1,.035,16);
+      }
     }
     for(let i=next;i<layout.length;i++){
       const p=1.69+i*2.88-position,z=3.15-p,[good,bad,kind]=layout[i];

@@ -316,13 +316,14 @@ function makeFirstTask(c){
     {label:"Shoes",type:"shoe",tint:0x7aba9e},{label:"Headset",type:"headset",tint:0x6fa9c6}
   ];
   const lists=[[2,0,1],[0,3,2,1],[3,1,0,3,2]];
-  let list,hint=0,t=0,playing=true,pick=0,selected=[];
+  let list,hint=0,t=0,playing=false,waiting=true,pick=0,selected=[];
   const px=i=>i%2===0?-1.61:1.61;
   const pz=i=>i<2?1.81:-.98;
   function restartList(){
-    hint=0;t=0;playing=true;pick=0;selected=[];
-    c.objective("Watch the sale list light up");
-    c.meter(list.length+" deals · remember the order");
+    hint=0;t=0;playing=true;waiting=false;pick=0;selected=[];
+    c.off("startList");
+    c.objective("Watch the shelf lights");
+    c.meter("1/"+list.length+" shown");
     shelves.forEach((_,i)=>c.off("product"+i));
     c.hideTools();
     c.tone([339+list[0]*92],.05,.084);
@@ -334,22 +335,34 @@ function makeFirstTask(c){
     c.tool("again","Show list again",restartList);
   }
   function choose(i){
-    if(list[pick]!==i){c.mistake("Order reset · watch the list");restartList();return;}
+    if(list[pick]!==i){c.mistake("Order reset · replay the lights");offerList();return;}
     selected.push({i,time:c.clock()});pick++;
     c.pulse([px(i),.40,pz(i)],shelves[i].tint,16);
     if(pick===list.length){c.receive([0,0,-2.64]);return;}
     c.tone([330+i*92,530+i*74]);showPick();
   }
-  function start(stage){list=lists[stage];restartList();}
+  function offerList(){
+    playing=false;waiting=true;pick=0;selected=[];
+    shelves.forEach((_,i)=>c.off("product"+i));
+    c.hideTools();
+    c.objective("Watch, then repeat");
+    c.meter("");
+    c.marker("startList","Show sale list",[0,.72,2.83],restartList,{kind:"hot"});
+  }
+  function start(stage){list=lists[stage];offerList();}
   function tick(dt){
     if(!playing)return;
     t+=dt;
-    if(t<.63)return;
+    if(t<.84)return;
     t=0;hint++;
     if(hint>=list.length){playing=false;showPick();return;}
+    c.meter((hint+1)+"/"+list.length+" shown");
     c.tone([339+list[hint]*92],.05,.084);
   }
   function draw(m,time){
+    if(waiting){
+      c.item(m,"register",0,.04,c.localZ(2.83),.63,0xeeae72);
+    }
     shelves.forEach((p,i)=>{
       const highlighted=playing&&hint<list.length&&list[hint]===i;
       c.pedestal(m,px(i),c.localZ(pz(i)),1.61,highlighted?0xeef4a7:p.tint);

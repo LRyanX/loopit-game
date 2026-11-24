@@ -426,27 +426,31 @@ function makeSpecialTask(c,scenario){
 }
 
 function make_swing(c,q){
-  let t=0,shot=null,index=0,landed=[];
+  let t=0,shot=null,index=0,landed=[],lastReady=-Infinity;
   const phase=()=>Math.sin(t*(1.75+index*.28))*2.66;
   const target=()=>q.docks[index]??0;
-  const ready=()=>Math.abs(phase()-target())<.53;
+  const ready=()=>Math.abs(phase()-target())<.56;
   function drop(){
     if(shot)return;
-    shot={x:phase(),at:c.clock(),expect:target()};c.tone([345,481]);show();
+    const at=c.clock(),expect=target(),x=phase();
+    // Keep a tap accepted just after the displayed cue leaves the truck.
+    shot={x:at-lastReady<.14?clamp(x,expect-.70,expect+.70):x,at,expect};
+    c.tone([345,481]);show();
   }
   function show(){
-    c.objective(q.goalText);
+    c.objective("Drop over the marked truck");
     c.meter(index+"/"+q.docks.length+" crates loaded");
     c.tool("drop",ready()?"Release now":"Release crane",drop,Boolean(shot));
   }
-  function start(){t=0;shot=null;index=0;landed=[];show();}
+  function start(){t=0;shot=null;index=0;landed=[];lastReady=-Infinity;show();}
   function tick(dt,time){
     const before=ready();t+=dt;
+    if(ready()&&!shot)lastReady=time;
     if(before!==ready()&&!shot)show();
     if(!shot||time-shot.at<.55)return;
     const {x,expect}=shot;shot=null;
-    if(Math.abs(x-expect)>.62){c.mistake("Crate missed the marked truck · reset");show();return;}
-    landed.push(expect);index++;c.pulse([x,.49,-.44],bright(),20);
+    if(Math.abs(x-expect)>.83){c.mistake("Wait until the crate is above the marked truck");show();return;}
+    landed.push(expect);index++;lastReady=-Infinity;c.pulse([x,.49,-.44],bright(),20);
     if(index===q.docks.length){c.receive([x,0,-.62]);return;}
     c.feedback(true,"Crate aboard");show();
   }
@@ -459,7 +463,12 @@ function make_swing(c,q){
     }
     m.tube([0,2.08,z(-2.28)],[0,2.08,z(-.25)],.121,.099,ink(),8);
     const p=shot?.x??phase(),f=shot?clamp((time-shot.at)/.55,0,1):0;
-    if(!shot)m.tube([0,2.07,z(-.26)],[p,1.24+Math.abs(p)*.08,z(-.42)],.032,.030,trim(),7);
+    if(!shot){
+      m.tube([0,2.07,z(-.26)],[p,1.24+Math.abs(p)*.08,z(-.42)],.032,.030,trim(),7);
+      const tint=ready()?0x9fedc0:0xf0c691;
+      for(let i=0;i<3;i++)m.box(p,.52+i*.17,z(-.49),.043,.07,.045,tint,0,1);
+      c.ring(m,target(),.438,z(-.49),.49,0x9fedc0,.038,16);
+    }
     if(index<q.docks.length)c.item(m,"parcel",p,shot?lerp(1.10,.45,curve(f)):1.13+Math.abs(p)*.071,z(-.49),.78,0xeec38a);
     landed.forEach((v,i)=>c.item(m,"parcel",v+(i%2-.5)*.50,.47,z(-.63),.57,bright()));
   }

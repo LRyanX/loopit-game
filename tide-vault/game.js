@@ -302,13 +302,13 @@ function makeFirstTask(c){
     });
   }
   function show(){
-    c.objective(seen?(level===cfg.mark?"Tide matched · open the floating cache":"Raise or drain to the carved tide mark"):"Read the wall gauge");
-    c.meter(seen?"Water "+level+" / mark "+cfg.mark+(cfg.leak&&!sealed?" · sluice open":""):"");
+    c.objective(seen?(level===cfg.mark?"Open floating cache":"Match the gold line"):"Read the wall gauge");
+    c.meter(seen?"Level "+level+" → "+cfg.mark+(cfg.leak&&!sealed?" · sluice open":""):"");
     if(!seen)c.marker("gauge","Read gauge",[-2.72,.87,2.02],read,{kind:"clue"});
     else {
       c.off("gauge");
-      c.marker("fill","Pump water",[-2.64,.71,.67],()=>pump(1),{kind:"clue"});
-      c.marker("drain","Drain water",[2.64,.71,.67],()=>pump(-1),{kind:"clue"});
+      c.marker("fill","Pump water",[-2.64,.71,.67],()=>pump(1),{kind:"clue",caption:"Pump ↑"});
+      c.marker("drain","Drain water",[2.64,.71,.67],()=>pump(-1),{kind:"clue",caption:"Drain ↓"});
       if(cfg.leak&&!sealed)c.marker("seal","Close sluice",[2.14,.76,-2.38],()=>c.flyTo(2.14,-1.81,()=>{
         sealed=true;c.feedback(true,"Sluice shut");show();
       }),{kind:"hot"});else c.off("seal");
@@ -340,6 +340,13 @@ function makeFirstTask(c){
     const gx=-2.72,gz=z(2.08);
     m.box(gx,.83,gz,.43,1.61,.21,ink());
     for(let i=0;i<4;i++)m.box(gx,.25+i*.36,gz+.15,.31,.083,.06,seen&&cfg.mark===i?0xf8c878:i===level?0x8af5e3:trim(),0,1);
+    if(seen){
+      const mark=surface(cfg.mark)+.06;
+      for(const x of [-1.43,1.43]){
+        m.box(x,.63,z(.40),.10,1.25,.14,ink());
+        m.box(x,mark,z(.40),.35,.068,.21,level===cfg.mark?0xaaf0ca:0xffd481,0,1);
+      }
+    }
     if(!c.hasAward())c.item(m,"box",0,water+.02,z(-1.67),1.01,0x6a8d85);
   }
   function swipe(p){
@@ -361,15 +368,16 @@ function makeSpecialTask(c,scenario){
     c.pulse([x[i],.87,.34],0x8de3d5,12);c.tone([300+levels[i]*81]);update();
   }
   function update(){
-    c.objective(from===null?"Select a basin with water":"Send one measure to a basin");
+    const matched=levels.every((v,i)=>v===target[i]);
+    c.objective(matched?"Open the transfer gate":from===null?"Match the basin marks":"Tap where to pour");
     c.meter(levels.join(" · ")+" → "+target.join(" · "));
     x.forEach((a,i)=>{
-      if(from===null&&levels[i]>0)c.marker("basin"+i,"Draw "+names[i],[a,.81,.34],()=>{from=i;update();},{kind:"clue",caption:names[i]});
+      if(from===null&&levels[i]>0)c.marker("basin"+i,"Draw "+names[i],[a,.81,.34],()=>{from=i;update();},{kind:"clue",caption:"Draw "+names[i]});
       else if(from!==null)c.marker("basin"+i,i===from?"Cancel flow":"Fill "+names[i],[a,.81,.34],()=>pour(i),
-        {kind:i===from?"clue":"hot",caption:i===from?"Cancel":names[i]});
+        {kind:i===from?"clue":"hot",caption:i===from?"Cancel":"Fill "+names[i]});
       else c.off("basin"+i);
     });
-    if(levels.every((v,i)=>v===target[i]))c.marker("sluice","Open transfer gate",[0,.72,-2.37],
+    if(matched)c.marker("sluice","Open transfer gate",[0,.72,-2.37],
       ()=>c.flyTo(0,-1.92,()=>c.receive([0,0,-2.37])),{kind:"good"});
     else c.off("sluice");
   }

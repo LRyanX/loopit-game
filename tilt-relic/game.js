@@ -305,21 +305,22 @@ function makeFirstTask(c){
   const px=x=>(x-1)*1.47,pz=y=>(y-1)*1.43-.27;
   const directions=[[-1,0],[1,0],[0,-1],[0,1]];
   const names=["Tilt left","Tilt right","Tilt up","Tilt down"];
-  let room,cell=[],shown=[],motion=null,seen=false,finger=null;
+  let room,cell=[],shown=[],motion=null,seen=false,finger=null,firstTilt=false;
   const at=(a,b)=>a[0]===b[0]&&a[1]===b[1];
+  const blocked=p=>p.some(n=>n<0||n>2)||room.walls.some(wall=>at(p,wall));
   function inspect(){
     c.flyTo(0,2.58,()=>{
-      seen=true;c.feedback(true,"Roll into the glowing socket");putControls();
+      seen=true;c.feedback(true);putControls();
     });
   }
   function putControls(){
-    c.objective(seen?(room.slide?"The ball now rolls to the next rail":"Tilt the board · roll into the socket"):"Inspect the stone ball track");
+    c.objective(seen?(room.slide?"The ball rolls to the rail":"Roll into the socket"):"Inspect the stone ball track");
+    c.meter(seen&&firstTilt?"Swipe or tap an arrow":"");
     if(!seen)c.marker("guide","Inspect track",[0,.68,2.68],inspect,{kind:"clue"});else c.off("guide");
     if(seen)directions.forEach(([x,y],i)=>c.tool("dir"+i,names[i],()=>move(x,y),!!motion));
   }
   function move(dx,dy){
     if(!seen||motion)return;
-    const blocked=p=>p.some(n=>n<0||n>2)||room.walls.some(wall=>at(p,wall));
     let goal=[cell[0]+dx,cell[1]+dy];
     if(blocked(goal)){
       c.mistake("Stone rail blocks that tilt");return;
@@ -327,6 +328,7 @@ function makeFirstTask(c){
     if(room.slide){
       while(!blocked([goal[0]+dx,goal[1]+dy]))goal=[goal[0]+dx,goal[1]+dy];
     }
+    firstTilt=false;
     motion={from:cell.slice(),to:goal,t:0,dx,dy};
     c.tone([286,417]);
     putControls();
@@ -345,7 +347,7 @@ function makeFirstTask(c){
     }
     putControls();
   }
-  function start(i){room=rooms[i];cell=room.start.slice();shown=cell.slice();seen=false;motion=null;finger=null;putControls();}
+  function start(i){room=rooms[i];cell=room.start.slice();shown=cell.slice();seen=false;motion=null;finger=null;firstTilt=i===0;putControls();}
   function draw(world,time){
     const m=new Mesh(),z=c.localZ;
     m.box(0,.12,z(-.27),4.76,.21,4.60,ink());
@@ -357,6 +359,12 @@ function makeFirstTask(c){
         c.ring(m,px(x),.31,z(pz(y)),.43,0x9cffc5,.038);
         m.tube([px(x),.29,z(pz(y))],[px(x),.31,z(pz(y))],.23,.23,ink(),10);
       }
+    }
+    if(seen&&firstTilt)for(const [dx,dz] of directions){
+      if(blocked([cell[0]+dx,cell[1]+dz]))continue;
+      const x=px(cell[0])+dx*.62,s=z(pz(cell[1]))+dz*.61;
+      m.tri([x+dx*.16,.316,s+dz*.16],[x-dx*.13-dz*.13,.316,s-dz*.13+dx*.13],
+        [x-dx*.13+dz*.13,.316,s-dz*.13-dx*.13],0xffd18c,1);
     }
     c.item(m,"orb",px(shown[0]),.34+(motion?.t?Math.sin(motion.t*Math.PI)*.09:0),z(pz(shown[1])),.82,0xf0b76b,time*.5);
     const turn=motion?Math.sin(Math.PI*motion.t)*.10:0;
