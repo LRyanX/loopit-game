@@ -23,13 +23,29 @@
 
 安装后，在目标项目的新聊天里调用 `$loopit-game-production`。如果技能列表还没显示，重新打开 Codex。 [Codex 官方安装说明](https://learn.chatgpt.com/docs/build-skills#install-curated-skills-for-local-use)
 
+## 文件夹结构
+
+同一个文档链接可以包含多个独立 brief。各 brief 分别确定主题、玩法、款数和验收要求。每个 brief 对应一个顶层目录，下面只放这份 brief 对应的游戏。本仓库的结构如下。
+
+~~~text
+black-friday/
+  checkout-courier/
+  cart-stack/
+  ...
+treasure-hunt/
+  lodestone-mine/
+  tilt-relic/
+  ...
+~~~
+
 ## 调用示例
 
 **从 brief 到 Loopit 草稿**
 
 ~~~text
-用 $loopit-game-production 读取飞书 brief <链接>。
-按 brief 的款数制作 3D H5 游戏，每款一个目录，在手机竖屏从开场试玩到结局。
+用 $loopit-game-production 读取飞书文档 <链接>。
+文档里的各个 brief 独立制作和验收，每个 brief 一个目录，每款游戏一个子目录。
+按各 brief 的款数制作 3D H5 游戏，在手机竖屏从开场试玩到结局。
 验收通过后推送到 <GitHub 仓库 URL>，用推送后的固定 commit 导入 Loopit。
 每款单独保存为可编辑草稿，试玩后重开确认，并汇总草稿链接和测试结果。
 ~~~
@@ -45,13 +61,13 @@
 
 ~~~text
 用 $loopit-game-production 把 <GitHub 仓库 URL> 中 commit <完整 SHA>
-下的 <游戏目录> 导入 Loopit。用实际源码生成可编辑草稿，
+下的 <brief目录>/<游戏目录> 导入 Loopit。用实际源码生成可编辑草稿，
 在手机竖屏从头试玩到结局，再保存并重开确认。
 ~~~
 
 ## 账号与验收结果
 
-- 读取私有 brief 时，使用能访问该文档的连接器或已登录的浏览器。若一份文档含多个 brief，可以在消息里指定范围和每个 brief 的款数。
+- 读取私有文档时，使用能访问该文档的连接器或已登录的浏览器。若一份文档含多个 brief，可以在消息里指定要执行的 brief 和各自的款数。
 - 推送 GitHub 时，新电脑的 Git 或连接器需要对目标仓库有写入权限。本地源码清单工具需要 Git 和 Python 3.9 或更新版本。
 - 导入 Loopit 时，在新电脑的浏览器登录相应工作台。Loopit 需要能读取固定提交的源文件。私有仓库使用已授权的访问方式。
 - 完整流程的验收汇总包含每款的固定 commit、草稿链接、竖屏通关结果、保存重开状态。Loopit 默认保留可编辑草稿，发布和送审由你另行指定。
