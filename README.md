@@ -10,6 +10,10 @@ Tap objects and floor tiles in the 3D scene. Lights, silhouettes, progress marks
 
 Open any game’s `index.html` in a modern browser. To serve the whole repository locally, run `python3 -m http.server 8000` from this directory.
 
+## Codex Skill
+
+Use `$loopit-game-production` to turn a game brief into tested 3D H5 games, commit them to GitHub, and import a pinned build into editable Loopit drafts. [安装和使用说明](docs/loopit-game-production.md)
+
 ## Black Friday
 
 | Game | First space | Second task | Third task |

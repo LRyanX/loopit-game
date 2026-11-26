@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D H5 游戏制作与 Loopit 交付"
+  short_description: "从 brief 制作独立 3D H5 游戏，验收到 GitHub 和 Loopit 草稿"
+  default_prompt: "用 $loopit-game-production 读取这个 brief，制作并验收 3D H5 游戏，提交到指定的 GitHub 仓库并生成 Loopit 草稿。"
