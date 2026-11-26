@@ -1,4 +1,4 @@
-# Loopit Games
+# Mini Games
 
 Twenty standalone 3D H5 games across two independent briefs. Each brief has its own top-level folder and each game inside it has a complete WebGL scene, English UI, sound, three physically connected spaces with different objectives, and replay.
 
@@ -12,7 +12,7 @@ Open any game’s `index.html` in a modern browser. To serve the whole repositor
 
 ## Codex Skill
 
-Use `$loopit-game-production` to turn a game brief into tested 3D H5 games, commit them to GitHub, and import a pinned build into editable Loopit drafts. [安装和使用说明](docs/loopit-game-production.md)
+Use `$mini-game-production` to turn a game brief into tested 3D H5 games, commit them to GitHub, and import a pinned build as editable drafts on the requested game platform. [安装和使用说明](docs/mini-game-production.md)
 
 ## Black Friday
 

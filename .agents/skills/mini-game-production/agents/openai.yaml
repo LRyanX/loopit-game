@@ -1,0 +1,4 @@
+interface:
+  display_name: "3D H5 游戏制作与游戏平台交付"
+  short_description: "从 brief 制作独立 3D H5 游戏，验收到 GitHub 和游戏平台草稿"
+  default_prompt: "用 $mini-game-production 读取文档链接，每个独立 brief 各建一个目录，制作并验收 3D H5 游戏，提交 GitHub 并生成游戏平台草稿。"
